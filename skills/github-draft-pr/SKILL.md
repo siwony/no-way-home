@@ -13,6 +13,7 @@ Use this workflow when a feature starts from checklist or planning Markdown and 
 - `gh auth status` must succeed.
 - `origin` must point to the GitHub repository.
 - Work must happen on a feature branch, not directly on `main`.
+- Branch names must follow `skills/git-branch-rules/SKILL.md`.
 
 If GitHub CLI is not authenticated, stop and ask the user to run:
 
@@ -26,7 +27,7 @@ gh auth login
 2. If the feature needs task tracking, start from `doc/feat/work-checklist-template.md`.
 3. Copy `.github/PULL_REQUEST_TEMPLATE.md` to `doc/feat/<feature>/pr-body.md` and fill it.
 4. Commit the feature document, checklist, and PR body first.
-5. Follow `skills/git-commit-rules/SKILL.md` for the commit message.
+5. Follow `skills/git-branch-rules/SKILL.md` for branch naming and `skills/git-commit-rules/SKILL.md` for the commit message.
 
 ## Draft PR Creation
 

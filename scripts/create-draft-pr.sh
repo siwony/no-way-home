@@ -73,6 +73,11 @@ if [[ "$current_branch" == "$base_branch" ]]; then
   exit 1
 fi
 
+if [[ ! "$current_branch" =~ ^feat/[A-Za-z0-9._-]+(/[A-Za-z0-9._-]+)?$ ]]; then
+  echo "Draft feature PR branches must follow feat/{feature-name} or feat/{feature-name}/{implementation-name}." >&2
+  exit 1
+fi
+
 if [[ -n "$(git status --porcelain)" ]]; then
   echo "Working tree is not clean. Commit checklist/docs before creating the PR." >&2
   exit 1

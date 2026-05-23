@@ -40,6 +40,8 @@ For Playwright E2E work, use [skills/playwright-e2e/SKILL.md](skills/playwright-
 
 Commit rules live in [skills/git-commit-rules/SKILL.md](skills/git-commit-rules/SKILL.md). Read that skill before creating or rewriting commits.
 
+Branch rules live in [skills/git-branch-rules/SKILL.md](skills/git-branch-rules/SKILL.md). Read that skill before creating a work branch.
+
 GitHub Draft PR workflow lives in [skills/github-draft-pr/SKILL.md](skills/github-draft-pr/SKILL.md). Use it when opening WIP feature PRs with `gh`.
 
 Pull requests should include a summary, test results, linked issues, and screenshots or logs for user-visible behavior. Call out migrations, config changes, and follow-up work.
