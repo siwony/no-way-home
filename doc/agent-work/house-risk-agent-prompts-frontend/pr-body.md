@@ -31,6 +31,8 @@ Backend Phase 1 API를 실제로 사용할 수 있는 첫 프론트엔드 슬라
 - Current verification:
   - `cd frontend && npm test` passed, 1 file / 4 tests
   - `cd frontend && npm run build` passed
+- UI/UX acceptance status: `CHANGES_REQUESTED`
+- Current loop target: add direct `User ID 다시 적용` and `새 진단 시작` actions inside the access-denied panel.
 
 ## 스크린샷 (필요한 경우)
 

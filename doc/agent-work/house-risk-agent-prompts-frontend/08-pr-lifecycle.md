@@ -33,7 +33,8 @@ None. Draft PR is open and development may proceed.
 | 2026-05-24 | DEVELOPMENT | PR lifecycle added after the missing harness-to-PR connection was identified. | yes | no |
 | 2026-05-24 | DRAFT_PR_OPEN | Work moved from `main` to `feat/house-risk-agent-prompts/frontend`; initial PR creation failed because the branch had no diff from `main`, so this lifecycle update will create the branch diff for retry. | yes | no |
 | 2026-05-24 | DRAFT_PR_OPEN | Draft PR opened: https://github.com/siwony/no-way-home/pull/1. | yes | yes |
-| 2026-05-24 | DEVELOPMENT | Frontend implementation completed under `frontend/`; validation tests and production build passed. | yes | pending |
+| 2026-05-24 | DEVELOPMENT | Frontend implementation completed under `frontend/`; validation tests and production build passed. | yes | yes |
+| 2026-05-24 | UI_UX_ACCEPTANCE | UI/UX acceptance returned `CHANGES_REQUESTED`; developer loop targets the access-denied recovery panel actions. | yes | pending |
 
 ## Ready For Review
 
