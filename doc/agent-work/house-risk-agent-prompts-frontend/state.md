@@ -6,7 +6,7 @@ Work ID: house-risk-agent-prompts-frontend
 
 ## Current Stage
 
-QA_PLAN
+DIRECTOR_FINAL_REVIEW
 
 ## Stage Order
 
@@ -34,3 +34,4 @@ QA_PLAN
 | 2026-05-24 | QA_PLAN | DEVELOPMENT | QA report returned `FAIL` due to session resume banner text conflicting with restored `User ID` and `checkId`; loop target is frontend developer. |
 | 2026-05-24 | DEVELOPMENT | UI_UX_ACCEPTANCE | Frontend developer fixed QA-01 by deriving the initial global banner from restored session state and added unit coverage; `npm test` and `npm run build` passed. |
 | 2026-05-24 | UI_UX_ACCEPTANCE | QA_PLAN | UI/UX acceptance approved QA-01 rework and confirmed frontend test/build pass. |
+| 2026-05-24 | QA_PLAN | DIRECTOR_FINAL_REVIEW | QA rerun passed. Frontend tests/build passed and built-frontend smoke verified restored-session banner plus access-denied recovery. |

@@ -18,7 +18,7 @@ Backend Phase 1 API를 실제로 사용할 수 있는 첫 프론트엔드 슬라
 - [x] Frontend 실행 구조 도입
 - [x] House check 생성/업로드/수기 입력/분석/리포트/체크리스트 흐름 구현
 - [x] UI/UX acceptance 완료
-- [ ] QA plan/report 완료
+- [x] QA plan/report 완료
 - [ ] Director final review 완료
 
 ## 리뷰 필요
@@ -36,12 +36,16 @@ Backend Phase 1 API를 실제로 사용할 수 있는 첫 프론트엔드 슬라
 - Rework verification:
   - `cd frontend && npm test` passed, 1 file / 4 tests
   - `cd frontend && npm run build` passed
-- QA status: `READY_FOR_REVIEW_AGAIN`
+- QA status: `PASS`
 - QA-01 rework completed:
   - restored `User ID` and `checkId` from `sessionStorage` now produce a matching initial global banner message.
   - `cd frontend && npm test` passed, 1 file / 5 tests
   - `cd frontend && npm run build` passed
 - UI/UX re-acceptance after QA-01: `APPROVED`
+- QA rerun:
+  - `cd frontend && npm test` passed, 1 file / 5 tests
+  - `cd frontend && npm run build` passed
+  - built-frontend smoke passed for restored-session banner and access-denied recovery
 
 ## 스크린샷 (필요한 경우)
 
