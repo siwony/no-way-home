@@ -34,7 +34,7 @@
 
 ## Implementation Constraints
 
-- Kotlin + Spring Boot + MariaDB 기준으로 구현한다.
+- 기술 스택과 로컬 실행 환경은 `doc/init/tech-stack.md`를 따른다.
 - 서비스 클래스에 util성 로직을 누적하지 않는다.
 - 계산, 검증, 변환, 외부 연동은 역할에 맞는 클래스나 인터페이스로 분리한다.
 - 개인정보 및 민감 문서 처리 코드는 로그 출력과 예외 메시지에 주의한다.

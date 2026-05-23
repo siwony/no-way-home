@@ -9,6 +9,7 @@ This is a Kotlin/Gradle project. Use the standard layout:
 - `src/test/kotlin/`: unit and integration tests
 - `src/test/resources/`: test fixtures
 - `e2e/`: Playwright end-to-end specs
+- `doc/init/`: project initialization and technical stack documents
 - `doc/feat/`: feature request Markdown files for agent implementation
 - `skills/`: reusable agent instructions
 

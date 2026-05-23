@@ -16,8 +16,7 @@
 
 ## Integration Tests
 
-다음 항목은 Spring Boot 통합 테스트로 검증한다.
-
+다음 항목은 Spring Boot 통합 테스트로 검증한다. 기술 스택 연결과 migration 검증은 `doc/init/tech-stack.md`의 초기화 테스트에서 먼저 통과해야 한다.
 - 진단 요청 생성
 - 등기부등본 파일 업로드
 - 건축물대장 파일 업로드
@@ -43,6 +42,7 @@ E2E 체크리스트는 다음 흐름을 포함한다.
 
 ## Final Quality Checklist
 
+- [ ] `doc/init/tech-stack.md`의 초기 스택 전제가 충족되어 있는가?
 - [ ] 등기부등본 분석 항목이 포함되어 있는가?
 - [ ] 건축물대장 분석 항목이 포함되어 있는가?
 - [ ] 시세 기반 계산식이 포함되어 있는가?
