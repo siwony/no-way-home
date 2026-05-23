@@ -140,6 +140,7 @@ function App() {
 
   const progressItems = useMemo(() => buildProgressItems(sectionStatus), [sectionStatus]);
   const userIdApplied = activeUserId.trim().length > 0;
+  const pendingUserId = draftUserId.trim();
   const checkReady = Boolean(checkId);
 
   const resetServerData = (nextCheckId: string | null) => {
@@ -1038,6 +1039,17 @@ function App() {
                       <dd>{checkId || "없음"}</dd>
                     </div>
                   </dl>
+                  <p className="access-panel-note">
+                    다시 적용할 User ID: <strong>{pendingUserId || "입력 필요"}</strong>
+                  </p>
+                  <div className="card-actions">
+                    <button type="button" className="primary-button" disabled={!pendingUserId} onClick={onApplyUserId}>
+                      User ID 다시 적용
+                    </button>
+                    <button type="button" className="secondary-button" onClick={onStartFresh}>
+                      새 진단 시작
+                    </button>
+                  </div>
                 </div>
               ) : resultState === "loading" ? (
                 <div className="result-placeholder">결과를 불러오는 중입니다.</div>

@@ -365,6 +365,16 @@ code {
   padding: 1rem;
 }
 
+.access-panel {
+  display: grid;
+  gap: 1rem;
+}
+
+.access-panel-note {
+  margin: 0;
+  color: var(--text-muted);
+}
+
 .report-layout,
 .checklist-layout {
   display: grid;

@@ -21,6 +21,7 @@ Status: READY_FOR_UI_UX_ACCEPTANCE
 - [x] 시세 입력 카드에서 `estimatedMarketValue` / `estimatedJeonseValue`를 함께 노출하고, 둘 중 하나 이상 필수 검증을 구현했다.
 - [x] 분석 실행, 리포트 탭, 체크리스트 탭, `ANALYSIS_NOT_READY` 상태 분기를 구현했다.
 - [x] `ACCESS_DENIED` 발생 시 기존 서버 데이터 영역을 비우고 접근 거부 패널로 전환하는 흐름을 구현했다.
+- [x] `ACCESS_DENIED` 패널 내부에 `User ID 다시 적용`과 `새 진단 시작` 회복 액션을 추가해 denial panel만으로 다음 동작을 바로 실행할 수 있게 했다.
 - [x] 브라우저 영구 저장소에는 `User ID`와 `checkId`만 `sessionStorage`에 저장하고, 리포트/체크리스트/임대인명/파일명 payload는 저장하지 않도록 제한했다.
 - [x] 로컬 기본 API 연결은 `VITE_API_BASE_URL=/api` + Vite proxy 기본 target `http://localhost:8080`로 구성하고, 필요 시 `VITE_BACKEND_ORIGIN`으로 오버라이드할 수 있게 했다.
 - [x] `frontend/.gitignore`를 추가해 `node_modules`, `dist`, `.vite`, `*.tsbuildinfo`를 제외했다.
@@ -63,6 +64,29 @@ Smoke environment note
 - local machine already had another process on `:8080` serving a different app, so runtime smoke used `SERVER_PORT=8081 ./gradlew bootRun` plus `VITE_BACKEND_ORIGIN=http://127.0.0.1:8081 npm run dev`
 - committed default config itself was not changed
 ```
+
+## Rework Loop: UI_UX_ACCEPTANCE -> DEVELOPMENT
+
+- 요청된 수정만 반영했다. `ACCESS_DENIED` 결과 패널 안에 `User ID 다시 적용`, `새 진단 시작` 버튼을 직접 추가했고, 패널 안에서 현재 재적용 대상 `User ID`도 함께 보이도록 했다.
+- 기존 동작은 유지했다. `ACCESS_DENIED` 발생 시 서버 유래 데이터(`sectionStatus`, `report`, `checklist`, 업로드 파일명)는 계속 즉시 제거되고, 회복 액션은 기존 `onApplyUserId` / `onStartFresh` 경로를 재사용한다.
+
+### Rework Verification
+
+```text
+cd frontend && npm test
+- success
+- vitest: 1 file passed, 4 tests passed
+
+cd frontend && npm run build
+- success
+- tsc no-emit checks passed, vite production build passed
+```
+
+### Rework Changed Files
+
+- `frontend/src/App.tsx`
+- `frontend/src/styles.css`
+- `doc/agent-work/house-risk-agent-prompts-frontend/03-developer-implementation.md`
 
 ## Functional Smoke Checklist
 

@@ -6,7 +6,7 @@ Work ID: house-risk-agent-prompts-frontend
 
 ## Current Stage
 
-DEVELOPMENT
+UI_UX_ACCEPTANCE
 
 ## Stage Order
 
@@ -29,3 +29,4 @@ DEVELOPMENT
 | 2026-05-24 | DRAFT_PR_OPEN | DEVELOPMENT | Draft PR opened at https://github.com/siwony/no-way-home/pull/1 and PR lifecycle status is `DRAFT_OPENED`. |
 | 2026-05-24 | DEVELOPMENT | UI_UX_ACCEPTANCE | Frontend developer completed the first usable React/Vite workspace, recorded passing `npm test` and `npm run build`, and marked implementation `READY_FOR_UI_UX_ACCEPTANCE`. |
 | 2026-05-24 | UI_UX_ACCEPTANCE | DEVELOPMENT | UI/UX acceptance requested one developer change: make the `ACCESS_DENIED` panel self-contained with `User ID 다시 적용` and `새 진단 시작` actions. |
+| 2026-05-24 | DEVELOPMENT | UI_UX_ACCEPTANCE | Frontend developer added direct recovery actions to the `ACCESS_DENIED` panel and reran `npm test` plus `npm run build` successfully. |
