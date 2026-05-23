@@ -39,6 +39,7 @@ None. Draft PR is open and development may proceed.
 | 2026-05-24 | UI_UX_ACCEPTANCE | UI/UX acceptance approved the rework; QA may proceed. | yes | pending |
 | 2026-05-24 | QA_REPORT | QA returned `FAIL` for the session resume banner mismatch; developer loop will correct the restored-session global message. | yes | pending |
 | 2026-05-24 | DEVELOPMENT | QA-01 fixed by deriving restored-session banner text from `User ID` and `checkId`; frontend tests and build passed. | yes | pending |
+| 2026-05-24 | UI_UX_ACCEPTANCE | UI/UX acceptance approved QA-01 rework; QA may rerun. | yes | pending |
 
 ## Ready For Review
 

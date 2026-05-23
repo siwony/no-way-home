@@ -41,6 +41,7 @@ Backend Phase 1 API를 실제로 사용할 수 있는 첫 프론트엔드 슬라
   - restored `User ID` and `checkId` from `sessionStorage` now produce a matching initial global banner message.
   - `cd frontend && npm test` passed, 1 file / 5 tests
   - `cd frontend && npm run build` passed
+- UI/UX re-acceptance after QA-01: `APPROVED`
 
 ## 스크린샷 (필요한 경우)
 
