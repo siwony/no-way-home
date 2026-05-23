@@ -26,3 +26,8 @@ management:
     health:
       probes:
         enabled: true
+
+housecheck:
+  security:
+    encryption:
+      secret: ${HOUSECHECK_ENCRYPTION_SECRET:housecheck-phase1-local-only-secret}
