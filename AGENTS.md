@@ -10,8 +10,11 @@ This is a Kotlin/Gradle project. Use the standard layout:
 - `src/test/resources/`: test fixtures
 - `e2e/`: Playwright end-to-end specs
 - `doc/init/`: project initialization and technical stack documents
+- `doc/agent-harness/`: multi-agent workflow, roles, and handoff templates
+- `doc/agent-work/`: generated per-feature multi-agent work logs
 - `doc/feat/`: feature request Markdown files for agent implementation
 - `skills/`: reusable agent instructions
+- `.codex/agents/`: project-specific Codex subagent TOML definitions
 
 Keep `settings.gradle.kts`, `build.gradle.kts`, `gradle.properties`, and `gradlew` in the repository root.
 
@@ -50,6 +53,10 @@ Pull requests should include a summary, test results, linked issues, and screens
 ## Feature Docs For Agents
 
 Store implementation-ready feature specs in `doc/feat/`. Each document should describe the goal, scope, expected behavior, tests, and constraints. Start from `doc/feat/feature-template.md` or `doc/feat/work-checklist-template.md`.
+
+For multi-agent work, use [doc/agent-harness/README.md](doc/agent-harness/README.md) and create work logs under `doc/agent-work/{work-id}/` from [doc/agent-harness/templates](doc/agent-harness/templates).
+
+Project-specific Codex subagents live in `.codex/agents/`. Use them with the harness roles described in [doc/agent-harness/codex-subagents.md](doc/agent-harness/codex-subagents.md).
 
 ## Security & Configuration Tips
 
