@@ -17,7 +17,7 @@ Backend Phase 1 API를 실제로 사용할 수 있는 첫 프론트엔드 슬라
 - [x] Draft PR 생성
 - [x] Frontend 실행 구조 도입
 - [x] House check 생성/업로드/수기 입력/분석/리포트/체크리스트 흐름 구현
-- [ ] UI/UX acceptance 완료
+- [x] UI/UX acceptance 완료
 - [ ] QA plan/report 완료
 - [ ] Director final review 완료
 
@@ -31,7 +31,7 @@ Backend Phase 1 API를 실제로 사용할 수 있는 첫 프론트엔드 슬라
 - Current verification:
   - `cd frontend && npm test` passed, 1 file / 4 tests
   - `cd frontend && npm run build` passed
-- UI/UX acceptance status: `READY_FOR_REVIEW_AGAIN`
+- UI/UX acceptance status: `APPROVED`
 - Rework completed: added direct `User ID 다시 적용` and `새 진단 시작` actions inside the access-denied panel.
 - Rework verification:
   - `cd frontend && npm test` passed, 1 file / 4 tests

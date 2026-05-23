@@ -1,14 +1,14 @@
 # UI/UX Acceptance: 주택 계약 위험도 진단 프론트엔드
 
-Status: CHANGES_REQUESTED
+Status: APPROVED
 
-Decision: CHANGES_REQUESTED
+Decision: APPROVED
 
 ## Review Summary
 
-The frontend matches the approved single-route operational workspace well overall. The `User ID` boundary is explicit, the major create/upload/manual-findings/market/analyze/result actions are present, card-level loading and validation states are implemented, `ANALYSIS_NOT_READY` is separated from generic errors, and browser persistence is limited to `sessionStorage` for `User ID` and `checkId`.
+The frontend still matches the approved single-route operational workspace. The `User ID` boundary remains explicit, the major create/upload/manual-findings/market/analyze/result actions remain present, card-level loading and validation states remain separated, `ANALYSIS_NOT_READY` is still distinct from generic errors, and browser persistence is still limited to `sessionStorage` for `User ID` and `checkId`.
 
-However, the approved `ACCESS_DENIED` recovery flow is not fully satisfied yet. The denial state clears server-derived report/status content correctly, but the dedicated denial panel does not include the required direct recovery actions.
+The prior `ACCESS_DENIED` change request is resolved. The denial panel now includes direct `User ID 다시 적용` and `새 진단 시작` recovery actions, shows the current `User ID` and `checkId`, and keeps the server-derived result/status content cleared while the user recovers.
 
 ## Commands Run
 
@@ -30,16 +30,11 @@ cd frontend && npm run build
 - [x] 정상, 빈 상태, 로딩, validation, `ANALYSIS_NOT_READY`, 일반 오류 상태가 구분되어 있다.
 - [x] 위험 안내 문구는 도구형 톤을 유지하고, 금지된 단정 표현을 프론트 copy에서 사용하지 않는다.
 - [x] `ACCESS_DENIED` 발생 시 서버 기반 결과/상태/파일명 노출은 제거되고 영구 저장소에도 서버 민감 데이터가 남지 않는다.
-- [ ] 접근 거부 패널 자체에 `User ID 다시 적용`과 `새 진단 시작` 회복 액션이 포함되어 있지 않다.
+- [x] 접근 거부 패널 자체에 `User ID 다시 적용`과 `새 진단 시작` 회복 액션이 포함되어 있다.
 
 ## Findings
 
-- `frontend/src/App.tsx:1027`-`1041`의 접근 거부 패널은 제목, 설명, 현재 `User ID`, 현재 `checkId`는 보여 주지만, 승인된 UI/UX plan에서 요구한 `User ID 다시 적용`과 `새 진단 시작` 액션을 패널 내부에 제공하지 않는다. 현재는 상단 공통 헤더의 입력/버튼에 의존해야 해서, `ACCESS_DENIED` 전용 복구 흐름이 불완전하다.
-
-## Change Requests
-
-- 접근 거부 패널 안에 즉시 사용할 수 있는 회복 액션 2개를 추가한다: `User ID 다시 적용`과 `새 진단 시작`.
-- 해당 패널만 보고도 다음 행동을 바로 실행할 수 있도록, 상단 헤더와 별도로 denial state 내부에서 복구 경로가 완결되게 한다.
+- 없음. 이전 UI/UX 변경 요청은 `frontend/src/App.tsx:1028`-`1052`에서 충족되며, 이번 rework로 새로운 UI/UX 이슈는 확인되지 않았다.
 
 ## Decision Notes
 

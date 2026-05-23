@@ -6,7 +6,7 @@ Work ID: house-risk-agent-prompts-frontend
 
 ## Current Stage
 
-UI_UX_ACCEPTANCE
+QA_PLAN
 
 ## Stage Order
 
@@ -30,3 +30,4 @@ UI_UX_ACCEPTANCE
 | 2026-05-24 | DEVELOPMENT | UI_UX_ACCEPTANCE | Frontend developer completed the first usable React/Vite workspace, recorded passing `npm test` and `npm run build`, and marked implementation `READY_FOR_UI_UX_ACCEPTANCE`. |
 | 2026-05-24 | UI_UX_ACCEPTANCE | DEVELOPMENT | UI/UX acceptance requested one developer change: make the `ACCESS_DENIED` panel self-contained with `User ID 다시 적용` and `새 진단 시작` actions. |
 | 2026-05-24 | DEVELOPMENT | UI_UX_ACCEPTANCE | Frontend developer added direct recovery actions to the `ACCESS_DENIED` panel and reran `npm test` plus `npm run build` successfully. |
+| 2026-05-24 | UI_UX_ACCEPTANCE | QA_PLAN | UI/UX acceptance approved the reworked access-denied recovery panel and confirmed frontend tests/build pass. |
