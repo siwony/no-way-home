@@ -19,7 +19,7 @@ Backend Phase 1 API를 실제로 사용할 수 있는 첫 프론트엔드 슬라
 - [x] House check 생성/업로드/수기 입력/분석/리포트/체크리스트 흐름 구현
 - [x] UI/UX acceptance 완료
 - [x] QA plan/report 완료
-- [ ] Director final review 완료
+- [x] Director final review 완료
 
 ## 리뷰 필요
 
@@ -46,6 +46,8 @@ Backend Phase 1 API를 실제로 사용할 수 있는 첫 프론트엔드 슬라
   - `cd frontend && npm test` passed, 1 file / 5 tests
   - `cd frontend && npm run build` passed
   - built-frontend smoke passed for restored-session banner and access-denied recovery
+- Director final review: `READY`
+- PR status: ready for review
 
 ## 스크린샷 (필요한 경우)
 

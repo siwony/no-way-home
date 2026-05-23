@@ -1,6 +1,6 @@
 # PR Lifecycle: 주택 계약 위험도 진단 프론트엔드
 
-Status: UPDATED
+Status: READY_FOR_REVIEW
 
 ## Branch
 
@@ -10,7 +10,7 @@ Status: UPDATED
 
 ## Draft PR
 
-- Title: `(WIP) feat: 주택 계약 위험도 진단 프론트엔드`
+- Title: `feat: 주택 계약 위험도 진단 프론트엔드`
 - Body file: `doc/agent-work/house-risk-agent-prompts-frontend/pr-body.md`
 - PR URL: https://github.com/siwony/no-way-home/pull/1
 - Created at: 2026-05-24
@@ -41,14 +41,15 @@ None. Draft PR is open and development may proceed.
 | 2026-05-24 | DEVELOPMENT | QA-01 fixed by deriving restored-session banner text from `User ID` and `checkId`; frontend tests and build passed. | yes | pending |
 | 2026-05-24 | UI_UX_ACCEPTANCE | UI/UX acceptance approved QA-01 rework; QA may rerun. | yes | pending |
 | 2026-05-24 | QA_REPORT | QA rerun passed; frontend tests/build and built-frontend smoke are green. | yes | pending |
+| 2026-05-24 | DIRECTOR_FINAL_REVIEW | Director final review is `READY`; PR body updated with final test results and PR marked ready for review. | yes | pending |
 
 ## Ready For Review
 
-- [ ] Director final review decision is `READY`
-- [ ] QA report result is `PASS`
-- [ ] Final test results are reflected in `pr-body.md`
-- [ ] `(WIP)` removed from PR title
-- [ ] `gh pr ready` completed
+- [x] Director final review decision is `READY`
+- [x] QA report result is `PASS`
+- [x] Final test results are reflected in `pr-body.md`
+- [x] `(WIP)` removed from PR title
+- [x] `gh pr ready` completed
 
 ## Notes
 
