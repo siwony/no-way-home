@@ -12,6 +12,7 @@ import type {
 } from "./types";
 import {
   applyAccessDeniedReset,
+  deriveNeutralGlobalMessage,
   validateBuildingLedgerFindings,
   validateContract,
   validateMarketPrice,
@@ -110,7 +111,9 @@ function App() {
   const [resultState, setResultState] = useState<ResultState>("idle");
   const [resultMessage, setResultMessage] = useState("아직 분석을 실행하지 않았습니다.");
   const [accessMode, setAccessMode] = useState<AccessMode>("none");
-  const [globalMessage, setGlobalMessage] = useState("먼저 User ID를 적용하면 진단을 시작할 수 있습니다.");
+  const [globalMessage, setGlobalMessage] = useState(() =>
+    deriveNeutralGlobalMessage(readSessionValue(sessionKeys.userId), readCheckId()),
+  );
 
   const [contractForm, setContractForm] = useState(initialContractForm);
   const [registryFile, setRegistryFile] = useState<File | null>(null);
@@ -278,14 +281,14 @@ function App() {
     }
 
     setAccessMode("none");
-    setGlobalMessage(checkId ? "현재 User ID로 이 checkId를 다시 확인할 수 있습니다." : "User ID가 적용되었습니다. 진단을 시작할 수 있습니다.");
+    setGlobalMessage(deriveNeutralGlobalMessage(nextUserId, checkId));
   };
 
   const onStartFresh = () => {
     clearMessages();
     resetServerData(null);
     setAccessMode("none");
-    setGlobalMessage(userIdApplied ? "새 진단을 시작할 수 있습니다." : "먼저 User ID를 적용하면 진단을 시작할 수 있습니다.");
+    setGlobalMessage(userIdApplied ? "새 진단을 시작할 수 있습니다." : deriveNeutralGlobalMessage(activeUserId, null));
     syncSession(activeUserId, null);
   };
 

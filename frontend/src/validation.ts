@@ -117,3 +117,11 @@ export function applyAccessDeniedReset(previousCheckId: string | null, nextUserI
     accessMode: userChanged ? "boundary_reset" : "none",
   };
 }
+
+export function deriveNeutralGlobalMessage(userId: string, checkId: string | null) {
+  if (!userId.trim()) {
+    return "먼저 User ID를 적용하면 진단을 시작할 수 있습니다.";
+  }
+
+  return checkId ? "현재 User ID로 이 checkId를 다시 확인할 수 있습니다." : "User ID가 적용되었습니다. 진단을 시작할 수 있습니다.";
+}

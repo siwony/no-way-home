@@ -6,7 +6,7 @@ Work ID: house-risk-agent-prompts-frontend
 
 ## Current Stage
 
-DEVELOPMENT
+UI_UX_ACCEPTANCE
 
 ## Stage Order
 
@@ -32,3 +32,4 @@ DEVELOPMENT
 | 2026-05-24 | DEVELOPMENT | UI_UX_ACCEPTANCE | Frontend developer added direct recovery actions to the `ACCESS_DENIED` panel and reran `npm test` plus `npm run build` successfully. |
 | 2026-05-24 | UI_UX_ACCEPTANCE | QA_PLAN | UI/UX acceptance approved the reworked access-denied recovery panel and confirmed frontend tests/build pass. |
 | 2026-05-24 | QA_PLAN | DEVELOPMENT | QA report returned `FAIL` due to session resume banner text conflicting with restored `User ID` and `checkId`; loop target is frontend developer. |
+| 2026-05-24 | DEVELOPMENT | UI_UX_ACCEPTANCE | Frontend developer fixed QA-01 by deriving the initial global banner from restored session state and added unit coverage; `npm test` and `npm run build` passed. |

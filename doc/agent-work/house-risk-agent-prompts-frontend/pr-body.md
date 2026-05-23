@@ -36,9 +36,11 @@ Backend Phase 1 API를 실제로 사용할 수 있는 첫 프론트엔드 슬라
 - Rework verification:
   - `cd frontend && npm test` passed, 1 file / 4 tests
   - `cd frontend && npm run build` passed
-- QA status: `FAIL`
-- Current QA defect:
-  - `QA-01`: restored `User ID` and `checkId` from `sessionStorage` conflict with the initial global banner message.
+- QA status: `READY_FOR_REVIEW_AGAIN`
+- QA-01 rework completed:
+  - restored `User ID` and `checkId` from `sessionStorage` now produce a matching initial global banner message.
+  - `cd frontend && npm test` passed, 1 file / 5 tests
+  - `cd frontend && npm run build` passed
 
 ## 스크린샷 (필요한 경우)
 

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { applyAccessDeniedReset, validateContract, validateMarketPrice, validateRegistryFindings } from "./validation";
+import { applyAccessDeniedReset, deriveNeutralGlobalMessage, validateContract, validateMarketPrice, validateRegistryFindings } from "./validation";
 
 describe("validation", () => {
   it("requires at least one market price amount", () => {
@@ -55,5 +55,11 @@ describe("validation", () => {
 
     expect(result.shouldClearServerData).toBe(true);
     expect(result.accessMode).toBe("boundary_reset");
+  });
+
+  it("derives the neutral banner message from restored session state", () => {
+    expect(deriveNeutralGlobalMessage("", null)).toBe("먼저 User ID를 적용하면 진단을 시작할 수 있습니다.");
+    expect(deriveNeutralGlobalMessage("owner-a", null)).toBe("User ID가 적용되었습니다. 진단을 시작할 수 있습니다.");
+    expect(deriveNeutralGlobalMessage("owner-a", "check-1")).toBe("현재 User ID로 이 checkId를 다시 확인할 수 있습니다.");
   });
 });

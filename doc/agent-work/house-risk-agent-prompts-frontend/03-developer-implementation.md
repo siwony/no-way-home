@@ -88,6 +88,30 @@ cd frontend && npm run build
 - `frontend/src/styles.css`
 - `doc/agent-work/house-risk-agent-prompts-frontend/03-developer-implementation.md`
 
+## Rework Loop: QA_REPORT -> DEVELOPMENT
+
+- QA-01만 수정했다. 세션 복원 시 초기 글로벌 배너가 고정 첫 진입 문구를 쓰지 않도록, 복원된 `User ID`와 `checkId` 기준의 neutral message helper를 추가하고 `App.tsx` 초기 상태와 재적용 경로에서 재사용했다.
+- 복원 상태 회귀를 막기 위해 helper 단위 테스트를 추가했다. 빈 세션, `User ID`만 있는 세션, `User ID + checkId`가 모두 복원된 세션의 문구를 함께 검증한다.
+
+### QA Rework Verification
+
+```text
+cd frontend && npm test
+- success
+- vitest: 1 file passed, 5 tests passed
+
+cd frontend && npm run build
+- success
+- tsc no-emit checks passed, vite production build passed
+```
+
+### QA Rework Changed Files
+
+- `frontend/src/App.tsx`
+- `frontend/src/validation.ts`
+- `frontend/src/validation.test.ts`
+- `doc/agent-work/house-risk-agent-prompts-frontend/03-developer-implementation.md`
+
 ## Functional Smoke Checklist
 
 - [x] 기본 route가 진단 도구 화면으로 열리고 User ID 적용 전 주요 액션이 비활성화된다.
