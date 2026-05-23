@@ -25,7 +25,8 @@ Prefer the Gradle wrapper:
 ```sh
 ./gradlew test          # run tests
 ./gradlew build         # compile, test, and package
-./gradlew run           # run the app
+./gradlew bootRun       # run the Spring Boot app locally
+docker compose up --build # run the app with PostgreSQL
 ./gradlew ktlintCheck   # check Kotlin style when ktlint is configured
 ./gradlew ktlintFormat  # format Kotlin code when ktlint is configured
 ```

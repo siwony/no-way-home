@@ -1,0 +1,13 @@
+.git
+.github
+.codex
+.gradle
+build
+out
+.idea
+.DS_Store
+*.iml
+.env
+doc
+skills
+scripts

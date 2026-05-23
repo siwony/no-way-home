@@ -1,0 +1,35 @@
+services:
+  postgres:
+    image: postgres:18
+    container_name: no-way-home-postgres
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-no_way_home}
+      POSTGRES_USER: ${POSTGRES_USER:-no_way_home}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-no_way_home}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: no-way-home-app
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB:-no_way_home}
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER:-no_way_home}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD:-no_way_home}
+    ports:
+      - "${APP_PORT:-8080}:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  postgres-data:

@@ -118,6 +118,13 @@ fabric.properties
 # Compiled class file
 *.class
 
+# Gradle build outputs
+.gradle/
+build/
+
+# Local environment
+.env
+
 # Log file
 *.log
 
@@ -129,6 +136,7 @@ fabric.properties
 
 # Package Files #
 *.jar
+!gradle/wrapper/gradle-wrapper.jar
 *.war
 *.nar
 *.ear
