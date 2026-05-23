@@ -66,6 +66,35 @@ PostgreSQL 기준 설계 원칙:
 
 시세 정보가 없으면 계산 불가 사유를 `CAUTION`으로 추가한다. 등기부등본 정보가 없으면 핵심 판정 불가 사유를 `DANGER` 또는 `CAUTION`으로 추가한다. 보수적 회수 시뮬레이션은 별도 서비스로 분리한다.
 
+## External Skill Integration
+
+`https://github.com/NomaDamas/k-skill`의 skill은 직접 도메인 로직에 섞지 말고 포트/어댑터 뒤에 둔다. 외부 호출 실패, 설치 누락, 네트워크 차단 시에도 핵심 수동 입력 기반 진단이 동작해야 한다.
+
+권장 포트:
+
+- `MarketPriceProvider`: 국토교통부 실거래가/전월세 데이터를 조회한다. `real-estate-search` skill 또는 동일 HTTP 계약의 어댑터로 구현한다.
+- `RegistryDocumentAcquisitionGuide`: 등기부등본 발급 보조 안내를 제공한다. `iros-registry-automation` skill의 보안 경계를 반영하되, 서버가 인터넷등기소 로그인/인증/결제를 대행하지 않는다.
+- `ReferenceListingProvider`: 공개 매물/호가 같은 보조 자료가 필요할 때만 둔다. 위험도 계산 필수 경로가 아니다.
+
+`MarketPriceProvider` 구현 메모:
+
+- `region-code` 조회로 법정동 코드를 확인한 뒤 주택 유형과 거래 유형에 맞는 endpoint를 호출한다.
+- `APT`는 `apartment`, `OFFICETEL`은 `officetel`, `VILLA`와 `MULTI_HOUSEHOLD`는 `villa`, `MULTI_FAMILY`는 `single-house`를 기본 매핑으로 검토한다. `UNKNOWN`은 자동 조회하지 않고 사용자 확인 필요 사유를 남긴다.
+- 매매 추정에는 `trade`, 전세/월세 비교에는 `rent` 데이터를 사용한다.
+- 저장 시 `source`, `source_url`, `lawd_cd`, `deal_ymd`, `asset_type`, `deal_type`, `sample_count`, `median_price_10k` 또는 `median_deposit_10k`를 보존한다.
+- 실거래 표본이 부족하면 추정 시세를 단정하지 말고 계산 불가 또는 낮은 신뢰도 사유를 추가한다.
+
+`iros-registry-automation` 적용 메모:
+
+- 사용자가 직접 로그인, 인증, 결제한 뒤 발급한 등기부등본 PDF 업로드를 기본 UX로 둔다.
+- 장바구니 담기나 파일 저장 보조를 문서화할 수는 있지만, 애플리케이션 서버가 사용자의 인터넷등기소 인증정보, 공동인증서 비밀번호, 카드정보를 수집하지 않는다.
+- 발급 대상 주소 목록, PDF, 로그, Excel 산출물은 민감정보로 보고 저장소와 테스트 fixture에 넣지 않는다.
+
+사용하지 말아야 할 경로:
+
+- `gongsijiga-search`의 개별공시지가를 시세나 매매가로 간주하지 않는다.
+- `daangn-realty-search`의 공개 매물/호가를 국토교통부 실거래가와 같은 신뢰도로 계산하지 않는다.
+
 ## MVP Phases
 
 | Phase | 구현 기능 | 완료 기준 |
