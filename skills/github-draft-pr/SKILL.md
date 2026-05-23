@@ -50,6 +50,26 @@ Use the helper script when possible:
 scripts/create-draft-pr.sh --feature "기능 이름" --body doc/feat/<feature>/pr-body.md
 ```
 
+## Harness Integration
+
+When the work uses `doc/agent-harness/`, use the harness work log as the PR source of truth.
+
+1. Create or update `doc/agent-work/<work-id>/pr-body.md` from `doc/agent-harness/templates/pr-body.md`.
+2. Track branch, PR URL, loop updates, and ready state in `doc/agent-work/<work-id>/08-pr-lifecycle.md`.
+3. Open the Draft PR after Director plan approval is `APPROVED` and before Developer agents start implementation:
+
+```sh
+scripts/create-draft-pr.sh --feature "기능 이름" --body doc/agent-work/<work-id>/pr-body.md
+```
+
+4. After each failed gate or completed loop, update both `08-pr-lifecycle.md` and `pr-body.md`, then push and refresh the PR body:
+
+```sh
+gh pr edit --body-file doc/agent-work/<work-id>/pr-body.md
+```
+
+5. When Director final review is `READY`, remove `(WIP)` from the PR title and mark the PR ready.
+
 ## During Implementation
 
 After each meaningful work unit:

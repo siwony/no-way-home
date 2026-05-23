@@ -25,3 +25,7 @@ Use only when decision is `CHANGES_REQUESTED`.
 ## Final Decision
 
 Use one decision value: `READY`, `CHANGES_REQUESTED`, or `BLOCKED`.
+
+## PR Ready Handoff
+
+When decision is `READY`, Director must update `pr-body.md` with final test results, update `08-pr-lifecycle.md`, remove `(WIP)` from the PR title, and run `gh pr ready`.

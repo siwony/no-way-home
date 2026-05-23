@@ -23,7 +23,7 @@ Project subagents live in `.codex/agents/`. The project config is `.codex/config
 
 | Harness Role | Codex Execution | Sandbox | Write Scope |
 |---|---|---|---|
-| Director | Parent Codex or `harness-director` | workspace-write | Director files only |
+| Director | Parent Codex or `harness-director` | workspace-write | Director files, `08-pr-lifecycle.md`, `pr-body.md` |
 | UI/UX agent | `harness-ui-ux` | workspace-write | `01-ui-ux-plan.md`, `04-ui-ux-acceptance.md` |
 | Frontend developer | `frontend-developer` | workspace-write | frontend files and `03-developer-implementation.md` |
 | Backend developer | `kotlin-spring-backend-developer` | workspace-write | backend files and `03-developer-implementation.md` |
@@ -56,6 +56,8 @@ Every delegated subagent should receive:
 - work id and title
 - role file path
 - current work-log file path
+- PR lifecycle file path
+- PR body file path
 - allowed write paths
 - forbidden write paths
 - expected status or decision value
@@ -123,10 +125,14 @@ Record PASS, FAIL, or BLOCKED.
 Parent Codex must:
 
 - create `doc/agent-work/<work-id>/` from `doc/agent-harness/templates/`
+- ensure work runs on a valid feature branch before implementation starts
+- open or update the Draft PR after Director plan approval
 - delegate subagents only for approved parallel work
 - keep file ownership disjoint
+- keep `08-pr-lifecycle.md` and `pr-body.md` in sync with each loop
 - review subagent outputs before advancing gates
 - update Director approval and final review files
+- mark the PR ready only after Director final review is `READY`
 - close subagents when no longer needed
 
 ## Work Log Checks

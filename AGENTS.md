@@ -55,7 +55,7 @@ Pull requests should include a summary, test results, linked issues, and screens
 
 Store implementation-ready feature specs in `doc/feat/`. Each document should describe the goal, scope, expected behavior, tests, and constraints. Start from `doc/feat/feature-template.md` or `doc/feat/work-checklist-template.md`.
 
-For multi-agent work, use [doc/agent-harness/README.md](doc/agent-harness/README.md) and create work logs under `doc/agent-work/{work-id}/` from [doc/agent-harness/templates](doc/agent-harness/templates).
+For multi-agent work, use [doc/agent-harness/README.md](doc/agent-harness/README.md) and create work logs under `doc/agent-work/{work-id}/` from [doc/agent-harness/templates](doc/agent-harness/templates). Harness work should open a Draft PR after Director plan approval and keep `08-pr-lifecycle.md` plus `pr-body.md` updated through each loop.
 
 Project-specific Codex subagents live in `.codex/agents/`. Use them with the harness roles described in [doc/agent-harness/codex-subagents.md](doc/agent-harness/codex-subagents.md).
 

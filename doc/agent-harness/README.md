@@ -16,11 +16,13 @@ See [workflow.md](workflow.md) for gate rules and loop handling. See [codex-suba
 1. Director가 작업 지시서를 작성한다.
 2. UI/UX agent가 기획서와 간단 체크리스트를 작성한다.
 3. Director가 기획이 원래 기능 목표와 맞는지 승인한다.
-4. Developer agents가 승인된 기획에 따라 구현한다.
-5. Developer agents가 UI/UX 체크리스트를 통과했는지 기록한다.
-6. QA agent가 기획 기준으로 상세 체크리스트를 만들고 테스트한다.
-7. Director가 최종 구현 상태를 확인한다.
-8. 불일치가 있으면 Director가 되돌릴 단계와 이유를 명시하고 루프를 반복한다.
+4. Director가 planning docs와 PR body를 커밋하고 Draft PR을 연다.
+5. Developer agents가 승인된 기획에 따라 구현한다.
+6. Developer agents가 UI/UX 체크리스트를 통과했는지 기록한다.
+7. QA agent가 기획 기준으로 상세 체크리스트를 만들고 테스트한다.
+8. Director가 최종 구현 상태를 확인한다.
+9. Director가 PR body를 최신화하고 PR을 review-ready 상태로 만든다.
+10. 불일치가 있으면 Director가 되돌릴 단계와 이유를 명시하고 루프를 반복한다.
 
 ## Work Directory
 
@@ -33,7 +35,16 @@ See [workflow.md](workflow.md) for gate rules and loop handling. See [codex-suba
 - 파일 안의 `{{WORK_ID}}`와 `{{TITLE}}` placeholder를 실제 값으로 바꾼다.
 - 각 단계의 `Status`, `Decision`, `Result` 값을 handoff 전에 직접 확인한다.
 
-필수 work log 파일은 `state.md`, `00-director-brief.md`, `01-ui-ux-plan.md`, `02-director-plan-approval.md`, `03-developer-implementation.md`, `04-ui-ux-acceptance.md`, `05-qa-plan.md`, `06-qa-report.md`, `07-director-final-review.md`이다.
+필수 work log 파일은 `state.md`, `00-director-brief.md`, `01-ui-ux-plan.md`, `02-director-plan-approval.md`, `03-developer-implementation.md`, `04-ui-ux-acceptance.md`, `05-qa-plan.md`, `06-qa-report.md`, `07-director-final-review.md`, `08-pr-lifecycle.md`, `pr-body.md`이다.
+
+## PR Rules
+
+- 하네스 작업은 `main`이 아니라 feature branch에서 시작한다.
+- Draft PR은 Director plan approval 이후, Developer 구현 전에 연다.
+- PR 제목은 `(WIP) feat: <기능 이름>` 형식을 사용한다.
+- PR 본문은 `doc/agent-work/{work-id}/pr-body.md`를 기준으로 갱신한다.
+- 루프가 발생하면 실패 gate, 재작업 대상, 최신 테스트 결과를 PR body에 반영한다.
+- Director final review가 `READY`이고 QA result가 `PASS`일 때만 `(WIP)`를 제거하고 `gh pr ready`를 실행한다.
 
 ## Handoff Rules
 

@@ -1,23 +1,25 @@
 # Agent Work State: 주택 계약 위험도 진단 서비스
 
-Status: READY
+Status: BLOCKED
 
 Work ID: house-risk-agent-prompts
 
 ## Current Stage
 
-MERGE_READY
+PR_READY
 
 ## Stage Order
 
 1. DIRECTOR_BRIEF
 2. UI_UX_PLAN
 3. DIRECTOR_PLAN_APPROVAL
-4. DEVELOPMENT
-5. UI_UX_ACCEPTANCE
-6. QA_PLAN
-7. QA_REPORT
-8. DIRECTOR_FINAL_REVIEW
+4. DRAFT_PR_OPEN
+5. DEVELOPMENT
+6. UI_UX_ACCEPTANCE
+7. QA_PLAN
+8. QA_REPORT
+9. DIRECTOR_FINAL_REVIEW
+10. PR_READY
 
 ## Loop History
 
@@ -30,3 +32,4 @@ MERGE_READY
 | 2026-05-24 | UI_UX_ACCEPTANCE | QA_PLAN | UI/UX re-review approved the backend rework. `estimatedJeonseValue`-only input is preserved as saved user input, market-value-dependent metrics remain explicitly unavailable when needed, and report wording stays aligned with the approved Phase 1 messaging constraints. |
 | 2026-05-24 | QA_PLAN | DIRECTOR_FINAL_REVIEW | QA rerun passed. Full `./gradlew test` and fresh focused reruns verified QA-01 and QA-02 fixes: jeonse-only input remains visible through report generation, and landlord name plus uploaded document bytes are encrypted at rest. |
 | 2026-05-24 | DIRECTOR_FINAL_REVIEW | MERGE_READY | Director final review marked the work item READY. Required gate decisions are satisfied, local work logs are updated, and the approved Phase 1 scope is merge-ready with only non-blocking residual risks remaining. |
+| 2026-05-24 | MERGE_READY | PR_READY | Harness-to-PR lifecycle was added retroactively. The work is implementation-ready but PR-ready is blocked because the work is on `main` and no Draft PR lifecycle exists yet. |
