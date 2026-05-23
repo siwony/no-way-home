@@ -40,11 +40,13 @@ For Playwright E2E work, use [skills/playwright-e2e/SKILL.md](skills/playwright-
 
 Commit rules live in [skills/git-commit-rules/SKILL.md](skills/git-commit-rules/SKILL.md). Read that skill before creating or rewriting commits.
 
+GitHub Draft PR workflow lives in [skills/github-draft-pr/SKILL.md](skills/github-draft-pr/SKILL.md). Use it when opening WIP feature PRs with `gh`.
+
 Pull requests should include a summary, test results, linked issues, and screenshots or logs for user-visible behavior. Call out migrations, config changes, and follow-up work.
 
 ## Feature Docs For Agents
 
-Store implementation-ready feature specs in `doc/feat/`. Each document should describe the goal, scope, expected behavior, tests, and constraints. Start from `doc/feat/feature-template.md`.
+Store implementation-ready feature specs in `doc/feat/`. Each document should describe the goal, scope, expected behavior, tests, and constraints. Start from `doc/feat/feature-template.md` or `doc/feat/work-checklist-template.md`.
 
 ## Security & Configuration Tips
 
