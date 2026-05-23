@@ -1,12 +1,12 @@
 # Agent Work State: 주택 계약 위험도 진단 프론트엔드
 
-Status: BLOCKED
+Status: ACTIVE
 
 Work ID: house-risk-agent-prompts-frontend
 
 ## Current Stage
 
-DRAFT_PR_OPEN
+DEVELOPMENT
 
 ## Stage Order
 
@@ -26,3 +26,4 @@ DRAFT_PR_OPEN
 | Date | From | To | Reason |
 |---|---|---|---|
 | 2026-05-24 | DIRECTOR_PLAN_APPROVAL | DRAFT_PR_OPEN | Harness-to-PR lifecycle was added after planning approval. Work is blocked before implementation because Draft PR creation requires moving off `main` to a valid `feat/...` branch. |
+| 2026-05-24 | DRAFT_PR_OPEN | DEVELOPMENT | Draft PR opened at https://github.com/siwony/no-way-home/pull/1 and PR lifecycle status is `DRAFT_OPENED`. |
