@@ -1,6 +1,6 @@
 # PR Lifecycle: 주택 계약 위험도 진단 프론트엔드
 
-Status: DRAFT_OPENED
+Status: UPDATED
 
 ## Branch
 
@@ -33,6 +33,7 @@ None. Draft PR is open and development may proceed.
 | 2026-05-24 | DEVELOPMENT | PR lifecycle added after the missing harness-to-PR connection was identified. | yes | no |
 | 2026-05-24 | DRAFT_PR_OPEN | Work moved from `main` to `feat/house-risk-agent-prompts/frontend`; initial PR creation failed because the branch had no diff from `main`, so this lifecycle update will create the branch diff for retry. | yes | no |
 | 2026-05-24 | DRAFT_PR_OPEN | Draft PR opened: https://github.com/siwony/no-way-home/pull/1. | yes | yes |
+| 2026-05-24 | DEVELOPMENT | Frontend implementation completed under `frontend/`; validation tests and production build passed. | yes | pending |
 
 ## Ready For Review
 
