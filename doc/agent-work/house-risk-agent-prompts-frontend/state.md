@@ -6,7 +6,7 @@ Work ID: house-risk-agent-prompts-frontend
 
 ## Current Stage
 
-UI_UX_ACCEPTANCE
+QA_PLAN
 
 ## Stage Order
 
@@ -38,3 +38,4 @@ UI_UX_ACCEPTANCE
 | 2026-05-24 | DIRECTOR_FINAL_REVIEW | PR_READY | Director final review marked the frontend work READY; PR body/lifecycle are being finalized for review-ready state. |
 | 2026-05-24 | PR_READY | DEVELOPMENT | User-reported live integration defect: after entering contract basic info, frontend POST to `http://localhost:5173/api/house-checks` returned 404. Loop target is frontend developer, then backend-inclusive E2E QA. |
 | 2026-05-24 | DEVELOPMENT | UI_UX_ACCEPTANCE | Frontend developer added Vite backend origin auto-detection and preview proxy coverage; `npm test` and `npm run build` passed. |
+| 2026-05-24 | UI_UX_ACCEPTANCE | QA_PLAN | UI/UX acceptance approved the integration rework because visible flow is unchanged and local create-step dead-end risk is reduced. |

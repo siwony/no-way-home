@@ -24,7 +24,7 @@ Status: UPDATED
 
 ## Current Blocker
 
-Frontend integration rework is complete and awaiting UI/UX acceptance plus backend-inclusive E2E QA.
+Frontend integration rework has UI/UX approval and is awaiting backend-inclusive E2E QA.
 
 ## Loop Updates
 
@@ -45,6 +45,7 @@ Frontend integration rework is complete and awaiting UI/UX acceptance plus backe
 | 2026-05-24 | PR_READY | Frontend evidence screenshots captured, committed under `assets/`, and linked from PR body. | yes | pending |
 | 2026-05-24 | PR_READY | Live integration defect reported from contract basic info create flow: `/api/house-checks` returned 404 through `localhost:5173`. Reopening developer loop and requiring backend-inclusive E2E QA before returning to ready-for-review. | yes | pending |
 | 2026-05-24 | DEVELOPMENT | Frontend rework added Vite backend auto-detection for local `no-way-home` backend candidates and shared `/api` proxy coverage for dev/preview. `cd frontend && npm test` and `cd frontend && npm run build` passed. | yes | pending |
+| 2026-05-24 | UI_UX_ACCEPTANCE | UI/UX acceptance approved the integration rework; QA must now run live Spring Boot backend plus frontend E2E for the create -> upload -> findings -> market -> analyze -> report/checklist path. | yes | pending |
 
 ## Visual Evidence Assets
 

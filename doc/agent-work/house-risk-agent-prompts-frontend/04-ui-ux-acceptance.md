@@ -6,42 +6,25 @@ Decision: APPROVED
 
 ## Review Summary
 
-The frontend still matches the approved single-route operational workspace. The `User ID` boundary remains explicit, the major create/upload/manual-findings/market/analyze/result actions remain present, card-level loading and validation states remain separated, `ANALYSIS_NOT_READY` is still distinct from generic errors, and browser persistence is still limited to `sessionStorage` for `User ID` and `checkId`.
+이번 live integration rework는 사용자에게 보이는 화면 구조나 카피를 바꾸는 수정이 아니다. 승인된 단일 route 작업형 흐름, `User ID` 경계 노출, 계약 기본 정보 생성 이후 같은 화면에서 업로드/수기 확인/시세/분석/결과로 이어지는 사용자 흐름은 그대로 유지된다. `frontend/src/App.tsx`와 `frontend/src/styles.css` 기준으로도 이번 루프에서 추가된 새 UI 상태나 회귀는 확인되지 않았다.
 
-The prior `ACCESS_DENIED` change request is resolved. The denial panel now includes direct `User ID 다시 적용` and `새 진단 시작` recovery actions, shows the current `User ID` and `checkId`, and keeps the server-derived result/status content cleared while the user recovers.
+수정의 실질적 UX 효과는 local dev/preview에서 `POST /api/house-checks`가 잘못된 upstream으로 빠져 404가 나는 경우를 줄였다는 점이다. `frontend/vite.backend.ts`와 `frontend/vite.config.ts`는 dev와 preview 모두에서 동일한 backend 탐지 규칙을 사용하고, `service=no-way-home` 응답을 기준으로 `:8080`과 `:8081` 후보를 판별한 뒤 proxy target을 잡는다. 따라서 사용자가 계약 기본 정보 제출 직후 generic failure에 멈춰 서는 가능성은 기존보다 낮아졌다.
 
-The QA-01 rework is also acceptable from a UI/UX perspective. Restored-session messaging now uses a neutral session-aware banner instead of reverting to the first-entry prompt when `User ID` and `checkId` are already present, and that change does not weaken the approved access-denied recovery flow.
+## Checklist Status
 
-## Commands Run
+- [x] 계약 기본 정보 제출 이후의 visible UI flow는 변경되지 않았다.
+- [x] `ACCESS_DENIED`, `ANALYSIS_NOT_READY`, 빈 상태, 로딩, validation 분리는 기존 승인 상태를 유지한다.
+- [x] dev와 preview가 같은 backend 감지 규칙을 사용해 local integration mismatch로 인한 create-step dead end 위험을 낮춘다.
 
-```text
-cd frontend && npm test
-- success
-- vitest: 1 file passed, 5 tests passed
+## Residual QA Risk
 
-cd frontend && npm run build
-- success
-- tsc no-emit checks passed, vite production build passed
-```
-
-## Checklist Review
-
-- [x] 기본 route가 곧바로 진단 도구 화면으로 열리고 마케팅 hero 페이지가 없다.
-- [x] `User ID` 적용 전에는 주요 API 호출 버튼이 비활성화되고, 적용 후 요청 헤더 경계가 일관되게 구현되어 있다.
-- [x] 계약 생성, 등기/건축물대장 PDF 업로드, 등기/건축물대장 수기 확인 저장, 시세 저장, 분석 실행, 리포트/체크리스트 조회 흐름이 한 화면 안에 구성되어 있다.
-- [x] 정상, 빈 상태, 로딩, validation, `ANALYSIS_NOT_READY`, 일반 오류 상태가 구분되어 있다.
-- [x] 위험 안내 문구는 도구형 톤을 유지하고, 금지된 단정 표현을 프론트 copy에서 사용하지 않는다.
-- [x] `ACCESS_DENIED` 발생 시 서버 기반 결과/상태/파일명 노출은 제거되고 영구 저장소에도 서버 민감 데이터가 남지 않는다.
-- [x] 접근 거부 패널 자체에 `User ID 다시 적용`과 `새 진단 시작` 회복 액션이 포함되어 있다.
-
-## Findings
-
-- 없음. QA-01 rework에서 추가된 restored-session neutral message helper와 그 테스트는 승인된 도구형 copy 방향을 유지하며, `ACCESS_DENIED` 패널의 회복 액션과 기존 서버 데이터 제거 흐름도 계속 보존된다.
+- QA는 `npm run dev`와 `npm run preview` 각각에서, `:8080`에 다른 프로세스가 있고 실제 backend가 `:8081`에 있을 때 `진단 시작`이 정상적으로 생성 단계로 넘어가는지 확인해야 한다.
+- QA는 backend가 후보 포트 외 위치에 있을 때 `VITE_BACKEND_ORIGIN` 또는 `VITE_BACKEND_CANDIDATES` 설정으로 복구 가능한지, 그리고 미설정 시 사용자가 여전히 generic create failure로만 보이게 되는지 확인할 필요가 있다.
 
 ## Changed Files
 
 - `doc/agent-work/house-risk-agent-prompts-frontend/04-ui-ux-acceptance.md`
 
-## Decision Notes
+## Open Questions Or Requested Changes
 
-Use one decision value: `APPROVED`, `CHANGES_REQUESTED`, or `BLOCKED`.
+- 없음

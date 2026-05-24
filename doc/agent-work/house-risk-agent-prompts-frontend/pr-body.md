@@ -14,7 +14,8 @@ Backend Phase 1 API를 실제로 사용할 수 있는 첫 프론트엔드 슬라
 - 2026-05-24 live integration 결함 루프 진행 중
 - 사용자 재현: 계약 기본 정보 입력 후 `http://localhost:5173/api/house-checks` 요청이 404를 반환하고 다음 행동이 없음
 - frontend-developer rework 완료: Vite dev/preview에서 실제 `no-way-home` backend를 `/api/status`로 감지하도록 보강
-- 다음 기준: UI/UX acceptance 후 실제 Spring Boot backend를 포함한 Playwright E2E가 통과해야 다시 ready-for-review로 복귀
+- UI/UX acceptance 재승인 완료
+- 다음 기준: 실제 Spring Boot backend를 포함한 Playwright E2E가 통과해야 다시 ready-for-review로 복귀
 
 ## 작업 내용
 
@@ -59,6 +60,7 @@ Backend Phase 1 API를 실제로 사용할 수 있는 첫 프론트엔드 슬라
 - Integration rework verification:
   - `cd frontend && npm test` passed, 2 files / 10 tests
   - `cd frontend && npm run build` passed
+- UI/UX re-acceptance: `APPROVED`
 
 ## 스크린샷
 
