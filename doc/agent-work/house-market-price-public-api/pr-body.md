@@ -25,6 +25,7 @@
 - 매매/순수 전세 표본 중앙값, 표본 수, 법정동 코드, 조회 월 범위, 경고 반환
 - 선택한 조회 결과를 저장할 수 있도록 시세 snapshot metadata 확장
 - 분석은 저장된 시세 snapshot만 사용하도록 유지
+- 실제 public API 부분 실패 시 가능한 표본은 유지하고 실패 endpoint는 warning으로 반환
 
 ### Frontend
 
@@ -59,6 +60,21 @@ doc/agent-work/house-market-price-public-api/assets/market-price-lookup-preview.
 
 git diff --check
 no output
+
+MARKET_PRICE_PROVIDER=mlit SERVER_PORT=18080 ./gradlew bootRun
+POST /api/house-checks
+POST /api/house-checks/{checkId}/market-price/lookup
+POST /api/house-checks/{checkId}/market-price
+lookup confidence AVAILABLE
+sourceKind MLIT_REAL_TRANSACTION
+lawdCode 11440
+marketPriceStatus SAVED
+
+실제 외부 API 직접 점검
+Juso XML 200
+StanReginCd XML 403
+AptTrade XML 200
+AptRent XML 403
 ```
 
 ## 스크린샷 (필요한 경우)

@@ -29,6 +29,7 @@ Status: READY_FOR_REVIEW
 | 2026-05-24 | DRAFT_PR_OPEN | Draft PR #3 opened against `feat/house-document-auto-fill` | yes | yes |
 | 2026-05-24 | DEVELOPMENT_COMPLETE | XML-only public market price lookup, preview/apply UI, tests, and screenshot evidence completed | yes | yes |
 | 2026-05-24 | QA_PASS | Full Gradle test, frontend tests/build, Playwright screenshot, and diff check passed | yes | yes |
+| 2026-05-24 | SERVICE_KEY_QA | Registered service keys tested against real public XML APIs; partial 403 fallback added and Gradle tests passed | yes | yes |
 
 ## Visual Evidence Assets
 

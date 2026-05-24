@@ -24,16 +24,16 @@ class MlitMarketPriceProvider(
         val address = roadAddressXmlClient.lookup(command.addressRoad)
             ?: command.addressLot?.let(roadAddressXmlClient::lookup)
             ?: return unavailableResult(command, endpointPair.label, listOf("주소를 법정동 코드로 해석하지 못했습니다."))
-        val lawdCode = legalRegionCodeXmlClient.resolveSggCode(address) ?: address.lawdCodeCandidate
+        val warnings = mutableListOf<String>()
+        val lawdCode = resolveLawdCode(address, warnings)
         if (lawdCode.length != 5) {
             return unavailableResult(command, endpointPair.label, listOf("실거래가 조회용 시군구 코드를 확인하지 못했습니다."))
         }
 
         val dealMonths = dealMonths(command)
-        val warnings = mutableListOf<String>()
-        val saleSamples = dealMonths.flatMap { mlitRealTransactionXmlClient.fetch(endpointPair.saleUrl, lawdCode, it) }
+        val saleSamples = fetchTransactionSamples(endpointPair.saleUrl, lawdCode, dealMonths, "매매", warnings)
             .selectPreferredSamples(address, warnings)
-        val rentSamples = dealMonths.flatMap { mlitRealTransactionXmlClient.fetch(endpointPair.rentUrl, lawdCode, it) }
+        val rentSamples = fetchTransactionSamples(endpointPair.rentUrl, lawdCode, dealMonths, "전월세", warnings)
             .filter { (it.monthlyRent ?: 0L) == 0L }
             .selectPreferredSamples(address, warnings)
 
@@ -66,6 +66,40 @@ class MlitMarketPriceProvider(
             dealYmdTo = dealYmdTo,
             warnings = warnings.distinct(),
         )
+    }
+
+    private fun resolveLawdCode(
+        address: RoadAddressLookupResult,
+        warnings: MutableList<String>,
+    ): String {
+        return try {
+            legalRegionCodeXmlClient.resolveSggCode(address) ?: address.lawdCodeCandidate
+        } catch (exception: HouseCheckExternalLookupException) {
+            warnings += "법정동 코드 보조 API 조회에 실패해 주소검색 결과의 행정구역 코드를 사용했습니다."
+            address.lawdCodeCandidate
+        }
+    }
+
+    private fun fetchTransactionSamples(
+        endpointUrl: String,
+        lawdCode: String,
+        dealMonths: List<String>,
+        label: String,
+        warnings: MutableList<String>,
+    ): List<MlitTransaction> {
+        val samples = mutableListOf<MlitTransaction>()
+        val failedMonths = mutableListOf<String>()
+        dealMonths.forEach { dealYmd ->
+            try {
+                samples += mlitRealTransactionXmlClient.fetch(endpointUrl, lawdCode, dealYmd)
+            } catch (exception: HouseCheckExternalLookupException) {
+                failedMonths += dealYmd
+            }
+        }
+        if (failedMonths.isNotEmpty()) {
+            warnings += "$label 실거래가 ${failedMonths.size}개월 조회에 실패했습니다."
+        }
+        return samples
     }
 
     private fun unavailableResult(

@@ -40,6 +40,7 @@ class HouseCheckMarketPriceLookupIntegrationTest {
     @BeforeEach
     fun cleanDatabase() {
         requestLog.clear()
+        failLegalAndRentApis = false
         jdbcTemplate.execute(
             """
             truncate table
@@ -53,6 +54,27 @@ class HouseCheckMarketPriceLookupIntegrationTest {
             cascade
             """.trimIndent(),
         )
+    }
+
+    @Test
+    fun returnsAvailableMarketPriceWhenOptionalPublicApisFail() {
+        failLegalAndRentApis = true
+        val checkId = createHouseCheck()
+
+        val lookup = postJson(
+            path = "/api/house-checks/$checkId/market-price/lookup",
+            ownerId = "owner-a",
+            body = "",
+        )
+
+        assertEquals(200, lookup.statusCode())
+        val lookupJson = parseJson(lookup.body())
+        assertEquals(220_000_000L, lookupJson.get("estimatedMarketValue").longValue())
+        assertTrue(lookupJson.get("estimatedJeonseValue").isNull)
+        assertEquals("AVAILABLE", lookupJson.get("confidence").asText())
+        assertEquals("11440", lookupJson.get("lawdCode").asText())
+        assertEquals(0, lookupJson.get("jeonseSampleCount").intValue())
+        assertTrue(lookupJson.get("warnings").size() >= 2)
     }
 
     @Test
@@ -148,6 +170,8 @@ class HouseCheckMarketPriceLookupIntegrationTest {
         private val marketApiServer: HttpServer = HttpServer.create(InetSocketAddress(0), 0)
         private val requestLog = Collections.synchronizedList(mutableListOf<LoggedRequest>())
         private val marketApiBaseUrl: String
+        @Volatile
+        private var failLegalAndRentApis: Boolean = false
 
         init {
             marketApiServer.createContext("/") { exchange ->
@@ -156,6 +180,10 @@ class HouseCheckMarketPriceLookupIntegrationTest {
                     query = exchange.requestURI.rawQuery.orEmpty(),
                     accept = exchange.requestHeaders.getFirst("Accept").orEmpty(),
                 )
+                if (failLegalAndRentApis && (exchange.requestURI.path == "/legal" || exchange.requestURI.path.contains("AptRent"))) {
+                    exchange.respond("Forbidden", 403, "text/plain; charset=utf-8")
+                    return@createContext
+                }
                 exchange.respond(responseBodyFor(exchange))
             }
             marketApiServer.start()
@@ -202,10 +230,14 @@ class HouseCheckMarketPriceLookupIntegrationTest {
             }
         }
 
-        private fun HttpExchange.respond(body: String) {
+        private fun HttpExchange.respond(
+            body: String,
+            status: Int = 200,
+            contentType: String = "application/xml; charset=utf-8",
+        ) {
             val bytes = body.toByteArray(Charsets.UTF_8)
-            responseHeaders.add("Content-Type", "application/xml; charset=utf-8")
-            sendResponseHeaders(200, bytes.size.toLong())
+            responseHeaders.add("Content-Type", contentType)
+            sendResponseHeaders(status, bytes.size.toLong())
             responseBody.use { it.write(bytes) }
         }
 
