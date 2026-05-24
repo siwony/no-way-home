@@ -1,6 +1,6 @@
 # PR Lifecycle: 공공 실거래가 시세 자동 조회
 
-Status: NOT_CREATED
+Status: DRAFT_OPENED
 
 ## Branch
 
@@ -12,21 +12,21 @@ Status: NOT_CREATED
 
 - Title: `(WIP) feat: 공공 실거래가 시세 자동 조회`
 - Body file: `doc/agent-work/house-market-price-public-api/pr-body.md`
-- PR URL:
-- Created at:
+- PR URL: https://github.com/siwony/no-way-home/pull/3
+- Created at: 2026-05-24
 
 ## Required Before Development
 
-- [ ] Work branch is not `main`
-- [ ] Planning documents are committed
-- [ ] `pr-body.md` is filled from the repository PR template
-- [ ] Draft PR is opened
+- [x] Work branch is not `main`
+- [x] Planning documents are committed
+- [x] `pr-body.md` is filled from the repository PR template
+- [x] Draft PR is opened
 
 ## Loop Updates
 
 | Date | Gate | Summary | PR Body Updated | Pushed |
 |---|---|---|---|---|
-|  |  |  |  |  |
+| 2026-05-24 | DRAFT_PR_OPEN | Draft PR #3 opened against `feat/house-document-auto-fill` | yes | yes |
 
 ## Visual Evidence Assets
 

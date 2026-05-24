@@ -6,7 +6,7 @@ Work ID: house-market-price-public-api
 
 ## Current Stage
 
-DRAFT_PR_OPEN
+DEVELOPMENT
 
 ## Stage Order
 

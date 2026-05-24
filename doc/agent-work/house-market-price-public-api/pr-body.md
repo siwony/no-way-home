@@ -11,7 +11,7 @@
 
 - [x] Director brief 작성
 - [x] UI/UX plan 작성 및 Director approval 완료
-- [ ] Draft PR 생성
+- [x] Draft PR 생성
 - [ ] Backend 구현
 - [ ] Frontend 구현
 - [ ] UI/UX acceptance 완료
