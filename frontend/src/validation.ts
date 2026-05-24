@@ -1,3 +1,4 @@
+import { ApiError } from "./api";
 import type {
   BuildingLedgerFindingsFormState,
   ContractFormState,
@@ -6,9 +7,15 @@ import type {
 } from "./types";
 
 export type ValidationErrors = Record<string, string>;
+export const DOCUMENT_INTAKE_UPLOAD_MAX_BYTES = 20 * 1024 * 1024;
+export const DOCUMENT_INTAKE_UPLOAD_MAX_LABEL = "20MB(20MiB)";
 
 function isNegativeNumber(value: string): boolean {
   return value.trim() !== "" && Number(value) < 0;
+}
+
+function documentIntakeUploadSizeMessage() {
+  return `파일 용량이 너무 큽니다. 문서 자동 입력은 ${DOCUMENT_INTAKE_UPLOAD_MAX_LABEL} 이하 파일만 업로드할 수 있습니다.`;
 }
 
 function requireBoolean(value: string, field: string, errors: ValidationErrors) {
@@ -49,6 +56,53 @@ export function validateUpload(file: File | null): ValidationErrors {
   }
 
   return errors;
+}
+
+export function validateDocumentIntakeUpload(documentType: "registry" | "lease-contract", file: File | null): ValidationErrors {
+  const errors: ValidationErrors = {};
+  if (!file) {
+    errors.file = "업로드할 파일을 먼저 선택해 주세요.";
+    return errors;
+  }
+
+  const lowerName = file.name.toLowerCase();
+  const isPdf = file.type === "application/pdf" || lowerName.endsWith(".pdf");
+  const isImage =
+    file.type === "image/jpeg" ||
+    file.type === "image/png" ||
+    file.type === "image/webp" ||
+    lowerName.endsWith(".jpg") ||
+    lowerName.endsWith(".jpeg") ||
+    lowerName.endsWith(".png") ||
+    lowerName.endsWith(".webp");
+
+  if (documentType === "registry" && !isPdf) {
+    errors.file = "지원하지 않는 형식입니다. 등기부등본은 PDF만 등록할 수 있습니다.";
+  }
+
+  if (documentType === "lease-contract" && !isPdf && !isImage) {
+    errors.file = "지원하지 않는 형식입니다. 임대차 계약서는 PDF, JPEG, PNG, WebP만 등록할 수 있습니다.";
+  }
+
+  if (file.size <= 0) {
+    errors.file = "빈 파일은 업로드할 수 없습니다.";
+  } else if (file.size > DOCUMENT_INTAKE_UPLOAD_MAX_BYTES) {
+    errors.file = documentIntakeUploadSizeMessage();
+  }
+
+  return errors;
+}
+
+export function deriveDocumentIntakeUploadFailureMessage(error: unknown) {
+  if (error instanceof ApiError) {
+    return error.message;
+  }
+
+  if (error instanceof Error && error.message.includes("HTTP 413")) {
+    return documentIntakeUploadSizeMessage();
+  }
+
+  return "문서를 업로드하지 못했습니다. 파일 형식과 상태를 다시 확인하세요.";
 }
 
 export function validateRegistryFindings(form: RegistryFindingsFormState): ValidationErrors {

@@ -1,5 +1,21 @@
+import { ApiError } from "./api";
 import { describe, expect, it } from "vitest";
-import { applyAccessDeniedReset, deriveNeutralGlobalMessage, validateContract, validateMarketPrice, validateRegistryFindings } from "./validation";
+import {
+  applyAccessDeniedReset,
+  deriveDocumentIntakeUploadFailureMessage,
+  DOCUMENT_INTAKE_UPLOAD_MAX_BYTES,
+  deriveNeutralGlobalMessage,
+  validateContract,
+  validateDocumentIntakeUpload,
+  validateMarketPrice,
+  validateRegistryFindings,
+} from "./validation";
+
+function createFile(name: string, type: string, size: number) {
+  const file = new File(["stub"], name, { type });
+  Object.defineProperty(file, "size", { value: size });
+  return file;
+}
 
 describe("validation", () => {
   it("requires at least one market price amount", () => {
@@ -48,6 +64,61 @@ describe("validation", () => {
     });
 
     expect(errors.seniorDebtAmount).toContain("선순위 채권");
+  });
+
+  it("validates registry auto-fill uploads as pdf only", () => {
+    const errors = validateDocumentIntakeUpload(
+      "registry",
+      new File(["fake"], "registry.png", { type: "image/png" }),
+    );
+
+    expect(errors.file).toContain("PDF");
+  });
+
+  it("allows supported lease contract image uploads", () => {
+    const errors = validateDocumentIntakeUpload(
+      "lease-contract",
+      new File(["fake"], "lease.webp", { type: "image/webp" }),
+    );
+
+    expect(errors.file).toBeUndefined();
+  });
+
+  it("allows production-sized registry and lease files under the document intake limit", () => {
+    const registryErrors = validateDocumentIntakeUpload(
+      "registry",
+      createFile("registry.pdf", "application/pdf", 11 * 1024 * 1024),
+    );
+    const leaseErrors = validateDocumentIntakeUpload(
+      "lease-contract",
+      createFile("lease.pdf", "application/pdf", Math.round(9.7 * 1024 * 1024)),
+    );
+
+    expect(registryErrors.file).toBeUndefined();
+    expect(leaseErrors.file).toBeUndefined();
+  });
+
+  it("rejects document intake uploads larger than 20 MiB before upload", () => {
+    const errors = validateDocumentIntakeUpload(
+      "registry",
+      createFile("registry.pdf", "application/pdf", DOCUMENT_INTAKE_UPLOAD_MAX_BYTES + 1),
+    );
+
+    expect(errors.file).toContain("20MB");
+    expect(errors.file).toContain("이하");
+  });
+
+  it("keeps the server message for document intake ApiError uploads", () => {
+    const error = new ApiError(413, {
+      code: "DOCUMENT_INTAKE_FILE_TOO_LARGE",
+      message: "문서 자동 입력은 20MB 이하 파일만 업로드할 수 있습니다.",
+    });
+
+    expect(deriveDocumentIntakeUploadFailureMessage(error)).toBe(error.message);
+  });
+
+  it("maps bare HTTP 413 upload failures to the size guidance message", () => {
+    expect(deriveDocumentIntakeUploadFailureMessage(new Error("HTTP 413"))).toContain("20MB");
   });
 
   it("clears server data when a different user id is applied to an existing check", () => {

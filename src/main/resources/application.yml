@@ -16,6 +16,10 @@ spring:
       hibernate:
         jdbc:
           time_zone: UTC
+  servlet:
+    multipart:
+      max-file-size: ${housecheck.document-intake.max-upload-size:20MB}
+      max-request-size: 21MB
 
 management:
   endpoints:
@@ -28,6 +32,23 @@ management:
         enabled: true
 
 housecheck:
+  document-intake:
+    max-upload-size: 20MB
+    extraction:
+      provider: ${HOUSECHECK_DOCUMENT_INTAKE_EXTRACTION_PROVIDER:openai}
+    ai:
+      auth-mode: ${HOUSECHECK_DOCUMENT_INTAKE_AI_AUTH_MODE:api-key}
+      api-key: ${OPENAI_API_KEY:}
+      access-token: ${HOUSECHECK_DOCUMENT_INTAKE_AI_ACCESS_TOKEN:}
+      oauth:
+        token-url: ${HOUSECHECK_DOCUMENT_INTAKE_AI_OAUTH_TOKEN_URL:}
+        client-id: ${HOUSECHECK_DOCUMENT_INTAKE_AI_OAUTH_CLIENT_ID:}
+        client-secret: ${HOUSECHECK_DOCUMENT_INTAKE_AI_OAUTH_CLIENT_SECRET:}
+        scope: ${HOUSECHECK_DOCUMENT_INTAKE_AI_OAUTH_SCOPE:}
+        client-authentication: ${HOUSECHECK_DOCUMENT_INTAKE_AI_OAUTH_CLIENT_AUTHENTICATION:body}
+      model: ${HOUSECHECK_DOCUMENT_INTAKE_AI_MODEL:gpt-4.1-mini}
+      base-url: ${HOUSECHECK_DOCUMENT_INTAKE_AI_BASE_URL:https://api.openai.com/v1}
+      timeout: ${HOUSECHECK_DOCUMENT_INTAKE_AI_TIMEOUT:90s}
   security:
     encryption:
       secret: ${HOUSECHECK_ENCRYPTION_SECRET:housecheck-phase1-local-only-secret}
