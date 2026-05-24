@@ -6,7 +6,7 @@ Work ID: house-risk-agent-prompts-frontend
 
 ## Current Stage
 
-DIRECTOR_FINAL_REVIEW
+PR_READY
 
 ## Stage Order
 
@@ -40,3 +40,4 @@ DIRECTOR_FINAL_REVIEW
 | 2026-05-24 | DEVELOPMENT | UI_UX_ACCEPTANCE | Frontend developer added Vite backend origin auto-detection and preview proxy coverage; `npm test` and `npm run build` passed. |
 | 2026-05-24 | UI_UX_ACCEPTANCE | QA_PLAN | UI/UX acceptance approved the integration rework because visible flow is unchanged and local create-step dead-end risk is reduced. |
 | 2026-05-24 | QA_PLAN | DIRECTOR_FINAL_REVIEW | Backend-inclusive QA passed with PostgreSQL, real Spring Boot on `:8081`, wrong service on `:8080`, Vite dev full browser flow, and Vite preview create proxy check. |
+| 2026-05-24 | DIRECTOR_FINAL_REVIEW | PR_READY | Director final review marked the integration rework READY after backend-inclusive E2E QA PASS and PR body/lifecycle sync. |

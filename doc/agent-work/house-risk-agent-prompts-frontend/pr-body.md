@@ -11,12 +11,12 @@ Backend Phase 1 API를 실제로 사용할 수 있는 첫 프론트엔드 슬라
 
 ## 현재 상태
 
-- 2026-05-24 live integration 결함 루프 진행 중
+- 2026-05-24 live integration 결함 루프 완료
 - 사용자 재현: 계약 기본 정보 입력 후 `http://localhost:5173/api/house-checks` 요청이 404를 반환하고 다음 행동이 없음
 - frontend-developer rework 완료: Vite dev/preview에서 실제 `no-way-home` backend를 `/api/status`로 감지하도록 보강
 - UI/UX acceptance 재승인 완료
 - backend-inclusive QA PASS 완료: real PostgreSQL + real Spring Boot + Vite dev full browser E2E + Vite preview create proxy check
-- 다음 기준: Director final review 재승인 후 ready-for-review 복귀
+- Director final review 재승인 완료
 
 ## 작업 내용
 
@@ -28,14 +28,14 @@ Backend Phase 1 API를 실제로 사용할 수 있는 첫 프론트엔드 슬라
 - [x] House check 생성/업로드/수기 입력/분석/리포트/체크리스트 흐름 구현
 - [x] UI/UX acceptance 완료
 - [x] QA plan/report 완료
-- [ ] Director final review 재완료
+- [x] Director final review 재완료
 
 ## 리뷰 필요
 
 - 최초 frontend 구조가 Kotlin/Spring backend와 분리되어 단순하게 유지되는지 확인
 - committed backend API contract를 변경하지 않고 소비하는지 확인
 - `X-User-Id` boundary와 `ACCESS_DENIED` 처리가 사용자에게 명확한지 확인
-- Draft PR: https://github.com/siwony/no-way-home/pull/1
+- PR: https://github.com/siwony/no-way-home/pull/1
 - Frontend implementation status: `READY_FOR_UI_UX_ACCEPTANCE`
 - Current verification:
   - `cd frontend && npm test` passed, 1 file / 4 tests
@@ -55,9 +55,9 @@ Backend Phase 1 API를 실제로 사용할 수 있는 첫 프론트엔드 슬라
   - `cd frontend && npm test` passed, 1 file / 5 tests
   - `cd frontend && npm run build` passed
   - built-frontend smoke passed for restored-session banner and access-denied recovery
-- Director final review: `CHANGES_REQUESTED` for live integration rerun
-- PR lifecycle status: `UPDATED` until backend-inclusive E2E passes
-- Current loop: live backend-inclusive E2E rework required for `/api/house-checks` create flow 404
+- Director final review: `READY`
+- PR lifecycle status: `READY_FOR_REVIEW`
+- Resolved loop: live backend-inclusive E2E rework for `/api/house-checks` create flow 404
 - Integration rework verification:
   - `cd frontend && npm test` passed, 2 files / 10 tests
   - `cd frontend && npm run build` passed

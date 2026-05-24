@@ -1,42 +1,44 @@
 # Director Final Review: 주택 계약 위험도 진단 프론트엔드
 
-Status: NEEDS_REVIEW
+Status: COMPLETE
 
-Decision: CHANGES_REQUESTED
+Decision: READY
 
 ## Final Review Summary
 
-The prior `READY` decision is superseded by a post-ready live integration defect reported by the user on 2026-05-24. The work must loop back to development and QA before it can return to `PR_READY`.
+The work is ready to return to the `PR_READY` gate after the post-ready live integration loop.
 
-Previously recorded prerequisites were satisfied, but the final QA evidence did not cover the full live backend path. The user reproduced a create-flow failure where the frontend request to `http://localhost:5173/api/house-checks` returned 404 after entering contract basic info.
+The user-reported create-flow failure has been addressed by frontend integration rework and backend-inclusive QA. The original symptom was `POST http://localhost:5173/api/house-checks` returning 404 after contract basic information submission. The new Vite configuration detects the real `no-way-home` backend via `/api/status`, applies the same proxy behavior to dev and preview, and still preserves explicit `VITE_BACKEND_ORIGIN` / `VITE_BACKEND_CANDIDATES` override paths.
 
-Bounded source review of the shipped frontend also matches the approved slice closely enough for Director sign-off. The dedicated `frontend/` workspace is present, all documented Phase 1 user actions exist in the single-route workspace, all API requests flow through an `X-User-Id` header-aware client, market price allows either amount, analysis/result states distinguish `ANALYSIS_NOT_READY`, and `ACCESS_DENIED` removes prior server-derived content while keeping direct recovery actions in the denial panel.
+Recorded gates are satisfied again: Director planning approval remains `APPROVED`, UI/UX acceptance re-approved the rework, QA result is `PASS`, and `08-pr-lifecycle.md` has been kept in sync with the GitHub PR body.
 
-The following prior residual risks are now blocking:
+Backend-inclusive QA specifically covered the prior risk:
 
-- The final QA rerun focused on the restored-session and access-denied regression path, not a full live backend create -> upload -> findings -> market -> analyze -> result pass.
-- Local runtime smoke previously required moving the backend off `:8080` because another process was already bound there on this machine.
-- Pre-analysis draft resume and generic rehydration after reload remain intentionally limited to session-scoped `User ID` and `checkId`, which is within the approved slice.
+- Wrong service on `127.0.0.1:8080`
+- Real PostgreSQL and Spring Boot backend on `127.0.0.1:8081`
+- Vite dev full browser path: create -> registry PDF upload -> building ledger PDF upload -> registry findings -> building ledger findings -> market price -> analyze -> report -> checklist
+- Vite preview create proxy check
+- Cross-user `ACCESS_DENIED` boundary with prior result content cleared
 
 ## Requirement Match
 
 - [x] Director brief satisfied
 - [x] UI/UX plan satisfied
 - [x] Developer implementation complete
-- [ ] QA result acceptable after live backend E2E rerun
+- [x] QA result acceptable after live backend E2E rerun
 - [x] Director plan approval is `APPROVED`
 - [x] UI/UX acceptance is `APPROVED`
-- [ ] QA report result is `PASS` after live backend E2E rerun
+- [x] QA report result is `PASS` after live backend E2E rerun
 - [x] Draft PR is opened and `08-pr-lifecycle.md` is updated
-- [ ] Implementation is complete enough for the approved frontend scope after fixing live API integration
+- [x] Implementation is complete enough for the approved frontend scope after fixing live API integration
 
 ## Rework Target
 
 Use only when decision is `CHANGES_REQUESTED`.
 
-- Target agent: `frontend-developer`
-- Reason: Contract basic information create flow can hit `/api/house-checks` on the Vite frontend origin and return 404 instead of reaching the Spring backend.
-- Required changes: Reproduce the live frontend/backend route, fix the frontend integration/configuration or user-facing recovery needed for local development, then hand off to QA for backend-inclusive Playwright E2E.
+- Target agent:
+- Reason:
+- Required changes:
 
 ## Final Decision
 
