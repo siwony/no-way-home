@@ -1,6 +1,6 @@
 # PR Lifecycle: 등기부등본·임대차 계약서 자동 입력
 
-Status: DRAFT_OPENED
+Status: UPDATED
 
 ## Branch
 
@@ -34,6 +34,10 @@ Status: DRAFT_OPENED
 | 2026-05-24 | UI_UX_ACCEPTANCE | UI/UX acceptance returned `CHANGES_REQUESTED`; frontend loop targets failed-document retry wording and explicit overwrite choice. | yes | pending |
 | 2026-05-24 | DEVELOPMENT | UI/UX requested rework completed: failed-document action wording now matches upload behavior and overwrite conflicts show explicit current-value-vs-approved-value choice. Frontend tests/build passed. | yes | pending |
 | 2026-05-24 | UI_UX_ACCEPTANCE | UI/UX re-acceptance approved the document auto-fill frontend rework; QA may proceed with mock fixture automation plus local-only real PDF upload validation. | yes | pending |
+| 2026-05-24 | QA_REPORT | QA completed mock browser E2E successfully and captured screenshots, but failed local-only real PDF validation because both provided PDFs returned `HTTP 413` before persistence. | yes | pending |
+| 2026-05-24 | DEVELOPMENT | Reopened backend/frontend development loop for document-intake upload size policy, Spring multipart limits, and clear oversized-file feedback. | yes | pending |
+| 2026-05-24 | DEVELOPMENT | Implemented 20MB backend upload policy, multipart limits, JSON `413`, frontend preflight validation, and upload error copy. | yes | pending |
+| 2026-05-24 | QA_REPORT | QA re-run passed with real local PDFs, encrypted storage evidence, frontend tests/build, focused backend tests, and `./gradlew test`. | yes | pending |
 
 ## Visual Evidence Assets
 
@@ -42,13 +46,14 @@ Status: DRAFT_OPENED
 
 | File | Scenario | PR Body Link Updated |
 |---|---|---|
-|  |  |  |
+| `qa-document-review-mock.png` | Mock fixture extraction review, warnings, field evidence, and review actions. | yes |
+| `qa-apply-preview-mock.png` | Mock fixture compare/apply preview with explicit overwrite choice state. | yes |
 
 ## Ready For Review
 
 - [ ] Director final review decision is `READY`
-- [ ] QA report result is `PASS`
-- [ ] Final test results are reflected in `pr-body.md`
+- [x] QA report result is `PASS`
+- [x] Final test results are reflected in `pr-body.md`
 - [ ] `(WIP)` removed from PR title
 - [ ] `gh pr ready` completed
 

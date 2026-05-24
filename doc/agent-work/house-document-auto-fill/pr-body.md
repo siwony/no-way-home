@@ -16,8 +16,8 @@
 - [x] Draft PR 생성
 - [x] Backend 구현
 - [x] Frontend 구현
-- [ ] UI/UX acceptance 완료
-- [ ] QA plan/report 완료
+- [x] UI/UX acceptance 완료
+- [x] QA plan/report 완료
 - [ ] Director final review 완료
 
 ## 리뷰 필요
@@ -45,10 +45,19 @@
   - `cd frontend && npm test` passed, 3 files / 13 tests
   - `cd frontend && npm run build` passed
 - UI/UX re-acceptance: `APPROVED`
-- QA remaining focus:
-  - mock fixture E2E automation
-  - local-only upload validation with the two user-provided PDFs
+- QA report:
+  - Mock fixture browser E2E passed through document session creation, registry/lease uploads, field review, compare/apply, form population, house check creation, registry findings save, stale-session `ACCESS_DENIED`, and browser storage hygiene.
+  - Initial blocking result: `FAIL` because the two local-only user-provided PDFs were rejected before persistence with `HTTP 413` / `MaxUploadSizeExceededException`.
+  - Rework added 20MB backend upload policy, Spring multipart limits, JSON `413`, frontend preflight validation, and clearer upload errors.
+  - Final result: `PASS`; the two local-only PDFs uploaded through the UI, 20 extracted fields were approved, approved values were applied, and house check `bd31b759-c0a1-4f45-b0ad-26297b8cac5d` was created.
+  - Real PDF storage evidence: registry `11006061` bytes and lease `9679921` bytes reached `APPROVED`; encrypted `.bin` files did not contain `%PDF`.
+- Final verification:
+  - `cd frontend && npm test` passed, 3 files / 17 tests
+  - `cd frontend && npm run build` passed
+  - `./gradlew test --tests 'com.nowayhome.housecheck.application.DocumentIntakeFilePolicyTest' --tests 'com.nowayhome.housecheck.api.DocumentIntakeControllerIntegrationTest' --tests 'com.nowayhome.housecheck.api.HouseCheckControllerIntegrationTest' --rerun-tasks` passed
+  - `./gradlew test` passed
 
 ## 스크린샷 (필요한 경우)
 
-Frontend 화면 증거는 UI 구현 후 `doc/agent-work/house-document-auto-fill/assets/`에 커밋하고 연결한다.
+- Mock fixture extraction review: https://github.com/siwony/no-way-home/blob/feat/house-document-auto-fill/doc/agent-work/house-document-auto-fill/assets/qa-document-review-mock.png
+- Mock fixture compare/apply preview: https://github.com/siwony/no-way-home/blob/feat/house-document-auto-fill/doc/agent-work/house-document-auto-fill/assets/qa-apply-preview-mock.png

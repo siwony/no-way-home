@@ -3,6 +3,7 @@ package com.nowayhome.housecheck.api
 import com.nowayhome.housecheck.application.ErrorResponse
 import com.nowayhome.housecheck.application.FieldErrorResponse
 import com.nowayhome.housecheck.application.HouseCheckErrorCode
+import com.nowayhome.housecheck.application.DocumentIntakeUploadSizePolicy
 import com.nowayhome.housecheck.domain.HouseCheckException
 import jakarta.validation.ConstraintViolationException
 import org.springframework.http.HttpStatus
@@ -11,13 +12,27 @@ import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
 import org.springframework.web.method.annotation.HandlerMethodValidationException
+import org.springframework.web.multipart.MaxUploadSizeExceededException
 
 @RestControllerAdvice
-class HouseCheckExceptionHandler {
+class HouseCheckExceptionHandler(
+    private val documentIntakeUploadSizePolicy: DocumentIntakeUploadSizePolicy,
+) {
     @ExceptionHandler(HouseCheckException::class)
     fun handleHouseCheckException(exception: HouseCheckException): ResponseEntity<ErrorResponse> {
         return ResponseEntity.status(statusFor(exception.errorCode))
             .body(ErrorResponse(exception.errorCode, exception.message))
+    }
+
+    @ExceptionHandler(MaxUploadSizeExceededException::class)
+    fun handleMaxUploadSizeExceeded(): ResponseEntity<ErrorResponse> {
+        return ResponseEntity.status(HttpStatus.PAYLOAD_TOO_LARGE)
+            .body(
+                ErrorResponse(
+                    code = HouseCheckErrorCode.DOCUMENT_INTAKE_FILE_TOO_LARGE,
+                    message = documentIntakeUploadSizePolicy.maxUploadSizeExceededMessage(),
+                ),
+            )
     }
 
     @ExceptionHandler(MethodArgumentNotValidException::class)
@@ -62,6 +77,7 @@ class HouseCheckExceptionHandler {
             HouseCheckErrorCode.DOCUMENT_INTAKE_FIELD_NOT_FOUND -> HttpStatus.NOT_FOUND
             HouseCheckErrorCode.ACCESS_DENIED -> HttpStatus.FORBIDDEN
             HouseCheckErrorCode.ANALYSIS_NOT_READY -> HttpStatus.CONFLICT
+            HouseCheckErrorCode.DOCUMENT_INTAKE_FILE_TOO_LARGE -> HttpStatus.PAYLOAD_TOO_LARGE
             else -> HttpStatus.BAD_REQUEST
         }
     }

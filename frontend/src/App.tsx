@@ -31,6 +31,8 @@ import type {
 } from "./types";
 import {
   applyAccessDeniedReset,
+  deriveDocumentIntakeUploadFailureMessage,
+  DOCUMENT_INTAKE_UPLOAD_MAX_LABEL,
   deriveNeutralGlobalMessage,
   validateBuildingLedgerFindings,
   validateContract,
@@ -790,7 +792,7 @@ function App() {
         setDocumentUploadErrors((previous) => ({
           ...previous,
           [slot]: {
-            form: innerError instanceof ApiError ? innerError.message : "문서를 업로드하지 못했습니다. 파일 형식과 상태를 다시 확인하세요.",
+            form: deriveDocumentIntakeUploadFailureMessage(innerError),
           },
         }));
       }
@@ -1184,7 +1186,10 @@ function App() {
     const uploadState = documentUploadStates[slot];
     const slotTitle = slot === "registry" ? "등기부등본 PDF" : "임대차 계약서 PDF / 이미지";
     const accept = slot === "registry" ? ".pdf,application/pdf" : ".pdf,.jpg,.jpeg,.png,.webp,application/pdf,image/jpeg,image/png,image/webp";
-    const helper = slot === "registry" ? "PDF만 지원합니다." : "PDF, JPEG, PNG, WebP를 지원합니다.";
+    const helper =
+      slot === "registry"
+        ? `PDF만 지원합니다. 최대 ${DOCUMENT_INTAKE_UPLOAD_MAX_LABEL}까지 업로드할 수 있습니다.`
+        : `PDF, JPEG, PNG, WebP를 지원합니다. 최대 ${DOCUMENT_INTAKE_UPLOAD_MAX_LABEL}까지 업로드할 수 있습니다.`;
     const actionLabel =
       document?.processingStatus === "FAILED"
         ? "파일 선택 후 다시 업로드"
@@ -1209,12 +1214,16 @@ function App() {
             type="file"
             accept={accept}
             disabled={!documentReady || uploadState === "loading"}
-            onChange={(event) =>
+            onChange={(event) => {
               setDocumentFiles((previous) => ({
                 ...previous,
                 [slot]: event.target.files?.[0] ?? null,
-              }))
-            }
+              }));
+              setDocumentUploadErrors((previous) => ({
+                ...previous,
+                [slot]: {},
+              }));
+            }}
           />
           <FieldError message={errors.file} />
         </label>

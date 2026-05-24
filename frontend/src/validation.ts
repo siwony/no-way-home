@@ -1,3 +1,4 @@
+import { ApiError } from "./api";
 import type {
   BuildingLedgerFindingsFormState,
   ContractFormState,
@@ -6,9 +7,15 @@ import type {
 } from "./types";
 
 export type ValidationErrors = Record<string, string>;
+export const DOCUMENT_INTAKE_UPLOAD_MAX_BYTES = 20 * 1024 * 1024;
+export const DOCUMENT_INTAKE_UPLOAD_MAX_LABEL = "20MB(20MiB)";
 
 function isNegativeNumber(value: string): boolean {
   return value.trim() !== "" && Number(value) < 0;
+}
+
+function documentIntakeUploadSizeMessage() {
+  return `파일 용량이 너무 큽니다. 문서 자동 입력은 ${DOCUMENT_INTAKE_UPLOAD_MAX_LABEL} 이하 파일만 업로드할 수 있습니다.`;
 }
 
 function requireBoolean(value: string, field: string, errors: ValidationErrors) {
@@ -79,9 +86,23 @@ export function validateDocumentIntakeUpload(documentType: "registry" | "lease-c
 
   if (file.size <= 0) {
     errors.file = "빈 파일은 업로드할 수 없습니다.";
+  } else if (file.size > DOCUMENT_INTAKE_UPLOAD_MAX_BYTES) {
+    errors.file = documentIntakeUploadSizeMessage();
   }
 
   return errors;
+}
+
+export function deriveDocumentIntakeUploadFailureMessage(error: unknown) {
+  if (error instanceof ApiError) {
+    return error.message;
+  }
+
+  if (error instanceof Error && error.message.includes("HTTP 413")) {
+    return documentIntakeUploadSizeMessage();
+  }
+
+  return "문서를 업로드하지 못했습니다. 파일 형식과 상태를 다시 확인하세요.";
 }
 
 export function validateRegistryFindings(form: RegistryFindingsFormState): ValidationErrors {

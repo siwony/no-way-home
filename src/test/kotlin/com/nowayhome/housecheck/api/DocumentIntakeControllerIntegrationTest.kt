@@ -13,6 +13,7 @@ import org.springframework.http.MediaType
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.test.context.DynamicPropertyRegistry
 import org.springframework.test.context.DynamicPropertySource
+import java.io.ByteArrayOutputStream
 import java.net.URI
 import java.net.http.HttpClient
 import java.net.http.HttpRequest
@@ -28,6 +29,10 @@ import kotlin.test.assertTrue
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class DocumentIntakeControllerIntegrationTest {
+    private val maxUploadSizeBytes = 20 * 1024 * 1024
+    private val largeRegistryPdfSizeBytes = 11_006_061
+    private val oversizedRegistryPdfSizeBytes = maxUploadSizeBytes + 1
+
     @LocalServerPort
     private var port: Int = 0
 
@@ -119,6 +124,32 @@ class DocumentIntakeControllerIntegrationTest {
         val originalBytes = "%PDF-1.4 registry fixture".toByteArray(StandardCharsets.UTF_8)
         assertFalse(storedBytes.contentEquals(originalBytes))
         assertFalse(containsBytes(storedBytes, "%PDF-1.4".toByteArray(StandardCharsets.UTF_8)))
+    }
+
+    @Test
+    fun uploadsRegistryPdfLargerThanLegacyMultipartDefault() {
+        val sessionId = createDocumentIntakeSession("owner-a")
+
+        val response = uploadDocument(
+            sessionId = sessionId,
+            ownerId = "owner-a",
+            documentType = "registry",
+            fileName = "registry-large.pdf",
+            contentType = "application/pdf",
+            fileBody = createPdfFixture(largeRegistryPdfSizeBytes),
+        )
+
+        assertEquals(200, response.statusCode())
+        val responseJson = parseJson(response.body())
+        assertEquals("REVIEW_REQUIRED", documentStatus(responseJson, "REGISTRY"))
+        assertEquals(
+            largeRegistryPdfSizeBytes.toLong(),
+            jdbcTemplate.queryForObject(
+                "select file_size from document_intake_document where session_id = ? and document_type = 'REGISTRY'",
+                Long::class.java,
+                UUID.fromString(sessionId),
+            ),
+        )
     }
 
     @Test
@@ -218,6 +249,25 @@ class DocumentIntakeControllerIntegrationTest {
 
         assertEquals(400, response.statusCode())
         assertEquals("DOCUMENT_INTAKE_INVALID_FILE_TYPE", parseJson(response.body()).get("code").asText())
+    }
+
+    @Test
+    fun rejectsUploadsLargerThanConfiguredMaximumWithJson413() {
+        val sessionId = createDocumentIntakeSession("owner-a")
+
+        val response = uploadDocument(
+            sessionId = sessionId,
+            ownerId = "owner-a",
+            documentType = "registry",
+            fileName = "registry-too-large.pdf",
+            contentType = "application/pdf",
+            fileBody = createPdfFixture(oversizedRegistryPdfSizeBytes),
+        )
+
+        assertEquals(413, response.statusCode())
+        val json = parseJson(response.body())
+        assertEquals("DOCUMENT_INTAKE_FILE_TOO_LARGE", json.get("code").asText())
+        assertEquals("업로드 파일은 최대 20MB까지 등록할 수 있습니다.", json.get("message").asText())
     }
 
     @Test
@@ -387,20 +437,37 @@ class DocumentIntakeControllerIntegrationTest {
         contentType: String,
         fileBody: String,
     ): HttpResponse<String> {
+        return uploadDocument(
+            sessionId = sessionId,
+            ownerId = ownerId,
+            documentType = documentType,
+            fileName = fileName,
+            contentType = contentType,
+            fileBody = fileBody.toByteArray(StandardCharsets.UTF_8),
+        )
+    }
+
+    private fun uploadDocument(
+        sessionId: String,
+        ownerId: String,
+        documentType: String,
+        fileName: String,
+        contentType: String,
+        fileBody: ByteArray,
+    ): HttpResponse<String> {
         val boundary = "----NoWayHomeDocumentIntakeBoundary"
-        val body = buildString {
-            append("--$boundary\r\n")
-            append("Content-Disposition: form-data; name=\"file\"; filename=\"$fileName\"\r\n")
-            append("Content-Type: $contentType\r\n\r\n")
-            append(fileBody)
-            append("\r\n")
-            append("--$boundary--\r\n")
-        }
+        val body = ByteArrayOutputStream().apply {
+            write("--$boundary\r\n".toByteArray(StandardCharsets.UTF_8))
+            write("Content-Disposition: form-data; name=\"file\"; filename=\"$fileName\"\r\n".toByteArray(StandardCharsets.UTF_8))
+            write("Content-Type: $contentType\r\n\r\n".toByteArray(StandardCharsets.UTF_8))
+            write(fileBody)
+            write("\r\n--$boundary--\r\n".toByteArray(StandardCharsets.UTF_8))
+        }.toByteArray()
         val request = HttpRequest.newBuilder()
             .uri(uri("/api/document-intakes/$sessionId/documents/$documentType"))
             .header("X-User-Id", ownerId)
             .header(HttpHeaders.CONTENT_TYPE, "multipart/form-data; boundary=$boundary")
-            .POST(HttpRequest.BodyPublishers.ofByteArray(body.toByteArray(StandardCharsets.UTF_8)))
+            .POST(HttpRequest.BodyPublishers.ofByteArray(body))
             .build()
         return httpClient.send(request, HttpResponse.BodyHandlers.ofString())
     }
@@ -446,6 +513,13 @@ class DocumentIntakeControllerIntegrationTest {
                 source.copyOfRange(start, start + target.size).contentEquals(target)
             }
         }
+    }
+
+    private fun createPdfFixture(sizeBytes: Int): ByteArray {
+        val bytes = ByteArray(sizeBytes) { '0'.code.toByte() }
+        val header = "%PDF-1.4\n".toByteArray(StandardCharsets.UTF_8)
+        header.copyInto(bytes, endIndex = minOf(header.size, bytes.size))
+        return bytes
     }
 
     companion object {

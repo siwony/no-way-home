@@ -1,6 +1,6 @@
 # Developer Implementation: 등기부등본·임대차 계약서 자동 입력
 
-Status: READY_FOR_UI_UX_ACCEPTANCE
+Status: READY_FOR_DIRECTOR_FINAL_REVIEW
 
 ## Prerequisites
 
@@ -182,4 +182,58 @@ cd frontend && npm run build
 
 - `frontend/src/App.tsx`
 - `frontend/src/styles.css`
+- `doc/agent-work/house-document-auto-fill/03-developer-implementation.md`
+
+## Rework Loop: QA_REPORT -> DEVELOPMENT
+
+- QA-01: 사용자 제공 실제 PDF 2종이 Spring multipart 기본 제한에 걸려 `HTTP 413`으로 거부되던 문제를 수정했다.
+- Backend:
+  - 문서 자동 입력 업로드 한도를 명시적인 20MB 정책으로 추가했다.
+  - Spring multipart `max-file-size`와 `max-request-size`를 실제 PDF 수용 범위로 설정했다.
+  - `MaxUploadSizeExceededException`을 JSON `413` 응답으로 변환하고 `DOCUMENT_INTAKE_FILE_TOO_LARGE` 코드를 추가했다.
+  - 11,006,061 byte PDF 수용 테스트와 20MB 초과 JSON 413 테스트를 추가했다.
+- Frontend:
+  - 문서 자동 입력 업로드 사전 검증에 20MiB 제한을 추가했다.
+  - 업로드 슬롯 helper copy에 지원 형식과 크기 제한을 표시했다.
+  - 서버 `ApiError` 메시지와 bare `HTTP 413`을 사용자에게 명확한 파일 크기 안내로 표시하도록 했다.
+
+### QA Rework Verification
+
+```text
+./gradlew test --tests 'com.nowayhome.housecheck.application.DocumentIntakeFilePolicyTest' --tests 'com.nowayhome.housecheck.api.DocumentIntakeControllerIntegrationTest' --tests 'com.nowayhome.housecheck.api.HouseCheckControllerIntegrationTest' --rerun-tasks
+- PASS
+
+cd frontend && npm test
+- PASS (3 files, 17 tests)
+
+cd frontend && npm run build
+- PASS
+
+Playwright browser QA with real local PDFs
+- PASS
+- Uploaded `/Users/jeongcool/me/no-way-home/6_부동산_등기사항_전부증명서.pdf`
+- Uploaded `/Users/jeongcool/me/no-way-home/임대차계약서.pdf`
+- Approved 20 extracted fields, applied approved values, and created house check `bd31b759-c0a1-4f45-b0ad-26297b8cac5d`
+
+DB/filesystem evidence for document session `30f7e3a3-033a-491f-980a-334c739d2786`
+- REGISTRY stored `11006061` bytes and reached `APPROVED`
+- LEASE_CONTRACT stored `9679921` bytes and reached `APPROVED`
+- Encrypted `.bin` files did not contain `%PDF`
+
+./gradlew test
+- PASS
+```
+
+### QA Rework Changed Files
+
+- `src/main/kotlin/com/nowayhome/housecheck/api/HouseCheckExceptionHandler.kt`
+- `src/main/kotlin/com/nowayhome/housecheck/application/DocumentIntakeFilePolicy.kt`
+- `src/main/kotlin/com/nowayhome/housecheck/application/DocumentIntakeUploadSizePolicy.kt`
+- `src/main/kotlin/com/nowayhome/housecheck/application/HouseCheckErrorCode.kt`
+- `src/main/resources/application.yml`
+- `src/test/kotlin/com/nowayhome/housecheck/api/DocumentIntakeControllerIntegrationTest.kt`
+- `src/test/kotlin/com/nowayhome/housecheck/application/DocumentIntakeFilePolicyTest.kt`
+- `frontend/src/App.tsx`
+- `frontend/src/validation.test.ts`
+- `frontend/src/validation.ts`
 - `doc/agent-work/house-document-auto-fill/03-developer-implementation.md`

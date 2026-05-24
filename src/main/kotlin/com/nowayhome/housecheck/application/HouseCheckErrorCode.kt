@@ -18,6 +18,7 @@ enum class HouseCheckErrorCode(
     DOCUMENT_INTAKE_NOT_FOUND("문서 자동 입력 세션을 찾을 수 없습니다."),
     DOCUMENT_INTAKE_INVALID_DOCUMENT_TYPE("지원하지 않는 문서 종류입니다."),
     DOCUMENT_INTAKE_INVALID_FILE_TYPE("지원하지 않는 형식입니다. 등기부등본은 PDF, 계약서는 PDF/JPEG/PNG/WebP만 등록할 수 있습니다."),
+    DOCUMENT_INTAKE_FILE_TOO_LARGE("업로드 파일 크기 제한을 초과했습니다."),
     DOCUMENT_INTAKE_FIELD_NOT_FOUND("문서 추출 필드를 찾을 수 없습니다."),
     DOCUMENT_INTAKE_INVALID_REVIEW_ACTION("필드 검토 요청을 다시 확인해 주세요."),
     DOCUMENT_INTAKE_INVALID_FIELD_VALUE("필드 값 형식이 올바르지 않습니다."),

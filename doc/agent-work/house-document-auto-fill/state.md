@@ -6,7 +6,7 @@ Work ID: house-document-auto-fill
 
 ## Current Stage
 
-QA_PLAN
+DIRECTOR_FINAL_REVIEW
 
 ## Stage Order
 
@@ -34,3 +34,7 @@ QA_PLAN
 | 2026-05-24 | UI_UX_ACCEPTANCE | DEVELOPMENT | UI/UX acceptance requested clearer failed-document retry wording and explicit current-value-vs-approved-value overwrite choice. |
 | 2026-05-24 | DEVELOPMENT | UI_UX_ACCEPTANCE | Frontend developer addressed UI/UX change requests and `npm test` plus `npm run build` passed. |
 | 2026-05-24 | UI_UX_ACCEPTANCE | QA_PLAN | UI/UX re-acceptance approved the document auto-fill rework; local-only real PDF upload validation remains for QA. |
+| 2026-05-24 | QA_PLAN | QA_REPORT | QA completed the mock browser E2E successfully, but local-only real PDF validation failed with `HTTP 413` multipart upload rejection. |
+| 2026-05-24 | QA_REPORT | DEVELOPMENT | Looping back to backend/frontend development for upload size policy, multipart limit, and actionable oversized-file feedback. |
+| 2026-05-24 | DEVELOPMENT | QA_REPORT | Upload size policy, multipart limits, JSON 413 handling, and frontend upload feedback were implemented and verified. |
+| 2026-05-24 | QA_REPORT | DIRECTOR_FINAL_REVIEW | QA re-run passed with frontend tests/build, backend tests, full backend test suite, and local-only real PDF browser E2E. |

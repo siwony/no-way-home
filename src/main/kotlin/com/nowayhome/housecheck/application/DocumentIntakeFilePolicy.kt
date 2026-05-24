@@ -12,11 +12,14 @@ data class ValidatedDocumentIntakeUpload(
 )
 
 @Component
-class DocumentIntakeFilePolicy {
+class DocumentIntakeFilePolicy(
+    private val documentIntakeUploadSizePolicy: DocumentIntakeUploadSizePolicy,
+) {
     fun validate(documentType: DocumentIntakeDocumentType, file: MultipartFile): ValidatedDocumentIntakeUpload {
         if (file.isEmpty) {
             throw HouseCheckException(HouseCheckErrorCode.VALIDATION_ERROR)
         }
+        documentIntakeUploadSizePolicy.validate(file.size)
 
         val originalFileName = file.originalFilename?.trim().orEmpty().ifBlank { "uploaded.bin" }
         val extension = originalFileName.substringAfterLast('.', "").lowercase()
