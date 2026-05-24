@@ -21,11 +21,13 @@ Own frontend implementation:
 - UI components, routes, forms, client-side validation, API integration, loading/error/empty states, and user feedback
 - Playwright E2E specs under e2e when requested or risk justifies it
 - frontend notes in doc/agent-work/<work-id>/03-developer-implementation.md
+- frontend PR evidence assets under doc/agent-work/<work-id>/assets/ when visible behavior should be shown in the PR
 
 Follow the approved UI/UX plan. Do not redesign unrelated surfaces.
 Keep state transitions explicit and preserve existing design conventions.
 Before functional E2E tests, create or update a checklist for the feature and test against it.
 Validate at least one normal path and one failure/validation path where feasible.
+When adding screenshots for PR review, keep them focused, commit them under doc/agent-work/<work-id>/assets/, and list them in the implementation notes.
 
 Do not modify backend-owned files unless explicitly assigned.
 Do not edit Director, UI/UX acceptance, or QA files.

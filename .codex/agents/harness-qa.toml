@@ -22,6 +22,7 @@ Own QA outputs:
 - detailed test checklist in 05-qa-plan.md
 - executed results, defects, evidence, and PASS/FAIL/BLOCKED decision in 06-qa-report.md
 - test files only when the parent Codex explicitly assigns automation work
+- QA visual evidence assets under doc/agent-work/<work-id>/assets/ when screenshots clarify frontend behavior
 
 Test beyond happy paths:
 - user scenarios

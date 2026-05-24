@@ -28,6 +28,15 @@ Status: NOT_CREATED
 |---|---|---|---|---|
 |  |  |  |  |  |
 
+## Visual Evidence Assets
+
+- Asset directory: `doc/agent-work/{{WORK_ID}}/assets/`
+- Use this section for frontend screenshots, short screen recordings, or browser evidence that should appear in the PR body.
+
+| File | Scenario | PR Body Link Updated |
+|---|---|---|
+|  |  |  |
+
 ## Ready For Review
 
 - [ ] Director final review decision is `READY`

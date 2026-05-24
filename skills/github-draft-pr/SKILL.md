@@ -70,6 +70,29 @@ gh pr edit --body-file doc/agent-work/<work-id>/pr-body.md
 
 5. When Director final review is `READY`, remove `(WIP)` from the PR title and mark the PR ready.
 
+## Frontend Images In PR Bodies
+
+`gh` cannot upload images into a PR body. For frontend work, store visual evidence in the branch and reference it from Markdown.
+
+Recommended path:
+
+```text
+doc/agent-work/<work-id>/assets/<scenario>.png
+```
+
+Rules:
+
+- Keep screenshots or recordings small and focused. Prefer PNG or WebP.
+- Commit and push the asset before referencing it in `pr-body.md`.
+- Use a GitHub `blob` URL with `?raw=1` so the image renders in the PR body.
+- Track each asset in `doc/agent-work/<work-id>/08-pr-lifecycle.md`.
+
+Example:
+
+```md
+![진단 워크스페이스](https://github.com/siwony/no-way-home/blob/feat/house-risk-agent-prompts/frontend/doc/agent-work/house-risk-agent-prompts-frontend/assets/workspace.png?raw=1)
+```
+
 ## During Implementation
 
 After each meaningful work unit:

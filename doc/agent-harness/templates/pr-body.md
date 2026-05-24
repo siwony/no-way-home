@@ -26,4 +26,10 @@
 
 ## 스크린샷 (필요한 경우)
 
-해당 없음
+Frontend 변경이 없으면 `해당 없음`으로 둔다.
+
+Frontend 화면 증거가 필요하면 이미지를 `doc/agent-work/{{WORK_ID}}/assets/`에 커밋하고 아래 형식으로 연결한다.
+
+```md
+![화면 설명](https://github.com/<owner>/<repo>/blob/<branch>/doc/agent-work/{{WORK_ID}}/assets/<file>.png?raw=1)
+```

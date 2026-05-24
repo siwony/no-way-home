@@ -55,3 +55,7 @@ npx playwright show-report
 ```
 
 Report the checklist coverage, command results, and any untested checklist items after running tests.
+
+## PR Evidence
+
+For frontend work that needs screenshots in a PR, save stable evidence under `doc/agent-work/<work-id>/assets/` instead of temporary Playwright output directories. Commit those assets and reference them from `doc/agent-work/<work-id>/pr-body.md`.

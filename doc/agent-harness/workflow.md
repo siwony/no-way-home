@@ -35,7 +35,8 @@ The harness must keep the local work log and GitHub PR in sync.
 3. Director commits the planning docs and PR body before implementation starts.
 4. Director opens a Draft PR with title `(WIP) feat: <기능 이름>` using `scripts/create-draft-pr.sh --feature "<기능 이름>" --body doc/agent-work/<work-id>/pr-body.md`.
 5. After each meaningful implementation or QA loop, the owning agent updates its work log and Director updates `pr-body.md` before pushing.
-6. When Director final review is `READY`, Director updates final test results in `pr-body.md`, removes `(WIP)` from the PR title, and runs `gh pr ready`.
+6. For frontend work, visual evidence is stored under `doc/agent-work/<work-id>/assets/`, committed, pushed, and referenced from `pr-body.md`.
+7. When Director final review is `READY`, Director updates final test results in `pr-body.md`, removes `(WIP)` from the PR title, and runs `gh pr ready`.
 
 ## Loop Rules
 
@@ -44,6 +45,7 @@ The harness must keep the local work log and GitHub PR in sync.
 - If tests are incomplete or blocked, loop to QA agent.
 - If a defect reveals a planning gap, Director may loop back to UI/UX agent instead of Developer agents.
 - On every loop, update `08-pr-lifecycle.md` and the PR body with the current status, failed gate, and next loop target.
+- On frontend loops, update screenshots or short screen recordings when the visible behavior changed.
 
 ## Merge-Ready Definition
 
