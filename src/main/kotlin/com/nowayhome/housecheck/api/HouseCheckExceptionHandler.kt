@@ -58,6 +58,8 @@ class HouseCheckExceptionHandler {
     private fun statusFor(errorCode: HouseCheckErrorCode): HttpStatus {
         return when (errorCode) {
             HouseCheckErrorCode.HOUSE_CHECK_NOT_FOUND -> HttpStatus.NOT_FOUND
+            HouseCheckErrorCode.DOCUMENT_INTAKE_NOT_FOUND -> HttpStatus.NOT_FOUND
+            HouseCheckErrorCode.DOCUMENT_INTAKE_FIELD_NOT_FOUND -> HttpStatus.NOT_FOUND
             HouseCheckErrorCode.ACCESS_DENIED -> HttpStatus.FORBIDDEN
             HouseCheckErrorCode.ANALYSIS_NOT_READY -> HttpStatus.CONFLICT
             else -> HttpStatus.BAD_REQUEST

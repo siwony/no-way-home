@@ -14,7 +14,7 @@
 - [x] Director brief 작성
 - [x] UI/UX plan 작성 및 Director approval 완료
 - [x] Draft PR 생성
-- [ ] Backend 구현
+- [x] Backend 구현
 - [ ] Frontend 구현
 - [ ] UI/UX acceptance 완료
 - [ ] QA plan/report 완료
@@ -28,6 +28,9 @@
 - 사용자 승인 전 자동 입력값이 최종 분석값으로 확정되지 않는지 확인
 - 사용자 제공 PDF 두 개는 local-only QA 입력으로만 사용하고 커밋하지 않는지 확인
 - Draft PR: https://github.com/siwony/no-way-home/pull/2
+- Backend slice status: `BACKEND_READY_FOR_FRONTEND`
+- Backend verification:
+  - `./gradlew test --tests 'com.nowayhome.housecheck.api.DocumentIntakeControllerIntegrationTest' --tests 'com.nowayhome.housecheck.api.HouseCheckControllerIntegrationTest' --rerun-tasks` passed
 
 ## 스크린샷 (필요한 경우)
 

@@ -29,6 +29,7 @@ Status: DRAFT_OPENED
 | 2026-05-24 | DIRECTOR_BRIEF | New production-grade document auto-fill harness work started on `feat/house-document-auto-fill`. | no | no |
 | 2026-05-24 | DIRECTOR_PLAN_APPROVAL | Director approved UI/UX plan and production document intake scope. Planning docs are included in the initial harness planning commit before Draft PR creation. | yes | yes |
 | 2026-05-24 | DRAFT_PR_OPEN | Draft PR opened against stacked base `feat/house-risk-agent-prompts/frontend`: https://github.com/siwony/no-way-home/pull/2. | yes | pending |
+| 2026-05-24 | DEVELOPMENT | Backend slice completed: `/api/document-intakes` session/upload/review/application-payload APIs, encrypted storage, fake extraction adapter, migration, and integration tests. Frontend implementation remains. | yes | pending |
 
 ## Visual Evidence Assets
 
