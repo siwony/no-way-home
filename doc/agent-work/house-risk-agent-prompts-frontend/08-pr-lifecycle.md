@@ -24,7 +24,7 @@ Status: UPDATED
 
 ## Current Blocker
 
-Live frontend/backend integration defect is under rework. User reported that creating a house check from the frontend hit `http://localhost:5173/api/house-checks` and returned 404 with no useful follow-up action.
+Frontend integration rework is complete and awaiting UI/UX acceptance plus backend-inclusive E2E QA.
 
 ## Loop Updates
 
@@ -44,6 +44,7 @@ Live frontend/backend integration defect is under rework. User reported that cre
 | 2026-05-24 | DIRECTOR_FINAL_REVIEW | Director final review is `READY`; PR body updated with final test results and PR marked ready for review. | yes | pending |
 | 2026-05-24 | PR_READY | Frontend evidence screenshots captured, committed under `assets/`, and linked from PR body. | yes | pending |
 | 2026-05-24 | PR_READY | Live integration defect reported from contract basic info create flow: `/api/house-checks` returned 404 through `localhost:5173`. Reopening developer loop and requiring backend-inclusive E2E QA before returning to ready-for-review. | yes | pending |
+| 2026-05-24 | DEVELOPMENT | Frontend rework added Vite backend auto-detection for local `no-way-home` backend candidates and shared `/api` proxy coverage for dev/preview. `cd frontend && npm test` and `cd frontend && npm run build` passed. | yes | pending |
 
 ## Visual Evidence Assets
 
