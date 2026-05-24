@@ -7,8 +7,6 @@ import com.nowayhome.housecheck.domain.ReportValueSourceType
 import com.nowayhome.housecheck.domain.analysis.BuildingLedgerFindingInput
 import com.nowayhome.housecheck.domain.analysis.BuildingRiskAnalyzer
 import com.nowayhome.housecheck.domain.analysis.MarketPriceAssessmentService
-import com.nowayhome.housecheck.domain.analysis.MarketPriceLookupCommand
-import com.nowayhome.housecheck.domain.analysis.MarketPriceProvider
 import com.nowayhome.housecheck.domain.analysis.MarketPriceRiskAnalyzer
 import com.nowayhome.housecheck.domain.analysis.RegistryFindingInput
 import com.nowayhome.housecheck.domain.analysis.RegistryRiskAnalyzer
@@ -47,7 +45,6 @@ class HouseRiskAnalysisService(
     private val recoverySimulationService: RecoverySimulationService,
     private val riskLevelPolicy: RiskLevelPolicy,
     private val marketPriceAssessmentService: MarketPriceAssessmentService,
-    private val marketPriceProvider: MarketPriceProvider,
 ) {
     @Transactional
     fun analyze(houseCheck: HouseCheckRequestEntity): HouseRiskReportEntity {
@@ -85,31 +82,17 @@ class HouseRiskAnalysisService(
         val buildingFindings = buildingLedgerManualFindingRepository.findByHouseCheckId(houseCheck.id)
         val savedMarketPrice = marketPriceSnapshotRepository.findByHouseCheckId(houseCheck.id)
 
-        val providerAssessment = if (savedMarketPrice == null) {
-            marketPriceAssessmentService.fromProviderResult(
-                marketPriceProvider.lookup(
-                    MarketPriceLookupCommand(
-                        addressRoad = houseCheck.addressRoad,
-                        housingType = houseCheck.housingType,
-                        contractPlannedDate = houseCheck.contractPlannedDate,
-                    ),
-                ),
-            )
-        } else {
-            null
-        }
-
-        val marketAssessment = savedMarketPrice?.let {
-            marketPriceAssessmentService.fromSavedSnapshot(
+        val marketAssessment = marketPriceAssessmentService.fromSavedSnapshot(
+            savedMarketPrice?.let {
                 SavedMarketPriceInput(
                     estimatedMarketValue = it.estimatedMarketValue,
                     estimatedJeonseValue = it.estimatedJeonseValue,
                     sourceLabel = it.sourceLabel,
                     referenceDate = it.referenceDate,
-                ),
-            )
-        } ?: providerAssessment!!.first
-        val providerReasons = providerAssessment?.second.orEmpty()
+                    sourceKind = it.sourceKind,
+                )
+            },
+        )
 
         val context = RiskAnalysisContext(
             houseCheckId = houseCheck.id,
@@ -176,7 +159,7 @@ class HouseRiskAnalysisService(
             emptyList()
         }
 
-        val allReasons = (registryReasons + buildingReasons + providerReasons + marketOutput.reasons + recoveryReasons)
+        val allReasons = (registryReasons + buildingReasons + marketOutput.reasons + recoveryReasons)
             .sortedByDescending { it.riskLevel.ordinal }
         val finalRiskLevel = riskLevelPolicy.resolve(allReasons)
         val summary = when (finalRiskLevel) {

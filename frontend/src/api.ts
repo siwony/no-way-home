@@ -8,6 +8,7 @@ import type {
   HouseChecklistResponse,
   HouseRiskReportResponse,
   MarketPriceFormState,
+  MarketPriceLookupResponse,
   RegistryFindingsFormState,
   SectionStatusResponse,
 } from "./types";
@@ -144,7 +145,18 @@ export const houseCheckApi = {
         estimatedJeonseValue: toNumber(form.estimatedJeonseValue),
         sourceLabel: form.sourceLabel.trim(),
         referenceDate: form.referenceDate,
+        sourceKind: form.sourceKind,
+        sampleCount: toNumber(form.sampleCount),
+        lawdCode: form.lawdCode.trim() || null,
+        dealYmdFrom: form.dealYmdFrom.trim() || null,
+        dealYmdTo: form.dealYmdTo.trim() || null,
       }),
+    });
+  },
+
+  lookupMarketPrice(userId: string, checkId: string) {
+    return request<MarketPriceLookupResponse>(`/house-checks/${checkId}/market-price/lookup`, userId, {
+      method: "POST",
     });
   },
 

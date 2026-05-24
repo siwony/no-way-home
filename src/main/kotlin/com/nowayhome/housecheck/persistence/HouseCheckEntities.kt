@@ -166,6 +166,14 @@ class MarketPriceSnapshotEntity(
     @Enumerated(EnumType.STRING)
     @Column(name = "source_kind", nullable = false, length = 40)
     var sourceKind: MarketPriceSourceKind = MarketPriceSourceKind.USER_ENTERED,
+    @Column(name = "sample_count")
+    var sampleCount: Int? = null,
+    @Column(name = "lawd_cd", length = 5)
+    var lawdCode: String? = null,
+    @Column(name = "deal_ymd_from", length = 6)
+    var dealYmdFrom: String? = null,
+    @Column(name = "deal_ymd_to", length = 6)
+    var dealYmdTo: String? = null,
     @Column(name = "created_at", nullable = false)
     var createdAt: OffsetDateTime = OffsetDateTime.now(),
     @Column(name = "updated_at", nullable = false)

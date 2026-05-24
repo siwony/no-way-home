@@ -5,7 +5,6 @@ import com.nowayhome.housecheck.domain.ContractType
 import com.nowayhome.housecheck.domain.DocumentType
 import com.nowayhome.housecheck.domain.HouseCheckException
 import com.nowayhome.housecheck.domain.HousingType
-import com.nowayhome.housecheck.domain.MarketPriceSourceKind
 import com.nowayhome.housecheck.persistence.BuildingLedgerManualFindingEntity
 import com.nowayhome.housecheck.persistence.BuildingLedgerManualFindingRepository
 import com.nowayhome.housecheck.persistence.HouseCheckDocumentEntity
@@ -158,6 +157,7 @@ class HouseCheckCommandService(
         request.validateAmounts()
         request.estimatedMarketValue?.let { validateAmount(it, HouseCheckErrorCode.INVALID_MARKET_PRICE_AMOUNT) }
         request.estimatedJeonseValue?.let { validateAmount(it, HouseCheckErrorCode.INVALID_MARKET_PRICE_AMOUNT) }
+        request.sampleCount?.let { validateAmount(it.toLong(), HouseCheckErrorCode.INVALID_MARKET_PRICE_AMOUNT) }
 
         val now = OffsetDateTime.now()
         val entity = marketPriceSnapshotRepository.findByHouseCheckId(checkId) ?: MarketPriceSnapshotEntity(
@@ -168,7 +168,11 @@ class HouseCheckCommandService(
         entity.estimatedJeonseValue = request.estimatedJeonseValue
         entity.sourceLabel = request.sourceLabel.trim()
         entity.referenceDate = request.referenceDate ?: throw HouseCheckException(HouseCheckErrorCode.VALIDATION_ERROR)
-        entity.sourceKind = MarketPriceSourceKind.USER_ENTERED
+        entity.sourceKind = request.sourceKindOrDefault()
+        entity.sampleCount = request.sampleCount
+        entity.lawdCode = request.lawdCode?.trim()?.takeIf { it.isNotEmpty() }
+        entity.dealYmdFrom = request.dealYmdFrom?.trim()?.takeIf { it.isNotEmpty() }
+        entity.dealYmdTo = request.dealYmdTo?.trim()?.takeIf { it.isNotEmpty() }
         entity.updatedAt = now
         marketPriceSnapshotRepository.save(entity)
 

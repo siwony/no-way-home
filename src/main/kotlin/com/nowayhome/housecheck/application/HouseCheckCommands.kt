@@ -1,6 +1,7 @@
 package com.nowayhome.housecheck.application
 
 import com.nowayhome.housecheck.domain.HousingType
+import com.nowayhome.housecheck.domain.MarketPriceSourceKind
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotNull
 import java.time.LocalDate
@@ -57,11 +58,22 @@ data class SaveMarketPriceRequest(
     val sourceLabel: String,
     @field:NotNull
     val referenceDate: LocalDate?,
+    val sourceKind: String? = null,
+    val sampleCount: Int? = null,
+    val lawdCode: String? = null,
+    val dealYmdFrom: String? = null,
+    val dealYmdTo: String? = null,
 ) {
     fun validateAmounts() {
         if (estimatedMarketValue == null && estimatedJeonseValue == null) {
             throw com.nowayhome.housecheck.domain.HouseCheckException(HouseCheckErrorCode.MARKET_PRICE_NOT_AVAILABLE)
         }
+    }
+
+    fun sourceKindOrDefault(): MarketPriceSourceKind {
+        val value = sourceKind?.trim()?.takeIf { it.isNotEmpty() } ?: return MarketPriceSourceKind.USER_ENTERED
+        return MarketPriceSourceKind.entries.firstOrNull { it.name.equals(value, ignoreCase = true) }
+            ?: throw com.nowayhome.housecheck.domain.HouseCheckException(HouseCheckErrorCode.VALIDATION_ERROR)
     }
 }
 

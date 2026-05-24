@@ -26,6 +26,7 @@ import type {
   HouseChecklistResponse,
   HouseRiskReportResponse,
   MarketPriceFormState,
+  MarketPriceLookupResponse,
   RegistryFindingsFormState,
   SectionStatusResponse,
 } from "./types";
@@ -132,6 +133,11 @@ const initialMarketPrice: MarketPriceFormState = {
   estimatedJeonseValue: "",
   sourceLabel: "",
   referenceDate: "",
+  sourceKind: "USER_ENTERED",
+  sampleCount: "",
+  lawdCode: "",
+  dealYmdFrom: "",
+  dealYmdTo: "",
 };
 
 const dateTimeFormatter = new Intl.DateTimeFormat("ko-KR", {
@@ -263,6 +269,8 @@ function App() {
   const [registryFindingsForm, setRegistryFindingsForm] = useState(initialRegistryFindings);
   const [buildingLedgerForm, setBuildingLedgerForm] = useState(initialBuildingLedgerFindings);
   const [marketPriceForm, setMarketPriceForm] = useState(initialMarketPrice);
+  const [marketPriceLookup, setMarketPriceLookup] = useState<MarketPriceLookupResponse | null>(null);
+  const [marketPriceLookupMessage, setMarketPriceLookupMessage] = useState("");
   const [contractFieldSources, setContractFieldSources] = useState<ContractFieldSources>({});
   const [registryFieldSources, setRegistryFieldSources] = useState<RegistryFieldSources>({});
 
@@ -300,6 +308,7 @@ function App() {
   const [registryFindingState, setRegistryFindingState] = useState<AsyncState>("idle");
   const [buildingFindingState, setBuildingFindingState] = useState<AsyncState>("idle");
   const [marketPriceState, setMarketPriceState] = useState<AsyncState>("idle");
+  const [marketPriceLookupState, setMarketPriceLookupState] = useState<AsyncState>("idle");
   const [analyzeState, setAnalyzeState] = useState<AsyncState>("idle");
 
   const hasAppliedDocumentFields = Object.keys(contractFieldSources).length + Object.keys(registryFieldSources).length > 0;
@@ -376,6 +385,7 @@ function App() {
     setRegistryFindingsErrors({});
     setBuildingLedgerErrors({});
     setMarketPriceErrors({});
+    setMarketPriceLookupMessage("");
     setDocumentUploadErrors({
       registry: {},
       "lease-contract": {},
@@ -396,6 +406,9 @@ function App() {
     setRegistryFindingsForm(initialRegistryFindings);
     setBuildingLedgerForm(initialBuildingLedgerFindings);
     setMarketPriceForm(initialMarketPrice);
+    setMarketPriceLookup(null);
+    setMarketPriceLookupState("idle");
+    setMarketPriceLookupMessage("");
     setContractForm(initialContractForm);
     setContractFieldSources({});
     setRegistryFieldSources({});
@@ -1116,6 +1129,67 @@ function App() {
         }
       }
     }
+  };
+
+  const onLookupMarketPrice = async () => {
+    if (!activeUserId || !checkId) return;
+
+    setMarketPriceLookupState("loading");
+    setMarketPriceLookup(null);
+    setMarketPriceLookupMessage("공공 실거래가를 조회하는 중입니다.");
+    setMarketPriceErrors({});
+    try {
+      const lookup = await houseCheckApi.lookupMarketPrice(activeUserId, checkId);
+      setMarketPriceLookup(lookup);
+      setMarketPriceLookupState("success");
+      if (lookup.confidence === "AVAILABLE") {
+        setMarketPriceLookupMessage("조회 결과를 확인한 뒤 적용할 수 있습니다.");
+      } else if (lookup.confidence === "LOW_CONFIDENCE") {
+        setMarketPriceLookupMessage("표본이 부족해 계산 기준값으로 확정하지 않았습니다. 수동 입력을 함께 확인하세요.");
+      } else {
+        setMarketPriceLookupMessage("적용 가능한 공공 실거래가 표본을 찾지 못했습니다. 수동 입력을 사용해 주세요.");
+      }
+    } catch (error) {
+      try {
+        handleKnownError(error, setMarketPriceErrors);
+      } catch (innerError) {
+        setMarketPriceLookupState("error");
+        if (innerError instanceof ApiError) {
+          setMarketPriceLookupMessage(innerError.message);
+        } else {
+          setMarketPriceLookupMessage("공공 실거래가를 조회하지 못했습니다. 수동 입력을 사용해 주세요.");
+        }
+      }
+    }
+  };
+
+  const onApplyMarketPriceLookup = () => {
+    if (!marketPriceLookup) return;
+
+    setMarketPriceForm({
+      estimatedMarketValue: marketPriceLookup.estimatedMarketValue?.toString() || "",
+      estimatedJeonseValue: marketPriceLookup.estimatedJeonseValue?.toString() || "",
+      sourceLabel: marketPriceLookup.sourceLabel,
+      referenceDate: marketPriceLookup.referenceDate,
+      sourceKind: marketPriceLookup.sourceKind,
+      sampleCount: marketPriceLookup.sampleCount.toString(),
+      lawdCode: marketPriceLookup.lawdCode || "",
+      dealYmdFrom: marketPriceLookup.dealYmdFrom || "",
+      dealYmdTo: marketPriceLookup.dealYmdTo || "",
+    });
+    setMarketPriceLookupMessage("조회 결과를 입력값에 적용했습니다. 저장 버튼으로 최종 반영하세요.");
+  };
+
+  const updateManualMarketPriceField = (field: keyof Pick<MarketPriceFormState, "estimatedMarketValue" | "estimatedJeonseValue" | "sourceLabel" | "referenceDate">, value: string) => {
+    setMarketPriceForm((current) => ({
+      ...current,
+      [field]: value,
+      sourceKind: "USER_ENTERED",
+      sampleCount: "",
+      lawdCode: "",
+      dealYmdFrom: "",
+      dealYmdTo: "",
+    }));
   };
 
   const onSaveMarketPrice = async (event: FormEvent) => {
@@ -1906,26 +1980,78 @@ function App() {
             <div className="form-grid two-column">
               <label className="field-group">
                 <span>추정 매매가</span>
-                <input type="number" min="0" value={marketPriceForm.estimatedMarketValue} onChange={(event) => setMarketPriceForm({ ...marketPriceForm, estimatedMarketValue: event.target.value })} disabled={!checkReady || marketPriceState === "loading"} />
+                <input type="number" min="0" value={marketPriceForm.estimatedMarketValue} onChange={(event) => updateManualMarketPriceField("estimatedMarketValue", event.target.value)} disabled={!checkReady || marketPriceState === "loading"} />
                 <FieldError message={marketPriceErrors.estimatedMarketValue} />
               </label>
               <label className="field-group">
                 <span>전세 참고 금액</span>
-                <input type="number" min="0" value={marketPriceForm.estimatedJeonseValue} onChange={(event) => setMarketPriceForm({ ...marketPriceForm, estimatedJeonseValue: event.target.value })} disabled={!checkReady || marketPriceState === "loading"} />
+                <input type="number" min="0" value={marketPriceForm.estimatedJeonseValue} onChange={(event) => updateManualMarketPriceField("estimatedJeonseValue", event.target.value)} disabled={!checkReady || marketPriceState === "loading"} />
                 <FieldError message={marketPriceErrors.estimatedJeonseValue} />
               </label>
               <label className="field-group">
                 <span>출처 메모</span>
-                <input value={marketPriceForm.sourceLabel} onChange={(event) => setMarketPriceForm({ ...marketPriceForm, sourceLabel: event.target.value })} disabled={!checkReady || marketPriceState === "loading"} />
+                <input value={marketPriceForm.sourceLabel} onChange={(event) => updateManualMarketPriceField("sourceLabel", event.target.value)} disabled={!checkReady || marketPriceState === "loading"} />
                 <FieldError message={marketPriceErrors.sourceLabel} />
               </label>
               <label className="field-group">
                 <span>기준일</span>
-                <input type="date" value={marketPriceForm.referenceDate} onChange={(event) => setMarketPriceForm({ ...marketPriceForm, referenceDate: event.target.value })} disabled={!checkReady || marketPriceState === "loading"} />
+                <input type="date" value={marketPriceForm.referenceDate} onChange={(event) => updateManualMarketPriceField("referenceDate", event.target.value)} disabled={!checkReady || marketPriceState === "loading"} />
                 <FieldError message={marketPriceErrors.referenceDate} />
               </label>
             </div>
+            <div className="preview-panel" data-testid="market-price-lookup-panel">
+              <div className="review-field-header">
+                <div>
+                  <h3>공공 실거래가 조회</h3>
+                  <p>국토교통부 실거래가 표본 기준</p>
+                </div>
+                <button type="button" className="ghost-button" disabled={!checkReady || marketPriceLookupState === "loading"} onClick={() => void onLookupMarketPrice()}>
+                  {marketPriceLookupState === "loading" ? "조회 중..." : "공공 실거래가 조회"}
+                </button>
+              </div>
+              {marketPriceLookupMessage && <p className="helper-copy">{marketPriceLookupMessage}</p>}
+              {marketPriceLookup && (
+                <dl className="detail-list compact">
+                  <div>
+                    <dt>추정 매매가</dt>
+                    <dd>{formatNumber(marketPriceLookup.estimatedMarketValue)}</dd>
+                  </div>
+                  <div>
+                    <dt>전세 참고 금액</dt>
+                    <dd>{formatNumber(marketPriceLookup.estimatedJeonseValue)}</dd>
+                  </div>
+                  <div>
+                    <dt>표본 수</dt>
+                    <dd>매매 {marketPriceLookup.marketSampleCount}건 · 전세 {marketPriceLookup.jeonseSampleCount}건</dd>
+                  </div>
+                  <div>
+                    <dt>조회 기준</dt>
+                    <dd>{marketPriceLookup.lawdCode || "코드 미확인"} · {marketPriceLookup.dealYmdFrom || "시작월 미확인"}~{marketPriceLookup.dealYmdTo || "종료월 미확인"}</dd>
+                  </div>
+                  <div>
+                    <dt>출처</dt>
+                    <dd>{marketPriceLookup.sourceLabel}</dd>
+                  </div>
+                  {marketPriceLookup.warnings.length > 0 && (
+                    <div>
+                      <dt>경고</dt>
+                      <dd>{marketPriceLookup.warnings.join(" ")}</dd>
+                    </div>
+                  )}
+                </dl>
+              )}
+              {marketPriceLookup && (
+                <div className="card-actions">
+                  <button type="button" className="secondary-button" disabled={marketPriceLookup.confidence !== "AVAILABLE"} onClick={onApplyMarketPriceLookup}>
+                    조회 결과 적용
+                  </button>
+                </div>
+              )}
+            </div>
             <p className="helper-copy">추정 매매가가 없으면 전세가율과 총 위험 노출 비율 계산 일부가 제한될 수 있습니다.</p>
+            {marketPriceForm.sourceKind === "MLIT_REAL_TRANSACTION" && (
+              <p className="source-note">공공 실거래가 적용됨 · 표본 {marketPriceForm.sampleCount || "0"}건 · {marketPriceForm.dealYmdFrom || "시작월 미확인"}~{marketPriceForm.dealYmdTo || "종료월 미확인"}</p>
+            )}
             <FieldError message={marketPriceErrors.form} />
             <div className="card-actions">
               <button type="submit" className="secondary-button" disabled={!checkReady || marketPriceState === "loading"}>

@@ -1,12 +1,12 @@
 # Agent Work State: 공공 실거래가 시세 자동 조회
 
-Status: ACTIVE
+Status: COMPLETED
 
 Work ID: house-market-price-public-api
 
 ## Current Stage
 
-DEVELOPMENT
+PR_READY
 
 ## Stage Order
 
@@ -25,4 +25,7 @@ DEVELOPMENT
 
 | Date | From | To | Reason |
 |---|---|---|---|
-|  |  |  |  |
+| 2026-05-24 | DEVELOPMENT | UI_UX_ACCEPTANCE | 공공 실거래가 XML lookup backend/frontend 구현 완료 |
+| 2026-05-24 | UI_UX_ACCEPTANCE | QA_REPORT | UI/UX acceptance approved |
+| 2026-05-24 | QA_REPORT | DIRECTOR_FINAL_REVIEW | QA result PASS |
+| 2026-05-24 | DIRECTOR_FINAL_REVIEW | PR_READY | Director final decision READY |

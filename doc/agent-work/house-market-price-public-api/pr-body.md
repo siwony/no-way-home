@@ -12,11 +12,26 @@
 - [x] Director brief 작성
 - [x] UI/UX plan 작성 및 Director approval 완료
 - [x] Draft PR 생성
-- [ ] Backend 구현
-- [ ] Frontend 구현
-- [ ] UI/UX acceptance 완료
-- [ ] QA plan/report 완료
-- [ ] Director final review 완료
+- [x] Backend 구현
+- [x] Frontend 구현
+- [x] UI/UX acceptance 완료
+- [x] QA plan/report 완료
+- [x] Director final review 완료
+
+### Backend
+
+- `POST /api/house-checks/{checkId}/market-price/lookup` 추가
+- Juso 주소검색, 법정동 코드, 국토교통부 실거래가를 XML-only로 호출
+- 매매/순수 전세 표본 중앙값, 표본 수, 법정동 코드, 조회 월 범위, 경고 반환
+- 선택한 조회 결과를 저장할 수 있도록 시세 snapshot metadata 확장
+- 분석은 저장된 시세 snapshot만 사용하도록 유지
+
+### Frontend
+
+- 시세 입력 카드에 공공 실거래가 조회, preview, 적용 버튼 추가
+- 조회 결과는 적용 전 기존 수동 입력값을 덮어쓰지 않음
+- 적용 후에도 기존 `시세 저장`으로만 최종 저장
+- 수동 편집 시 source metadata를 `USER_ENTERED`로 초기화
 
 ## 리뷰 필요
 
@@ -26,6 +41,26 @@
 - provider 비활성화, API key 누락, 표본 부족 때 수동 입력 fallback이 유지되는지 확인
 - 테스트 결과와 잔여 risk 확인
 
+## 테스트
+
+```text
+./gradlew test
+BUILD SUCCESSFUL
+
+cd frontend && npm test
+Test Files 3 passed (3)
+Tests 17 passed (17)
+
+cd frontend && npm run build
+vite build completed successfully
+
+npx -y -p playwright@latest node --input-type=module <market-price screenshot script>
+doc/agent-work/house-market-price-public-api/assets/market-price-lookup-preview.png 195635 bytes
+
+git diff --check
+no output
+```
+
 ## 스크린샷 (필요한 경우)
 
-구현 후 `doc/agent-work/house-market-price-public-api/assets/`에 Playwright 증거 이미지를 추가한다.
+![공공 실거래가 조회 preview](https://github.com/siwony/no-way-home/blob/feat/house-market-price-public-api/doc/agent-work/house-market-price-public-api/assets/market-price-lookup-preview.png?raw=1)

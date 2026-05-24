@@ -126,6 +126,7 @@ class HouseRiskAnalysisComponentsTest {
                 estimatedJeonseValue = 65_000_000,
                 sourceLabel = "manual",
                 referenceDate = LocalDate.now(),
+                sourceKind = MarketPriceSourceKind.USER_ENTERED,
             ),
         )
 

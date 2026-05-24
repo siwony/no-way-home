@@ -24,6 +24,11 @@ describe("validation", () => {
       estimatedJeonseValue: "",
       sourceLabel: "사용자 확인",
       referenceDate: "2026-05-24",
+      sourceKind: "USER_ENTERED",
+      sampleCount: "",
+      lawdCode: "",
+      dealYmdFrom: "",
+      dealYmdTo: "",
     });
 
     expect(errors.estimatedMarketValue).toContain("하나");

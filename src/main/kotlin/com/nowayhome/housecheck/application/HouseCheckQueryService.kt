@@ -3,7 +3,9 @@ package com.nowayhome.housecheck.application
 import com.nowayhome.housecheck.domain.AnalysisStatus
 import com.nowayhome.housecheck.domain.CalculationStatus
 import com.nowayhome.housecheck.domain.DocumentType
+import com.nowayhome.housecheck.domain.MarketPriceSourceKind
 import com.nowayhome.housecheck.domain.ReportValueSourceType
+import com.nowayhome.housecheck.persistence.MarketPriceSnapshotEntity
 import com.nowayhome.housecheck.persistence.BuildingLedgerManualFindingRepository
 import com.nowayhome.housecheck.persistence.HouseCheckDocumentRepository
 import com.nowayhome.housecheck.persistence.HouseCheckRequestRepository
@@ -85,16 +87,16 @@ class HouseCheckQueryService(
             depositRisk = DepositRiskSectionResponse(
                 summary = report.depositSummary,
                 estimatedMarketValue = marketPrice?.let {
-                    LongFieldResponse(it.estimatedMarketValue, ReportValueSourceType.USER_ENTERED)
+                    LongFieldResponse(it.estimatedMarketValue, it.reportValueSourceType())
                 },
                 estimatedJeonseValue = marketPrice?.let {
-                    LongFieldResponse(it.estimatedJeonseValue, ReportValueSourceType.USER_ENTERED)
+                    LongFieldResponse(it.estimatedJeonseValue, it.reportValueSourceType())
                 },
                 sourceLabel = marketPrice?.let {
-                    StringFieldResponse(it.sourceLabel, ReportValueSourceType.USER_ENTERED)
+                    StringFieldResponse(it.sourceLabel, it.reportValueSourceType())
                 },
                 referenceDate = marketPrice?.let {
-                    DateFieldResponse(it.referenceDate, ReportValueSourceType.USER_ENTERED)
+                    DateFieldResponse(it.referenceDate, it.reportValueSourceType())
                 },
                 jeonseRatio = DecimalFieldResponse(
                     value = report.jeonseRatio,
@@ -180,5 +182,13 @@ class HouseCheckQueryService(
                 ReportAvailability.NOT_READY
             },
         )
+    }
+
+    private fun MarketPriceSnapshotEntity.reportValueSourceType(): ReportValueSourceType {
+        return if (sourceKind == MarketPriceSourceKind.USER_ENTERED) {
+            ReportValueSourceType.USER_ENTERED
+        } else {
+            ReportValueSourceType.CALCULATED
+        }
     }
 }

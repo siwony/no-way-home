@@ -1,6 +1,6 @@
 # PR Lifecycle: 공공 실거래가 시세 자동 조회
 
-Status: DRAFT_OPENED
+Status: READY_FOR_REVIEW
 
 ## Branch
 
@@ -10,7 +10,7 @@ Status: DRAFT_OPENED
 
 ## Draft PR
 
-- Title: `(WIP) feat: 공공 실거래가 시세 자동 조회`
+- Title: `feat: 공공 실거래가 시세 자동 조회`
 - Body file: `doc/agent-work/house-market-price-public-api/pr-body.md`
 - PR URL: https://github.com/siwony/no-way-home/pull/3
 - Created at: 2026-05-24
@@ -27,6 +27,8 @@ Status: DRAFT_OPENED
 | Date | Gate | Summary | PR Body Updated | Pushed |
 |---|---|---|---|---|
 | 2026-05-24 | DRAFT_PR_OPEN | Draft PR #3 opened against `feat/house-document-auto-fill` | yes | yes |
+| 2026-05-24 | DEVELOPMENT_COMPLETE | XML-only public market price lookup, preview/apply UI, tests, and screenshot evidence completed | yes | yes |
+| 2026-05-24 | QA_PASS | Full Gradle test, frontend tests/build, Playwright screenshot, and diff check passed | yes | yes |
 
 ## Visual Evidence Assets
 
@@ -35,18 +37,18 @@ Status: DRAFT_OPENED
 
 | File | Scenario | PR Body Link Updated |
 |---|---|---|
-|  |  |  |
+| `assets/market-price-lookup-preview.png` | 공공 실거래가 조회 preview, 적용, 저장 완료 상태 | yes |
 
 ## Ready For Review
 
-- [ ] Director final review decision is `READY`
-- [ ] QA report result is `PASS`
-- [ ] Final test results are reflected in `pr-body.md`
-- [ ] `(WIP)` removed from PR title
-- [ ] `gh pr ready` completed
+- [x] Director final review decision is `READY`
+- [x] QA report result is `PASS`
+- [x] Final test results are reflected in `pr-body.md`
+- [x] `(WIP)` removed from PR title
+- [x] `gh pr ready` completed
 
 ## Notes
 
-Use one status value: `NOT_CREATED`, `DRAFT_OPENED`, `UPDATED`, `READY_FOR_REVIEW`, `SKIPPED_BY_USER`, or `BLOCKED`.
+Status value: `READY_FOR_REVIEW`.
 
 Stacked PR base is the current document auto-fill feature branch because this work builds on the existing frontend/backend application flow in PR #2.

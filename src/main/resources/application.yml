@@ -49,6 +49,16 @@ housecheck:
       model: ${HOUSECHECK_DOCUMENT_INTAKE_AI_MODEL:gpt-4.1-mini}
       base-url: ${HOUSECHECK_DOCUMENT_INTAKE_AI_BASE_URL:https://api.openai.com/v1}
       timeout: ${HOUSECHECK_DOCUMENT_INTAKE_AI_TIMEOUT:90s}
+  market-price:
+    provider: ${MARKET_PRICE_PROVIDER:none}
+    molit-openapi-service-key: ${MOLIT_OPENAPI_SERVICE_KEY:}
+    juso-confirm-key: ${JUSO_CONFIRM_KEY:}
+    history-months: ${MARKET_PRICE_HISTORY_MONTHS:12}
+    min-sample-count: ${MARKET_PRICE_MIN_SAMPLE_COUNT:3}
+    timeout: ${MARKET_PRICE_TIMEOUT:10s}
+    juso-search-url: ${MARKET_PRICE_JUSO_SEARCH_URL:https://business.juso.go.kr/addrlink/addrLinkApi.do}
+    legal-region-code-url: ${MARKET_PRICE_LEGAL_REGION_CODE_URL:https://apis.data.go.kr/1741000/StanReginCd/getStanReginCdList}
+    mlit-base-url: ${MARKET_PRICE_MLIT_BASE_URL:https://apis.data.go.kr/1613000}
   security:
     encryption:
       secret: ${HOUSECHECK_ENCRYPTION_SECRET:housecheck-phase1-local-only-secret}

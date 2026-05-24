@@ -3,6 +3,7 @@ package com.nowayhome.housecheck.api
 import com.nowayhome.housecheck.application.CreateHouseCheckRequest
 import com.nowayhome.housecheck.application.HouseCheckCommandService
 import com.nowayhome.housecheck.application.HouseCheckQueryService
+import com.nowayhome.housecheck.application.MarketPriceLookupService
 import com.nowayhome.housecheck.application.SaveBuildingLedgerFindingsRequest
 import com.nowayhome.housecheck.application.SaveMarketPriceRequest
 import com.nowayhome.housecheck.application.SaveRegistryFindingsRequest
@@ -32,6 +33,7 @@ import java.util.UUID
 class HouseCheckController(
     private val houseCheckCommandService: HouseCheckCommandService,
     private val houseCheckQueryService: HouseCheckQueryService,
+    private val marketPriceLookupService: MarketPriceLookupService,
 ) {
     @PostMapping
     fun create(
@@ -87,6 +89,12 @@ class HouseCheckController(
     ): SectionStatusResponse {
         return houseCheckCommandService.saveMarketPrice(checkId, ownerId, request)
     }
+
+    @PostMapping("/{checkId}/market-price/lookup")
+    fun lookupMarketPrice(
+        @PathVariable checkId: UUID,
+        @RequestHeader("X-User-Id") @NotBlank ownerId: String,
+    ) = marketPriceLookupService.lookup(checkId, ownerId)
 
     @PostMapping("/{checkId}/analyze")
     fun analyze(

@@ -10,6 +10,7 @@ data class SavedMarketPriceInput(
     val estimatedJeonseValue: Long?,
     val sourceLabel: String,
     val referenceDate: LocalDate,
+    val sourceKind: MarketPriceSourceKind,
 )
 
 @Component
@@ -33,7 +34,7 @@ class MarketPriceAssessmentService {
                 note = "현재 확인된 자료 기준으로 추정 전세가만 저장되어 있어 매매 시세 기준 비율과 회수 시뮬레이션은 계산할 수 없습니다.",
                 estimatedMarketValue = null,
                 estimatedJeonseValue = saved.estimatedJeonseValue,
-                sourceKind = MarketPriceSourceKind.USER_ENTERED,
+                sourceKind = saved.sourceKind,
                 sourceLabel = saved.sourceLabel,
                 referenceDate = saved.referenceDate,
             )
@@ -44,7 +45,7 @@ class MarketPriceAssessmentService {
             note = null,
             estimatedMarketValue = saved.estimatedMarketValue,
             estimatedJeonseValue = saved.estimatedJeonseValue,
-            sourceKind = MarketPriceSourceKind.USER_ENTERED,
+            sourceKind = saved.sourceKind,
             sourceLabel = saved.sourceLabel,
             referenceDate = saved.referenceDate,
         )
@@ -115,7 +116,7 @@ class MarketPriceAssessmentService {
             calculationStatus = CalculationStatus.AVAILABLE,
             note = null,
             estimatedMarketValue = result.estimatedMarketValue,
-            estimatedJeonseValue = null,
+            estimatedJeonseValue = result.estimatedJeonseValue,
             sourceKind = result.sourceKind,
             sourceLabel = result.sourceLabel,
             referenceDate = result.referenceDate,
