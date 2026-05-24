@@ -1,6 +1,6 @@
 # PR Lifecycle: 등기부등본·임대차 계약서 자동 입력
 
-Status: NOT_CREATED
+Status: DRAFT_OPENED
 
 ## Branch
 
@@ -12,22 +12,23 @@ Status: NOT_CREATED
 
 - Title: `(WIP) feat: 등기부등본·임대차 계약서 자동 입력`
 - Body file: `doc/agent-work/house-document-auto-fill/pr-body.md`
-- PR URL:
-- Created at:
+- PR URL: https://github.com/siwony/no-way-home/pull/2
+- Created at: 2026-05-24
 
 ## Required Before Development
 
 - [x] Work branch is not `main`
 - [x] Planning documents are committed
 - [x] `pr-body.md` is filled from the repository PR template
-- [ ] Draft PR is opened
+- [x] Draft PR is opened
 
 ## Loop Updates
 
 | Date | Gate | Summary | PR Body Updated | Pushed |
 |---|---|---|---|---|
 | 2026-05-24 | DIRECTOR_BRIEF | New production-grade document auto-fill harness work started on `feat/house-document-auto-fill`. | no | no |
-| 2026-05-24 | DIRECTOR_PLAN_APPROVAL | Director approved UI/UX plan and production document intake scope. Planning docs are included in the initial harness planning commit before Draft PR creation. | yes | pending |
+| 2026-05-24 | DIRECTOR_PLAN_APPROVAL | Director approved UI/UX plan and production document intake scope. Planning docs are included in the initial harness planning commit before Draft PR creation. | yes | yes |
+| 2026-05-24 | DRAFT_PR_OPEN | Draft PR opened against stacked base `feat/house-risk-agent-prompts/frontend`: https://github.com/siwony/no-way-home/pull/2. | yes | pending |
 
 ## Visual Evidence Assets
 

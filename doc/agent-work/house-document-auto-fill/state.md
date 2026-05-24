@@ -6,7 +6,7 @@ Work ID: house-document-auto-fill
 
 ## Current Stage
 
-DRAFT_PR_OPEN
+DEVELOPMENT
 
 ## Stage Order
 
@@ -29,3 +29,4 @@ DRAFT_PR_OPEN
 | 2026-05-24 | DIRECTOR_BRIEF | UI_UX_PLAN | Director brief and feature documents created; UI/UX planning delegated. |
 | 2026-05-24 | UI_UX_PLAN | DIRECTOR_PLAN_APPROVAL | UI/UX plan completed with `READY_FOR_DIRECTOR_REVIEW`. |
 | 2026-05-24 | DIRECTOR_PLAN_APPROVAL | DRAFT_PR_OPEN | Director approved the production document intake scope and local-only user PDF QA fixture handling. |
+| 2026-05-24 | DRAFT_PR_OPEN | DEVELOPMENT | Draft PR opened at https://github.com/siwony/no-way-home/pull/2. |
