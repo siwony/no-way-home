@@ -48,7 +48,7 @@ housecheck:
         client-authentication: ${HOUSECHECK_DOCUMENT_INTAKE_AI_OAUTH_CLIENT_AUTHENTICATION:body}
       model: ${HOUSECHECK_DOCUMENT_INTAKE_AI_MODEL:gpt-4.1-mini}
       base-url: ${HOUSECHECK_DOCUMENT_INTAKE_AI_BASE_URL:https://api.openai.com/v1}
-      timeout: ${HOUSECHECK_DOCUMENT_INTAKE_AI_TIMEOUT:20s}
+      timeout: ${HOUSECHECK_DOCUMENT_INTAKE_AI_TIMEOUT:90s}
   security:
     encryption:
       secret: ${HOUSECHECK_ENCRYPTION_SECRET:housecheck-phase1-local-only-secret}

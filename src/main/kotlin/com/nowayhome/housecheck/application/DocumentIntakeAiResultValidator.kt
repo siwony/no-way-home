@@ -36,33 +36,42 @@ class DocumentIntakeAiResultValidator(
     ): ExtractedDocumentResult {
         require(maxSourcePage >= 1) { "maxSourcePage must be positive" }
 
-        val duplicateFieldKeys = payload.fields.groupingBy { it.fieldKey.trim().uppercase() }.eachCount()
-            .filterValues { it > 1 }
-            .keys
-        if (duplicateFieldKeys.isNotEmpty()) {
-            throw invalid("AI 응답에 중복 필드가 포함되어 있습니다.")
+        val fields = payload.fields
+            .mapNotNull { field -> field.toExtractedFieldOrNull(documentType, maxSourcePage) }
+            .distinctBy { it.fieldKey }
+        if (fields.isEmpty()) {
+            throw invalid("AI 응답에서 저장 가능한 필드를 찾지 못했습니다.")
         }
 
-        val fields = payload.fields.map { field ->
-            val fieldKey = parseFieldKey(field.fieldKey, documentType)
-            ExtractedDocumentField(
-                fieldKey = fieldKey,
-                value = normalizeFieldValue(fieldKey, field.value),
-                sourcePage = validateSourcePage(field.sourcePage, maxSourcePage),
-                sourceText = validateSourceText(field.sourceText),
-                confidence = validateConfidence(field.confidence),
-            )
-        }
-
-        val warnings = payload.warnings.map { warning ->
-            ExtractedDocumentWarning(
-                warningType = parseWarningType(warning.warningType),
-                message = validateWarningMessage(warning.message),
-                relatedFieldKeys = warning.relatedFieldKeys.map(::parseRelatedFieldKey).distinct(),
-            )
-        }
+        val warnings = payload.warnings.mapNotNull { warning -> warning.toExtractedWarningOrNull() }
 
         return ExtractedDocumentResult(fields = fields, warnings = warnings)
+    }
+
+    private fun DocumentIntakeAiFieldPayload.toExtractedFieldOrNull(
+        documentType: DocumentIntakeDocumentType,
+        maxSourcePage: Int,
+    ): ExtractedDocumentField? {
+        return runCatching {
+            val fieldKey = parseFieldKey(fieldKey, documentType)
+            ExtractedDocumentField(
+                fieldKey = fieldKey,
+                value = normalizeFieldValue(fieldKey, value),
+                sourcePage = validateSourcePage(sourcePage, maxSourcePage),
+                sourceText = validateSourceText(sourceText),
+                confidence = validateConfidence(confidence),
+            )
+        }.getOrNull()
+    }
+
+    private fun DocumentIntakeAiWarningPayload.toExtractedWarningOrNull(): ExtractedDocumentWarning? {
+        return runCatching {
+            ExtractedDocumentWarning(
+                warningType = parseWarningType(warningType),
+                message = validateWarningMessage(message),
+                relatedFieldKeys = relatedFieldKeys.map(::parseRelatedFieldKey).distinct(),
+            )
+        }.getOrNull()
     }
 
     private fun parseFieldKey(rawValue: String, documentType: DocumentIntakeDocumentType): DocumentIntakeFieldKey {
