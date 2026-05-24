@@ -24,7 +24,7 @@ Status: UPDATED
 
 ## Current Blocker
 
-Frontend integration rework has UI/UX approval and is awaiting backend-inclusive E2E QA.
+Backend-inclusive E2E QA passed and the work is awaiting Director final review.
 
 ## Loop Updates
 
@@ -46,6 +46,7 @@ Frontend integration rework has UI/UX approval and is awaiting backend-inclusive
 | 2026-05-24 | PR_READY | Live integration defect reported from contract basic info create flow: `/api/house-checks` returned 404 through `localhost:5173`. Reopening developer loop and requiring backend-inclusive E2E QA before returning to ready-for-review. | yes | pending |
 | 2026-05-24 | DEVELOPMENT | Frontend rework added Vite backend auto-detection for local `no-way-home` backend candidates and shared `/api` proxy coverage for dev/preview. `cd frontend && npm test` and `cd frontend && npm run build` passed. | yes | pending |
 | 2026-05-24 | UI_UX_ACCEPTANCE | UI/UX acceptance approved the integration rework; QA must now run live Spring Boot backend plus frontend E2E for the create -> upload -> findings -> market -> analyze -> report/checklist path. | yes | pending |
+| 2026-05-24 | QA_REPORT | Backend-inclusive QA passed: wrong service on `:8080`, real Spring Boot on `:8081`, Vite dev full browser E2E, Vite preview create proxy check, frontend tests/build, and controller integration test. | yes | pending |
 
 ## Visual Evidence Assets
 
@@ -57,6 +58,7 @@ Frontend integration rework has UI/UX approval and is awaiting backend-inclusive
 | `workspace.png` | Main diagnostic workspace with `User ID` session context and operational form flow. | yes |
 | `report.png` | Report tab with risk level, reasons, registry/building/deposit sections, and conservative simulation. | yes |
 | `access-denied.png` | `ACCESS_DENIED` panel with direct `User ID 다시 적용` and `새 진단 시작` recovery actions. | yes |
+| `qa-access-denied.png` | Live backend E2E access-denied boundary state after cross-user reload. | yes |
 
 ## Ready For Review
 

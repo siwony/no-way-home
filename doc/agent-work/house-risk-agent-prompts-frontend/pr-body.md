@@ -15,7 +15,8 @@ Backend Phase 1 API를 실제로 사용할 수 있는 첫 프론트엔드 슬라
 - 사용자 재현: 계약 기본 정보 입력 후 `http://localhost:5173/api/house-checks` 요청이 404를 반환하고 다음 행동이 없음
 - frontend-developer rework 완료: Vite dev/preview에서 실제 `no-way-home` backend를 `/api/status`로 감지하도록 보강
 - UI/UX acceptance 재승인 완료
-- 다음 기준: 실제 Spring Boot backend를 포함한 Playwright E2E가 통과해야 다시 ready-for-review로 복귀
+- backend-inclusive QA PASS 완료: real PostgreSQL + real Spring Boot + Vite dev full browser E2E + Vite preview create proxy check
+- 다음 기준: Director final review 재승인 후 ready-for-review 복귀
 
 ## 작업 내용
 
@@ -61,6 +62,12 @@ Backend Phase 1 API를 실제로 사용할 수 있는 첫 프론트엔드 슬라
   - `cd frontend && npm test` passed, 2 files / 10 tests
   - `cd frontend && npm run build` passed
 - UI/UX re-acceptance: `APPROVED`
+- Backend-inclusive QA rerun: `PASS`
+  - real Spring Boot backend on `127.0.0.1:8081`
+  - wrong upstream service on `127.0.0.1:8080`
+  - Vite dev full browser path: create -> uploads -> findings -> market -> analyze -> report -> checklist
+  - Vite preview proxy create check passed
+  - `./gradlew test --tests com.nowayhome.housecheck.api.HouseCheckControllerIntegrationTest --rerun-tasks` passed
 
 ## 스크린샷
 
@@ -75,3 +82,7 @@ Backend Phase 1 API를 실제로 사용할 수 있는 첫 프론트엔드 슬라
 ### 접근 거부 복구 상태
 
 ![접근 거부 복구 상태](https://github.com/siwony/no-way-home/blob/feat/house-risk-agent-prompts/frontend/doc/agent-work/house-risk-agent-prompts-frontend/assets/access-denied.png?raw=1)
+
+### QA 접근 경계 증거
+
+![QA 접근 경계 증거](https://github.com/siwony/no-way-home/blob/feat/house-risk-agent-prompts/frontend/doc/agent-work/house-risk-agent-prompts-frontend/assets/qa-access-denied.png?raw=1)
