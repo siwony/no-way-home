@@ -7,6 +7,8 @@ export type RiskLevel = "SAFE" | "CAUTION" | "DANGER" | "CRITICAL";
 export type CalculationStatus = "AVAILABLE" | "NOT_AVAILABLE";
 export type ReportValueSourceType = "USER_ENTERED" | "UPLOADED_FILE_METADATA" | "CALCULATED";
 export type ChecklistStage = "BEFORE_CONTRACT" | "RIGHT_BEFORE_CONTRACT" | "AFTER_CONTRACT";
+export type MarketPriceSourceKind = "USER_ENTERED" | "MLIT_REAL_TRANSACTION" | "PUBLIC_ANNOUNCED_PRICE" | "REFERENCE_LISTING";
+export type MarketPriceLookupConfidence = "AVAILABLE" | "LOW_CONFIDENCE" | "UNAVAILABLE";
 
 export type SectionStatusResponse = {
   checkId: string;
@@ -162,6 +164,27 @@ export type MarketPriceFormState = {
   estimatedJeonseValue: string;
   sourceLabel: string;
   referenceDate: string;
+  sourceKind: MarketPriceSourceKind;
+  sampleCount: string;
+  lawdCode: string;
+  dealYmdFrom: string;
+  dealYmdTo: string;
+};
+
+export type MarketPriceLookupResponse = {
+  estimatedMarketValue: number | null;
+  estimatedJeonseValue: number | null;
+  sourceLabel: string;
+  referenceDate: string;
+  sourceKind: MarketPriceSourceKind;
+  sampleCount: number;
+  marketSampleCount: number;
+  jeonseSampleCount: number;
+  lawdCode: string | null;
+  dealYmdFrom: string | null;
+  dealYmdTo: string | null;
+  confidence: MarketPriceLookupConfidence;
+  warnings: string[];
 };
 
 export type DocumentIntakeDocumentType = "REGISTRY" | "LEASE_CONTRACT";
