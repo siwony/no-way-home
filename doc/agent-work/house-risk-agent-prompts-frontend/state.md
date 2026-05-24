@@ -6,7 +6,7 @@ Work ID: house-risk-agent-prompts-frontend
 
 ## Current Stage
 
-PR_READY
+DEVELOPMENT
 
 ## Stage Order
 
@@ -36,3 +36,4 @@ PR_READY
 | 2026-05-24 | UI_UX_ACCEPTANCE | QA_PLAN | UI/UX acceptance approved QA-01 rework and confirmed frontend test/build pass. |
 | 2026-05-24 | QA_PLAN | DIRECTOR_FINAL_REVIEW | QA rerun passed. Frontend tests/build passed and built-frontend smoke verified restored-session banner plus access-denied recovery. |
 | 2026-05-24 | DIRECTOR_FINAL_REVIEW | PR_READY | Director final review marked the frontend work READY; PR body/lifecycle are being finalized for review-ready state. |
+| 2026-05-24 | PR_READY | DEVELOPMENT | User-reported live integration defect: after entering contract basic info, frontend POST to `http://localhost:5173/api/house-checks` returned 404. Loop target is frontend developer, then backend-inclusive E2E QA. |

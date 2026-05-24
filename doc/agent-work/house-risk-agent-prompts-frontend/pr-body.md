@@ -9,6 +9,12 @@
 
 Backend Phase 1 API를 실제로 사용할 수 있는 첫 프론트엔드 슬라이스를 추가한다.
 
+## 현재 상태
+
+- 2026-05-24 live integration 결함 루프 진행 중
+- 사용자 재현: 계약 기본 정보 입력 후 `http://localhost:5173/api/house-checks` 요청이 404를 반환하고 다음 행동이 없음
+- 다음 기준: frontend-developer 수정 후 실제 Spring Boot backend를 포함한 Playwright E2E가 통과해야 다시 ready-for-review로 복귀
+
 ## 작업 내용
 
 - [x] Director brief 작성
@@ -19,7 +25,7 @@ Backend Phase 1 API를 실제로 사용할 수 있는 첫 프론트엔드 슬라
 - [x] House check 생성/업로드/수기 입력/분석/리포트/체크리스트 흐름 구현
 - [x] UI/UX acceptance 완료
 - [x] QA plan/report 완료
-- [x] Director final review 완료
+- [ ] Director final review 재완료
 
 ## 리뷰 필요
 
@@ -46,8 +52,9 @@ Backend Phase 1 API를 실제로 사용할 수 있는 첫 프론트엔드 슬라
   - `cd frontend && npm test` passed, 1 file / 5 tests
   - `cd frontend && npm run build` passed
   - built-frontend smoke passed for restored-session banner and access-denied recovery
-- Director final review: `READY`
-- PR status: ready for review
+- Director final review: `CHANGES_REQUESTED` for live integration rerun
+- PR lifecycle status: `UPDATED` until backend-inclusive E2E passes
+- Current loop: live backend-inclusive E2E rework required for `/api/house-checks` create flow 404
 
 ## 스크린샷
 

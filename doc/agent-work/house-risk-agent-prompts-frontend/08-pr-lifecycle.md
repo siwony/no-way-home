@@ -1,6 +1,6 @@
 # PR Lifecycle: 주택 계약 위험도 진단 프론트엔드
 
-Status: READY_FOR_REVIEW
+Status: UPDATED
 
 ## Branch
 
@@ -24,7 +24,7 @@ Status: READY_FOR_REVIEW
 
 ## Current Blocker
 
-None. Draft PR is open and development may proceed.
+Live frontend/backend integration defect is under rework. User reported that creating a house check from the frontend hit `http://localhost:5173/api/house-checks` and returned 404 with no useful follow-up action.
 
 ## Loop Updates
 
@@ -43,6 +43,7 @@ None. Draft PR is open and development may proceed.
 | 2026-05-24 | QA_REPORT | QA rerun passed; frontend tests/build and built-frontend smoke are green. | yes | pending |
 | 2026-05-24 | DIRECTOR_FINAL_REVIEW | Director final review is `READY`; PR body updated with final test results and PR marked ready for review. | yes | pending |
 | 2026-05-24 | PR_READY | Frontend evidence screenshots captured, committed under `assets/`, and linked from PR body. | yes | pending |
+| 2026-05-24 | PR_READY | Live integration defect reported from contract basic info create flow: `/api/house-checks` returned 404 through `localhost:5173`. Reopening developer loop and requiring backend-inclusive E2E QA before returning to ready-for-review. | yes | pending |
 
 ## Visual Evidence Assets
 
@@ -57,9 +58,9 @@ None. Draft PR is open and development may proceed.
 
 ## Ready For Review
 
-- [x] Director final review decision is `READY`
-- [x] QA report result is `PASS`
-- [x] Final test results are reflected in `pr-body.md`
+- [ ] Director final review decision is `READY` after the live integration rerun
+- [ ] QA report result is `PASS` after backend-inclusive E2E
+- [ ] Final test results are reflected in `pr-body.md`
 - [x] `(WIP)` removed from PR title
 - [x] `gh pr ready` completed
 
