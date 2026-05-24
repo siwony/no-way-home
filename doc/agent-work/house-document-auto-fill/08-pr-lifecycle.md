@@ -1,6 +1,6 @@
 # PR Lifecycle: 등기부등본·임대차 계약서 자동 입력
 
-Status: UPDATED
+Status: READY_FOR_REVIEW
 
 ## Branch
 
@@ -10,11 +10,11 @@ Status: UPDATED
 
 ## Draft PR
 
-- Title: `(WIP) feat: 등기부등본·임대차 계약서 자동 입력`
+- Title: `feat: 등기부등본·임대차 계약서 자동 입력`
 - Body file: `doc/agent-work/house-document-auto-fill/pr-body.md`
 - PR URL: https://github.com/siwony/no-way-home/pull/2
 - Created at: 2026-05-24
-- Current remote state: PR #2 is currently review-ready on GitHub and must be moved back to Draft before developers resume implementation.
+- Current remote state: PR #2 is ready for review on GitHub and remains stacked on `feat/house-risk-agent-prompts/frontend`.
 
 ## Required Before Development
 
@@ -39,9 +39,13 @@ Status: UPDATED
 | 2026-05-24 | DEVELOPMENT | Reopened backend/frontend development loop for document-intake upload size policy, Spring multipart limits, and clear oversized-file feedback. | yes | pending |
 | 2026-05-24 | DEVELOPMENT | Implemented 20MB backend upload policy, multipart limits, JSON `413`, frontend preflight validation, and upload error copy. | yes | pending |
 | 2026-05-24 | QA_REPORT | QA re-run passed with real local PDFs, encrypted storage evidence, frontend tests/build, focused backend tests, and `./gradlew test`. | yes | pending |
-| 2026-05-24 | DIRECTOR_FINAL_REVIEW | Director final review returned `READY`; PR #2 may be marked ready while preserving stacked-base note. | yes | pending |
-| 2026-05-24 | PR_READY | Reopened the harness loop because the default extraction path still depends on `FakeDocumentIntakeExtractionAdapter`; new in-scope requirement is real PDF parsing plus AI review with no silent fake fallback. Latest completed verification from the prior slice remains: frontend tests/build PASS, focused backend tests PASS, `./gradlew test` PASS, local-only real PDF QA PASS. | yes | no |
-| 2026-05-24 | DIRECTOR_PLAN_APPROVAL | Director approved resumed development without a new UI/UX planning loop. Next implementation targets are real parser integration, AI extraction/review adapter wiring, explicit provider-unavailable failure, and fake-adapter opt-in only behavior. | yes | no |
+| 2026-05-24 | DIRECTOR_FINAL_REVIEW | Director final review for the original slice returned `READY`, but the loop was reopened before PR readiness was finalized. | yes | pending |
+| 2026-05-24 | PR_READY | Reopened the harness loop because the default extraction path still depended on `FakeDocumentIntakeExtractionAdapter`; new in-scope requirement was real PDF parsing plus AI review with no silent fake fallback. | yes | no |
+| 2026-05-24 | DIRECTOR_PLAN_APPROVAL | Director approved resumed development without a new UI/UX planning loop. Next implementation targets were real parser integration, AI extraction/review adapter wiring, explicit provider-unavailable failure, and fake-adapter opt-in only behavior. | yes | no |
+| 2026-05-24 | DEVELOPMENT | Reopened implementation completed: PDFBox PDF parsing/page counting, OpenAI Responses `input_file` handoff, strict AI result validation, default provider switch to `openai`, fake opt-in only, and explicit `AI_PROVIDER_UNAVAILABLE` failure without fallback. | yes | no |
+| 2026-05-24 | QA_REPORT | Reopened QA passed with focused/full backend tests, frontend tests/build, actual-PDF no-key runtime smoke, and actual-PDF mock OpenAI runtime smoke confirming `input_file` plus `data:application/pdf;base64,` request evidence. | yes | no |
+| 2026-05-24 | DIRECTOR_FINAL_REVIEW | Director final review returned `READY` for the reopened scope. PR communication must preserve the stacked-base caveat and the residual risk that live OpenAI service calls were not verified locally. | yes | no |
+| 2026-05-24 | PR_READY | PR body updated, `(WIP)` removed from the title, and PR marked ready for review. | yes | no |
 
 ## Visual Evidence Assets
 
@@ -55,16 +59,16 @@ Status: UPDATED
 
 ## Ready For Review
 
-- [ ] Director final review decision is `READY`
-- [ ] QA report result is `PASS`
-- [ ] Final test results are reflected in `pr-body.md`
-- [ ] `(WIP)` removed from PR title
-- [ ] `gh pr ready` completed
+- [x] Director final review decision is `READY`
+- [x] QA report result is `PASS`
+- [x] Final test results are reflected in `pr-body.md`
+- [x] `(WIP)` removed from PR title
+- [x] `gh pr ready` completed
 
 ## Notes
 
 Use one status value: `NOT_CREATED`, `DRAFT_OPENED`, `UPDATED`, `READY_FOR_REVIEW`, `SKIPPED_BY_USER`, or `BLOCKED`.
 
-- Failed gate for this loop: `PR_READY`
-- Loop target: `DEVELOPMENT`
-- Required remote follow-up before coding resumes: convert PR #2 back to Draft and restore the `(WIP)` title marker
+- Current harness state is `READY_FOR_REVIEW`.
+- Merge communication must continue to call out the stacked base branch dependency on `feat/house-risk-agent-prompts/frontend`.
+- Residual implementation risk: live OpenAI service integration was not exercised locally because `OPENAI_API_KEY` was unavailable.

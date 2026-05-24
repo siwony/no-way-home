@@ -6,7 +6,7 @@ Work ID: house-document-auto-fill
 
 ## Current Stage
 
-DEVELOPMENT
+PR_READY
 
 ## Stage Order
 
@@ -41,3 +41,6 @@ DEVELOPMENT
 | 2026-05-24 | DIRECTOR_FINAL_REVIEW | PR_READY | Director final review returned `READY`; PR can be marked ready while preserving the stacked-base caveat. |
 | 2026-05-24 | PR_READY | DIRECTOR_PLAN_APPROVAL | User expanded scope to require real PDF parsing and AI review in the default extraction path; previous fake-adapter follow-up is now in-scope. |
 | 2026-05-24 | DIRECTOR_PLAN_APPROVAL | DEVELOPMENT | Director approved the reopened loop with real parser + AI adapter requirements and explicit no-fake-default rules. |
+| 2026-05-24 | DEVELOPMENT | QA_REPORT | Reopened implementation completed with PDFBox parsing, OpenAI default provider wiring, strict AI result validation, no-key failure handling, and frontend failure-state review. |
+| 2026-05-24 | QA_REPORT | DIRECTOR_FINAL_REVIEW | QA reopened scope passed with focused/full backend tests, frontend test/build, actual-PDF no-key smoke, and actual-PDF mock OpenAI smoke. |
+| 2026-05-24 | DIRECTOR_FINAL_REVIEW | PR_READY | Director final review returned `READY` for the reopened scope while preserving the stacked-base caveat and the live-OpenAI residual risk. |

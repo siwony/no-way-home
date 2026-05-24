@@ -237,3 +237,89 @@ DB/filesystem evidence for document session `30f7e3a3-033a-491f-980a-334c739d278
 - `frontend/src/validation.test.ts`
 - `frontend/src/validation.ts`
 - `doc/agent-work/house-document-auto-fill/03-developer-implementation.md`
+
+## Rework Loop: APPROVED scope reopen -> DEVELOPMENT
+
+- Backend only. Replaced the production/default document-intake extraction path with a real PDF parser + OpenAI-backed extraction adapter.
+- Added Apache PDFBox-based per-page PDF parsing to validate and count PDF pages, then attach the original PDF to OpenAI as an `input_file` for model-side text/vision review.
+- Scanned/image-only PDFs no longer fail just because local text extraction is empty. Locally extracted text is included when available, and the original PDF remains the primary AI input for image-only pages.
+- Invalid PDFs still fail explicitly with parser/provider codes such as `PDF_ENCRYPTED`, `PDF_PARSE_FAILED`, `PDF_TEXT_EXTRACTION_EMPTY`, `AI_PROVIDER_UNAVAILABLE`, `AI_REVIEW_FAILED`, or `AI_RESPONSE_INVALID`.
+- Added configuration-driven OpenAI integration behind `DocumentIntakeExtractionPort`.
+  - Default provider is `openai`.
+  - Fake extraction now requires explicit opt-in via `housecheck.document-intake.extraction.provider=fake`.
+  - AI config is driven by `OPENAI_API_KEY` / `housecheck.document-intake.ai.api-key`, plus configurable model, base URL, and timeout.
+- Added strict validation for AI structured output before persistence.
+  - Field key must map to a known `DocumentIntakeFieldKey` for the uploaded document type.
+  - Field values are normalized through `DocumentIntakeFieldValueParser`.
+  - Confidence must stay within `0..1`.
+  - `sourcePage` must stay within the parsed document page range.
+  - `sourceText` and warning payloads are bounded and validated.
+- Missing provider configuration no longer falls back to fake data. The default path returns a document `FAILED` state with `AI_PROVIDER_UNAVAILABLE`.
+
+### Scope Reopen Verification
+
+```text
+./gradlew test --rerun-tasks --tests 'com.nowayhome.housecheck.application.DocumentIntakePdfTextExtractorTest' --tests 'com.nowayhome.housecheck.application.OpenAiDocumentIntakeExtractionAdapterTest' --tests 'com.nowayhome.housecheck.api.DocumentIntakeControllerIntegrationTest' --tests 'com.nowayhome.housecheck.api.DocumentIntakeControllerOpenAiUnavailableIntegrationTest'
+- PASS
+
+./gradlew test --tests 'com.nowayhome.housecheck.application.DocumentIntakeFilePolicyTest' --tests 'com.nowayhome.housecheck.api.HouseCheckControllerIntegrationTest'
+- PASS
+
+Manual local real-PDF smoke
+- PDFBox probe confirmed the user-provided PDFs are image-only from a local text extraction perspective:
+  - `6_부동산_등기사항_전부증명서.pdf`: 8 pages, 0 pages with locally extractable text.
+  - `임대차계약서.pdf`: 2 pages, 0 pages with locally extractable text.
+- With default OpenAI provider and no `OPENAI_API_KEY`, uploading both real PDFs reached document `FAILED` with `AI_PROVIDER_UNAVAILABLE`, not `PDF_TEXT_EXTRACTION_EMPTY`. This verifies the scanned PDFs now pass the PDF parser stage.
+- With a local mock OpenAI Responses server and the same real PDFs, both uploads reached `REVIEW_REQUIRED`. The mock server observed `input_file` PDF data on both requests.
+```
+
+### Scope Reopen Changed Files
+
+- `build.gradle.kts`
+- `.env.example`
+- `src/main/kotlin/com/nowayhome/housecheck/application/DocumentIntakeAiProperties.kt`
+- `src/main/kotlin/com/nowayhome/housecheck/application/DocumentIntakeAiResultValidator.kt`
+- `src/main/kotlin/com/nowayhome/housecheck/application/DocumentIntakeExtractionConfiguration.kt`
+- `src/main/kotlin/com/nowayhome/housecheck/application/DocumentIntakeExtractionPort.kt`
+- `src/main/kotlin/com/nowayhome/housecheck/application/DocumentIntakeFieldValueParser.kt`
+- `src/main/kotlin/com/nowayhome/housecheck/application/DocumentIntakePdfTextExtractor.kt`
+- `src/main/kotlin/com/nowayhome/housecheck/application/FakeDocumentIntakeExtractionAdapter.kt`
+- `src/main/kotlin/com/nowayhome/housecheck/application/OpenAiDocumentIntakeExtractionAdapter.kt`
+- `src/main/resources/application.yml`
+- `src/test/kotlin/com/nowayhome/housecheck/api/DocumentIntakeControllerIntegrationTest.kt`
+- `src/test/kotlin/com/nowayhome/housecheck/api/DocumentIntakeControllerOpenAiUnavailableIntegrationTest.kt`
+- `src/test/kotlin/com/nowayhome/housecheck/application/DocumentIntakePdfTextExtractorTest.kt`
+- `src/test/kotlin/com/nowayhome/housecheck/application/OpenAiDocumentIntakeExtractionAdapterTest.kt`
+- `doc/agent-work/house-document-auto-fill/03-developer-implementation.md`
+
+### Scope Reopen Risks Or Follow-ups
+
+- Live OpenAI integration against the real OpenAI service was not exercised because no local `OPENAI_API_KEY` was available during verification. Provider behavior is covered with a stub HTTP server, a default no-key integration test, and a local mock Responses smoke against the user-provided PDFs.
+- Image uploads still rely on the AI model's native vision path rather than a local OCR layer. This keeps the approved lease image contract working, but image-specific extraction quality still needs QA with real local samples.
+
+## Frontend Review Addendum: backend failure.message exposure
+
+- Scope: frontend-only review for the new production failure codes `AI_PROVIDER_UNAVAILABLE`, `AI_REVIEW_FAILED`, `AI_RESPONSE_INVALID`, `PDF_ENCRYPTED`, `PDF_PARSE_FAILED`, `PDF_TEXT_EXTRACTION_EMPTY`.
+- Result: no frontend code change required in this loop.
+- Findings:
+  - Failed document slots already render backend `failure.code` and `failure.message` directly from the session response, then append a clear next action (`새 파일을 선택한 뒤 다시 업로드하세요.`). This satisfies the requirement to surface backend failure semantics after upload. Evidence: [frontend/src/App.tsx](/Users/jeongcool/me/no-way-home/frontend/src/App.tsx:1245)
+  - Retry and manual fallback already remain available together. A failed slot keeps the re-upload CTA (`파일 선택 후 다시 업로드`), while the review/apply panel continues to expose `지금은 수기 입력으로 계속`. Evidence: [frontend/src/App.tsx](/Users/jeongcool/me/no-way-home/frontend/src/App.tsx:1192), [frontend/src/App.tsx](/Users/jeongcool/me/no-way-home/frontend/src/App.tsx:1551)
+  - Upload-time API failures also keep the server message via `deriveDocumentIntakeUploadFailureMessage`, so `413` or other request failures are not collapsed into a generic client-only error. Evidence: [frontend/src/validation.ts](/Users/jeongcool/me/no-way-home/frontend/src/validation.ts:89), [frontend/src/validation.test.ts](/Users/jeongcool/me/no-way-home/frontend/src/validation.test.ts:111)
+
+### Frontend Review Verification
+
+```text
+cd frontend && npm test
+- PASS (3 files, 17 tests)
+
+cd frontend && npm run build
+- PASS
+```
+
+### Frontend Review Changed Files
+
+- `doc/agent-work/house-document-auto-fill/03-developer-implementation.md`
+
+### Frontend Review Residual Risks
+
+- This loop verified source-level rendering and existing unit coverage, not a live browser flow against each new backend failure code. QA should still exercise at least one real failed-session snapshot for parser failure and one for AI/provider failure to confirm final wording and layout.

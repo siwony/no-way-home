@@ -537,6 +537,7 @@ class DocumentIntakeControllerIntegrationTest {
             registry.add("spring.datasource.password") {
                 System.getenv("HOUSECHECK_TEST_DATASOURCE_PASSWORD") ?: "no_way_home"
             }
+            registry.add("housecheck.document-intake.extraction.provider") { "fake" }
             registry.add("housecheck.storage.root") { storageRoot.toString() }
             registry.add("housecheck.security.encryption.secret") { "housecheck-test-secret" }
         }

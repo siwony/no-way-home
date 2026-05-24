@@ -109,3 +109,82 @@ Use one result value: `PASS`, `FAIL`, or `BLOCKED`.
 - Result is `PASS`.
 - The current extraction adapter remains fake by design. Real OCR/provider integration is still a follow-up behind the existing port.
 - Existing analysis-side `등기 PDF 업로드` is still required before `등기 수기 확인 저장` succeeds. This did not block document-intake real-PDF upload, extraction review, apply, or house check creation.
+
+## Reopen QA: real PDF parser + OpenAI default path
+
+Status: COMPLETED
+
+Result: PASS
+
+### Reopen Scope
+
+- 현재 uncommitted workspace 기준으로 실제 PDF 파서 + OpenAI 기본 경로가 독립적으로 재현되는지 최소 범위로 재검증
+- 실제 로컬 PDF 2종에 대해 no-key 실패 경로와 mock OpenAI 성공 경로를 각각 재실행
+- frontend가 새 backend failure code/message를 그대로 노출하는지 소스/테스트 근거 확인
+
+### Commands Executed
+
+```text
+docker compose up -d postgres
+- PASS
+
+./gradlew test --rerun-tasks --tests 'com.nowayhome.housecheck.application.DocumentIntakePdfTextExtractorTest' --tests 'com.nowayhome.housecheck.application.OpenAiDocumentIntakeExtractionAdapterTest' --tests 'com.nowayhome.housecheck.api.DocumentIntakeControllerOpenAiUnavailableIntegrationTest' --tests 'com.nowayhome.housecheck.api.DocumentIntakeControllerIntegrationTest'
+- PASS
+
+./gradlew test --tests 'com.nowayhome.housecheck.api.HouseCheckControllerIntegrationTest'
+- PASS
+
+cd frontend && npm test
+- PASS (3 files, 17 tests)
+
+cd frontend && npm run build
+- PASS
+
+OPENAI_API_KEY='' ./gradlew bootRun
+- PASS for runtime smoke on http://127.0.0.1:8080
+
+curl -X POST /api/document-intakes
+curl -X POST /api/document-intakes/{sessionId}/documents/registry -F file=@6_부동산_등기사항_전부증명서.pdf
+curl -X POST /api/document-intakes/{sessionId}/documents/lease-contract -F file=@임대차계약서.pdf
+- PASS
+- sessionId: c6a49e54-f179-42ac-8933-967f701af290
+- REGISTRY: FAILED / AI_PROVIDER_UNAVAILABLE
+- LEASE_CONTRACT: FAILED / AI_PROVIDER_UNAVAILABLE
+- fields=0, warnings=0 after lease upload
+
+python3 mock OpenAI server on http://127.0.0.1:18080/v1/responses
+OPENAI_API_KEY='qa-mock-key' HOUSECHECK_DOCUMENT_INTAKE_AI_BASE_URL='http://127.0.0.1:18080/v1' ./gradlew bootRun
+curl -X POST /api/document-intakes
+curl -X POST /api/document-intakes/{sessionId}/documents/registry -F file=@6_부동산_등기사항_전부증명서.pdf
+curl -X POST /api/document-intakes/{sessionId}/documents/lease-contract -F file=@임대차계약서.pdf
+- PASS
+- sessionId: 14bcc279-025b-48b1-baef-6dcb915ab57f
+- REGISTRY: REVIEW_REQUIRED
+- LEASE_CONTRACT: REVIEW_REQUIRED
+- fields=5, warnings=0 after lease upload
+- mock request log evidence:
+  - INPUT_FILE_REQUESTS=2
+  - PDF_DATA_URL_REQUESTS=2
+```
+
+### Executed Checks And Evidence
+
+- PDFBox 파서 단위 테스트가 통과했다. 빈 페이지 PDF도 메타데이터를 유지하고, 잘못된 PDF는 `PDF_PARSE_FAILED`로 실패한다.
+- OpenAI 어댑터 단위 테스트가 통과했다. top-level `output_text`와 nested `output[].content[].text`를 모두 파싱하고, blank-text PDF도 `input_file` 첨부로 처리한다.
+- 기본 provider no-key 통합 테스트가 통과했다. `DocumentIntakeControllerOpenAiUnavailableIntegrationTest`는 기본 OpenAI provider에서 API key가 없을 때 `FAILED / AI_PROVIDER_UNAVAILABLE`를 검증한다.
+- 실제 로컬 PDF 2종으로 재실행한 런타임 smoke에서도 두 문서가 모두 `AI_PROVIDER_UNAVAILABLE`에 도달했다. 이때 `PDF_TEXT_EXTRACTION_EMPTY`로 막히지 않았으므로 스캔형 PDF가 파서 단계를 통과하는 점은 재확인됐다.
+- mock OpenAI 런타임 smoke에서 같은 로컬 PDF 2종이 모두 `REVIEW_REQUIRED`에 도달했다. mock 서버 로그 `/tmp/mock-openai-requests.log`에는 `input_file`와 `data:application/pdf;base64,` 흔적이 각각 2회 기록됐다.
+- frontend 실패 노출은 소스/테스트로 재확인했다.
+  - failed slot은 backend `failure.code`와 `failure.message`를 그대로 렌더링한다. 근거: [frontend/src/App.tsx](/Users/jeongcool/me/no-way-home/frontend/src/App.tsx:1245)
+  - 업로드 단계의 `ApiError`도 서버 `message`를 그대로 유지한다. 근거: [frontend/src/validation.ts](/Users/jeongcool/me/no-way-home/frontend/src/validation.ts:96)
+  - 이에 대한 단위 테스트가 있다. 근거: [frontend/src/validation.test.ts](/Users/jeongcool/me/no-way-home/frontend/src/validation.test.ts:111)
+
+### Defects
+
+- 없음
+
+### Residual Risks
+
+- 실제 OpenAI 서비스와의 end-to-end 호출은 이번 QA에서 검증하지 않았다. 이번 루프는 로컬 mock Responses 서버까지만 확인했다.
+- 이미지 입력 경로는 이번 재검증 범위에서 제외했다. 현재 reopen scope는 사용자 제공 실제 PDF 2종 기준이다.
+- 브라우저 실화면 smoke는 이번 루프에서 생략했다. failure message 노출은 source/test evidence로 충분하다고 판단했다.

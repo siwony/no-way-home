@@ -6,23 +6,28 @@ Decision: READY
 
 ## Final Review Summary
 
-Approved scope is satisfied. The implementation delivers a pre-house-check document intake session, fixed registry/lease upload slots, extracted field review with evidence and warnings, explicit user approval/edit/exclude actions, compare/apply before overwrite, owner-bound access control, encrypted intake storage, and a fake extraction adapter behind a port boundary.
+Approved reopened scope is satisfied. The default document-intake extraction path now runs through a real PDF parser plus the OpenAI-backed extraction adapter instead of silently using fake output. `fake` extraction is opt-in only via `housecheck.document-intake.extraction.provider=fake`. PDF uploads are parsed with PDFBox for validity and page count, then the original PDF is forwarded to the OpenAI Responses API as `input_file` data so scanned PDFs can continue through the AI review path even when local text extraction is empty.
 
-Gate evidence is consistent across the harness logs. UI/UX acceptance is `APPROVED`, QA result is `PASS`, and the latest rework closed the real-PDF `HTTP 413` failure with a 20MB policy plus explicit frontend/backend handling. Final verification reported `cd frontend && npm test` PASS (3 files / 17 tests), `cd frontend && npm run build` PASS, focused backend tests PASS, full `./gradlew test` PASS, and Playwright local QA PASS with the two user-provided real PDFs, 20 approved fields, house check creation, and encrypted `.bin` storage that does not expose `%PDF` in plaintext.
+Evidence across the current loop is internally consistent. Developer notes record the provider switch, PDFBox integration, strict AI result validation before persistence, and explicit `AI_PROVIDER_UNAVAILABLE` failure when no API key is configured. QA reopened the loop and passed focused backend tests, additional backend integration coverage, `./gradlew test`, `cd frontend && npm test`, `cd frontend && npm run build`, a real-PDF no-key smoke that reached `FAILED / AI_PROVIDER_UNAVAILABLE`, and a real-PDF mock OpenAI smoke that reached `REVIEW_REQUIRED` while observing both `input_file` and `data:application/pdf;base64,` request payloads.
 
-This remains merge-ready with two explicit caveats. First, the branch is still stacked on `feat/house-risk-agent-prompts/frontend` until PR #1 merges, so coordinator follow-up must keep the base branch/PR ordering accurate and rebase onto `main` after PR #1 lands. Second, the extraction path is intentionally fake for this slice; production rollout beyond the current approved scope still requires selecting and integrating a real OCR/registry document provider behind the existing port/adapter boundary with cost, accuracy, and security review.
+Frontend handling for the new backend failure path is sufficient for this scope. The reopened review found no frontend code change was required because failed document slots already render backend `failure.code` and `failure.message`, and upload-time API errors already preserve server messages.
+
+This gate is ready with two explicit residual caveats that must stay visible in PR communication:
+
+- The PR is stacked on `feat/house-risk-agent-prompts/frontend` rather than `main`. Merge ordering and later rebase remain coordinator work until PR #1 lands.
+- Live end-to-end verification against the real OpenAI service was not executed because no local `OPENAI_API_KEY` was available. The implemented path is covered by unit/integration tests, a no-key runtime failure smoke, and a mock OpenAI runtime smoke, but provider-specific behavior in the live service remains a residual risk.
 
 ## Requirement Match
 
 - [x] Director brief satisfied
-- [x] UI/UX plan satisfied
-- [x] Developer implementation complete
-- [x] QA result acceptable
+- [x] UI/UX plan still satisfied for the reopened scope
+- [x] Developer implementation complete for the real parser + AI default path
+- [x] QA result acceptable for the reopened scope
 
 ## Notes
 
-- `ktlintCheck` is not configured in this repository. The reported `task not found` result is non-blocking for this gate.
-- Real local PDFs remained QA-only inputs and were not committed, which matches the approved scope.
+- Real local PDFs remained local QA fixtures only and were not committed.
+- The current `READY` decision covers the approved reopened scope, not a guarantee that the live OpenAI account/configuration is already validated in this branch.
 
 ## Rework Target
 
@@ -41,17 +46,16 @@ Use one decision value: `READY`, `CHANGES_REQUESTED`, or `BLOCKED`.
   - Director plan approval: `APPROVED`
   - UI/UX acceptance: `APPROVED`
   - QA report: `PASS`
-  - Final verification: all reported required commands and local browser QA passed
+  - Final verification: backend focused/full tests PASS, frontend test/build PASS, real-PDF no-key smoke PASS, real-PDF mock OpenAI smoke PASS
 - Remaining caveats:
-  - stacked base branch dependency on PR #1 remains until rebase
-  - real OCR/provider integration is still a production follow-up, not part of this completed slice
+  - stacked base branch dependency on `feat/house-risk-agent-prompts/frontend`
+  - live OpenAI service call remains unverified due missing `OPENAI_API_KEY`
 
 ## PR Ready Handoff
 
 When decision is `READY`, Director must update `pr-body.md` with final test results, update `08-pr-lifecycle.md`, remove `(WIP)` from the PR title, and run `gh pr ready`.
 
 - Coordinator should now:
-  - update `doc/agent-work/house-document-auto-fill/08-pr-lifecycle.md` to `READY_FOR_REVIEW`
-  - check the `Director final review decision is READY` and PR-ready items
-  - ensure the GitHub PR title drops `(WIP)` and the PR is marked ready
-  - preserve the stacked-base note in PR communication until PR #1 merges
+  - keep the stacked-base caveat in the PR body until the base branch merges
+  - keep the live-OpenAI residual risk visible in PR review notes
+  - sync GitHub PR title/body/state with the latest local harness files

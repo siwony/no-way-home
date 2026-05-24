@@ -34,6 +34,13 @@ management:
 housecheck:
   document-intake:
     max-upload-size: 20MB
+    extraction:
+      provider: ${HOUSECHECK_DOCUMENT_INTAKE_EXTRACTION_PROVIDER:openai}
+    ai:
+      api-key: ${OPENAI_API_KEY:}
+      model: ${HOUSECHECK_DOCUMENT_INTAKE_AI_MODEL:gpt-4.1-mini}
+      base-url: ${HOUSECHECK_DOCUMENT_INTAKE_AI_BASE_URL:https://api.openai.com/v1}
+      timeout: ${HOUSECHECK_DOCUMENT_INTAKE_AI_TIMEOUT:20s}
   security:
     encryption:
       secret: ${HOUSECHECK_ENCRYPTION_SECRET:housecheck-phase1-local-only-secret}
