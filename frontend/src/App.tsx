@@ -1187,7 +1187,7 @@ function App() {
     const helper = slot === "registry" ? "PDF만 지원합니다." : "PDF, JPEG, PNG, WebP를 지원합니다.";
     const actionLabel =
       document?.processingStatus === "FAILED"
-        ? "다시 처리"
+        ? "파일 선택 후 다시 업로드"
         : document
           ? "다시 업로드"
           : "업로드";
@@ -1236,7 +1236,7 @@ function App() {
         {document?.failure ? (
           <div className="inline-warning" data-tone="critical">
             <strong>{document.failure.code}</strong>
-            <span>{document.failure.message}</span>
+            <span>{document.failure.message} 새 파일을 선택한 뒤 다시 업로드하세요.</span>
           </div>
         ) : null}
         <FieldError message={errors.form} />
@@ -1579,6 +1579,12 @@ function App() {
                             {item.conflict ? "승인값으로 교체" : item.sameAsCurrent ? "출처 노트만 유지" : "반영"}
                           </span>
                         </label>
+                        {item.conflict ? (
+                          <div className="choice-summary" data-selected={applySelection[item.id] ? "approved" : "current"}>
+                            <span>{applySelection[item.id] ? "선택됨: 승인값으로 교체" : "선택됨: 현재 값 유지"}</span>
+                            <small>체크를 끄면 현재 입력값을 유지하고, 체크하면 문서 승인값으로 교체합니다.</small>
+                          </div>
+                        ) : null}
                       </article>
                     ))}
                   </div>

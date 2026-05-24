@@ -31,3 +31,5 @@ UI_UX_ACCEPTANCE
 | 2026-05-24 | DIRECTOR_PLAN_APPROVAL | DRAFT_PR_OPEN | Director approved the production document intake scope and local-only user PDF QA fixture handling. |
 | 2026-05-24 | DRAFT_PR_OPEN | DEVELOPMENT | Draft PR opened at https://github.com/siwony/no-way-home/pull/2. |
 | 2026-05-24 | DEVELOPMENT | UI_UX_ACCEPTANCE | Backend and frontend document auto-fill slices completed; frontend tests/build passed and work is ready for UI/UX acceptance. |
+| 2026-05-24 | UI_UX_ACCEPTANCE | DEVELOPMENT | UI/UX acceptance requested clearer failed-document retry wording and explicit current-value-vs-approved-value overwrite choice. |
+| 2026-05-24 | DEVELOPMENT | UI_UX_ACCEPTANCE | Frontend developer addressed UI/UX change requests and `npm test` plus `npm run build` passed. |

@@ -31,6 +31,8 @@ Status: DRAFT_OPENED
 | 2026-05-24 | DRAFT_PR_OPEN | Draft PR opened against stacked base `feat/house-risk-agent-prompts/frontend`: https://github.com/siwony/no-way-home/pull/2. | yes | pending |
 | 2026-05-24 | DEVELOPMENT | Backend slice completed: `/api/document-intakes` session/upload/review/application-payload APIs, encrypted storage, fake extraction adapter, migration, and integration tests. Frontend implementation remains. | yes | pending |
 | 2026-05-24 | DEVELOPMENT | Frontend document auto-fill flow completed inside the existing workspace. `cd frontend && npm test`, `cd frontend && npm run build`, and focused backend tests passed. | yes | pending |
+| 2026-05-24 | UI_UX_ACCEPTANCE | UI/UX acceptance returned `CHANGES_REQUESTED`; frontend loop targets failed-document retry wording and explicit overwrite choice. | yes | pending |
+| 2026-05-24 | DEVELOPMENT | UI/UX requested rework completed: failed-document action wording now matches upload behavior and overwrite conflicts show explicit current-value-vs-approved-value choice. Frontend tests/build passed. | yes | pending |
 
 ## Visual Evidence Assets
 

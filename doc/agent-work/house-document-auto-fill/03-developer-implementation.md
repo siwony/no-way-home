@@ -162,3 +162,24 @@ Live smoke (2026-05-24, local backend + Vite)
 
 - UI/UX acceptance can now validate the end-to-end frontend flow on the existing workspace: `User ID 적용 -> 문서 세션 시작 -> 문서 업로드 -> 추출 검토 -> 승인한 필드 반영 -> 계약/등기 입력 확인`.
 - Existing house-check APIs and tests still pass after this slice, and the browser-storage check remained within the allowed session-only keys.
+
+## Rework Loop: UI_UX_ACCEPTANCE -> DEVELOPMENT
+
+- UI/UX-01: 실패 문서 액션 문구를 실제 동작과 맞췄다. stored original 재처리 API가 없는 현재 backend contract에서는 `다시 처리` 대신 `파일 선택 후 다시 업로드`로 표시하고, 실패 메시지도 새 파일 선택 후 재업로드하라는 안내를 함께 보여준다.
+- UI/UX-02: overwrite 비교에서 충돌 항목의 선택 상태를 명시적으로 표시했다. 체크 해제 상태는 `선택됨: 현재 값 유지`, 체크 상태는 `선택됨: 승인값으로 교체`로 보이고, 체크 규칙 설명을 함께 노출한다.
+
+### UI/UX Rework Verification
+
+```text
+cd frontend && npm test
+- PASS (3 files, 13 tests)
+
+cd frontend && npm run build
+- PASS
+```
+
+### UI/UX Rework Changed Files
+
+- `frontend/src/App.tsx`
+- `frontend/src/styles.css`
+- `doc/agent-work/house-document-auto-fill/03-developer-implementation.md`

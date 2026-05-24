@@ -466,6 +466,30 @@ code {
   gap: 0.75rem;
 }
 
+.choice-summary {
+  display: grid;
+  gap: 0.25rem;
+  padding: 0.65rem 0.75rem;
+  border-radius: 8px;
+  border: 1px solid rgba(141, 91, 28, 0.24);
+  background: rgba(141, 91, 28, 0.08);
+  color: var(--text-strong);
+}
+
+.choice-summary[data-selected="approved"] {
+  border-color: rgba(14, 101, 76, 0.28);
+  background: rgba(14, 101, 76, 0.08);
+}
+
+.choice-summary span {
+  font-weight: 700;
+}
+
+.choice-summary small {
+  color: var(--text-muted);
+  line-height: 1.45;
+}
+
 .review-value strong {
   font-size: 1.05rem;
 }

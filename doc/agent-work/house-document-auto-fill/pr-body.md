@@ -35,6 +35,15 @@
 - Frontend verification:
   - `cd frontend && npm test` passed, 3 files / 13 tests
   - `cd frontend && npm run build` passed
+- UI/UX acceptance loop:
+  - `CHANGES_REQUESTED`
+  - failed-document `다시 처리` wording must match actual upload behavior
+  - overwrite comparison must show explicit `현재 값 유지` vs `승인값으로 교체`
+- UI/UX requested rework:
+  - failed-document action now says `파일 선택 후 다시 업로드`
+  - conflict rows now show `선택됨: 현재 값 유지` or `선택됨: 승인값으로 교체`
+  - `cd frontend && npm test` passed, 3 files / 13 tests
+  - `cd frontend && npm run build` passed
 
 ## 스크린샷 (필요한 경우)
 
