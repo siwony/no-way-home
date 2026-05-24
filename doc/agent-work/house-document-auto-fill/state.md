@@ -6,7 +6,7 @@ Work ID: house-document-auto-fill
 
 ## Current Stage
 
-UI_UX_ACCEPTANCE
+QA_PLAN
 
 ## Stage Order
 
@@ -33,3 +33,4 @@ UI_UX_ACCEPTANCE
 | 2026-05-24 | DEVELOPMENT | UI_UX_ACCEPTANCE | Backend and frontend document auto-fill slices completed; frontend tests/build passed and work is ready for UI/UX acceptance. |
 | 2026-05-24 | UI_UX_ACCEPTANCE | DEVELOPMENT | UI/UX acceptance requested clearer failed-document retry wording and explicit current-value-vs-approved-value overwrite choice. |
 | 2026-05-24 | DEVELOPMENT | UI_UX_ACCEPTANCE | Frontend developer addressed UI/UX change requests and `npm test` plus `npm run build` passed. |
+| 2026-05-24 | UI_UX_ACCEPTANCE | QA_PLAN | UI/UX re-acceptance approved the document auto-fill rework; local-only real PDF upload validation remains for QA. |

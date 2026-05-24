@@ -44,6 +44,10 @@
   - conflict rows now show `선택됨: 현재 값 유지` or `선택됨: 승인값으로 교체`
   - `cd frontend && npm test` passed, 3 files / 13 tests
   - `cd frontend && npm run build` passed
+- UI/UX re-acceptance: `APPROVED`
+- QA remaining focus:
+  - mock fixture E2E automation
+  - local-only upload validation with the two user-provided PDFs
 
 ## 스크린샷 (필요한 경우)
 

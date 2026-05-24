@@ -33,6 +33,7 @@ Status: DRAFT_OPENED
 | 2026-05-24 | DEVELOPMENT | Frontend document auto-fill flow completed inside the existing workspace. `cd frontend && npm test`, `cd frontend && npm run build`, and focused backend tests passed. | yes | pending |
 | 2026-05-24 | UI_UX_ACCEPTANCE | UI/UX acceptance returned `CHANGES_REQUESTED`; frontend loop targets failed-document retry wording and explicit overwrite choice. | yes | pending |
 | 2026-05-24 | DEVELOPMENT | UI/UX requested rework completed: failed-document action wording now matches upload behavior and overwrite conflicts show explicit current-value-vs-approved-value choice. Frontend tests/build passed. | yes | pending |
+| 2026-05-24 | UI_UX_ACCEPTANCE | UI/UX re-acceptance approved the document auto-fill frontend rework; QA may proceed with mock fixture automation plus local-only real PDF upload validation. | yes | pending |
 
 ## Visual Evidence Assets
 
