@@ -49,12 +49,16 @@ Backend Phase 1 API를 실제로 사용할 수 있는 첫 프론트엔드 슬라
 - Director final review: `READY`
 - PR status: ready for review
 
-## 스크린샷 (필요한 경우)
+## 스크린샷
 
-스크린샷은 `doc/agent-work/house-risk-agent-prompts-frontend/assets/`에 커밋한 뒤 PR 본문에서 GitHub raw image URL로 참조한다.
+### 진단 워크스페이스
 
-예시:
-
-```md
 ![진단 워크스페이스](https://github.com/siwony/no-way-home/blob/feat/house-risk-agent-prompts/frontend/doc/agent-work/house-risk-agent-prompts-frontend/assets/workspace.png?raw=1)
-```
+
+### 리포트 결과
+
+![리포트 결과](https://github.com/siwony/no-way-home/blob/feat/house-risk-agent-prompts/frontend/doc/agent-work/house-risk-agent-prompts-frontend/assets/report.png?raw=1)
+
+### 접근 거부 복구 상태
+
+![접근 거부 복구 상태](https://github.com/siwony/no-way-home/blob/feat/house-risk-agent-prompts/frontend/doc/agent-work/house-risk-agent-prompts-frontend/assets/access-denied.png?raw=1)

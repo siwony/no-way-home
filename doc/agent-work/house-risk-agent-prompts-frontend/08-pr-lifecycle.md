@@ -42,6 +42,7 @@ None. Draft PR is open and development may proceed.
 | 2026-05-24 | UI_UX_ACCEPTANCE | UI/UX acceptance approved QA-01 rework; QA may rerun. | yes | pending |
 | 2026-05-24 | QA_REPORT | QA rerun passed; frontend tests/build and built-frontend smoke are green. | yes | pending |
 | 2026-05-24 | DIRECTOR_FINAL_REVIEW | Director final review is `READY`; PR body updated with final test results and PR marked ready for review. | yes | pending |
+| 2026-05-24 | PR_READY | Frontend evidence screenshots captured, committed under `assets/`, and linked from PR body. | yes | pending |
 
 ## Visual Evidence Assets
 
@@ -50,7 +51,9 @@ None. Draft PR is open and development may proceed.
 
 | File | Scenario | PR Body Link Updated |
 |---|---|---|
-|  |  |  |
+| `workspace.png` | Main diagnostic workspace with `User ID` session context and operational form flow. | yes |
+| `report.png` | Report tab with risk level, reasons, registry/building/deposit sections, and conservative simulation. | yes |
+| `access-denied.png` | `ACCESS_DENIED` panel with direct `User ID 다시 적용` and `새 진단 시작` recovery actions. | yes |
 
 ## Ready For Review
 
