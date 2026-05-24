@@ -9,58 +9,41 @@
 
 등기부등본과 임대차 계약서를 등록하면 문서에서 핵심 정보를 추출하고, 사용자의 검토/승인 후 기존 주택 계약 위험도 진단 입력값에 자동 반영하는 실제 서비스용 문서 intake 기능을 추가한다.
 
+현재 이 PR은 review-ready 상태에서 reopened 되었다. 새 범위는 fake extraction follow-up을 실제 구현 범위로 끌어왔고, 기본 extraction path가 반드시 실제 PDF parser + AI review adapter를 타도록 수정해야 한다.
+
 ## 작업 내용
 
 - [x] Director brief 작성
 - [x] UI/UX plan 작성 및 Director approval 완료
 - [x] Draft PR 생성
-- [x] Backend 구현
-- [x] Frontend 구현
-- [x] UI/UX acceptance 완료
-- [x] QA plan/report 완료
-- [x] Director final review 완료
+- [ ] Backend 재구현: 실제 PDF parser + AI extraction/review adapter
+- [ ] Frontend 재검증: parser/AI failure states and copy
+- [ ] QA 재실행
+- [ ] Director final review 재실행
 
 ## 리뷰 필요
 
+- 이 PR은 현재 다시 Draft로 되돌려야 한다. 로컬 하네스 상태는 reopened implementation loop를 기준으로 갱신되었다.
+- production default에서 `FakeDocumentIntakeExtractionAdapter`가 절대 자동 사용되지 않는지 확인
+- 실제 PDF parser library가 업로드 PDF 텍스트 추출 경로에 포함되는지 확인
+- AI extraction/review가 기존 `DocumentIntakeExtractionPort` 뒤에 유지되는지 확인
+- provider/API key 미설정 시 명시적으로 실패하고 fake fallback이 없는지 확인
+- `.env.example` 또는 동등한 설정 문서에 필요한 provider 설정만 placeholder로 기록하고 secrets는 커밋하지 않는지 확인
+- 사용자 제공 PDF 두 개는 계속 local-only QA 입력으로만 사용하고 커밋하지 않는지 확인
 - “직접 등기부등본 확인”의 첫 구현 범위가 인증/결제 대행이 아니라 사용자가 확보한 문서의 구조화와 검토 지원으로 제한되는지 확인
 - 문서 원본/추출 결과/승인 입력값의 보안 경계가 충분한지 확인
 - 외부 OCR/provider가 도메인 로직과 결합되지 않는지 확인
 - 사용자 승인 전 자동 입력값이 최종 분석값으로 확정되지 않는지 확인
-- 사용자 제공 PDF 두 개는 local-only QA 입력으로만 사용하고 커밋하지 않는지 확인
 - Draft PR: https://github.com/siwony/no-way-home/pull/2
-- Backend slice status: `BACKEND_READY_FOR_FRONTEND`
-- Backend verification:
-  - `./gradlew test --tests 'com.nowayhome.housecheck.api.DocumentIntakeControllerIntegrationTest' --tests 'com.nowayhome.housecheck.api.HouseCheckControllerIntegrationTest' --rerun-tasks` passed
-- Frontend slice status: `READY_FOR_UI_UX_ACCEPTANCE`
-- Frontend verification:
-  - `cd frontend && npm test` passed, 3 files / 13 tests
-  - `cd frontend && npm run build` passed
-- UI/UX acceptance loop:
-  - `CHANGES_REQUESTED`
-  - failed-document `다시 처리` wording must match actual upload behavior
-  - overwrite comparison must show explicit `현재 값 유지` vs `승인값으로 교체`
-- UI/UX requested rework:
-  - failed-document action now says `파일 선택 후 다시 업로드`
-  - conflict rows now show `선택됨: 현재 값 유지` or `선택됨: 승인값으로 교체`
-  - `cd frontend && npm test` passed, 3 files / 13 tests
-  - `cd frontend && npm run build` passed
-- UI/UX re-acceptance: `APPROVED`
-- QA report:
-  - Mock fixture browser E2E passed through document session creation, registry/lease uploads, field review, compare/apply, form population, house check creation, registry findings save, stale-session `ACCESS_DENIED`, and browser storage hygiene.
-  - Initial blocking result: `FAIL` because the two local-only user-provided PDFs were rejected before persistence with `HTTP 413` / `MaxUploadSizeExceededException`.
-  - Rework added 20MB backend upload policy, Spring multipart limits, JSON `413`, frontend preflight validation, and clearer upload errors.
-  - Final result: `PASS`; the two local-only PDFs uploaded through the UI, 20 extracted fields were approved, approved values were applied, and house check `bd31b759-c0a1-4f45-b0ad-26297b8cac5d` was created.
-  - Real PDF storage evidence: registry `11006061` bytes and lease `9679921` bytes reached `APPROVED`; encrypted `.bin` files did not contain `%PDF`.
-- Final verification:
+- Reopened loop target: `DEVELOPMENT`
+- Latest completed verification from the prior slice, now superseded for final approval:
   - `cd frontend && npm test` passed, 3 files / 17 tests
   - `cd frontend && npm run build` passed
   - `./gradlew test --tests 'com.nowayhome.housecheck.application.DocumentIntakeFilePolicyTest' --tests 'com.nowayhome.housecheck.api.DocumentIntakeControllerIntegrationTest' --tests 'com.nowayhome.housecheck.api.HouseCheckControllerIntegrationTest' --rerun-tasks` passed
   - `./gradlew test` passed
-- Director final review: `READY`
+  - Local-only real PDF QA passed on the previous slice
 - Merge caveat:
   - PR #2 is stacked on `feat/house-risk-agent-prompts/frontend` until PR #1 merges, then should be rebased onto `main`.
-- Follow-up outside this slice:
-  - Real OCR/registry provider integration remains behind the existing `DocumentIntakeExtractionPort` boundary.
 
 ## 스크린샷 (필요한 경우)
 

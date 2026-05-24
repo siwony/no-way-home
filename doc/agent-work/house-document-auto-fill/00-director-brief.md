@@ -4,37 +4,37 @@ Status: READY_FOR_UI_UX
 
 ## Goal
 
-기존 주택 계약 위험도 진단을 실제 서비스용 문서 기반 흐름으로 확장한다. 사용자가 등기부등본과 임대차 계약서를 등록하면 시스템이 문서에서 핵심 정보를 추출하고, 사용자의 검토/승인 후 계약 기본 정보와 등기 확인 입력에 자동 반영한다.
+기존 문서 자동 입력 기능을 데모용 fake extraction 수준에서 멈추지 않고, 실제 PDF 파서와 AI 검토 단계를 거치는 production-intent intake 흐름으로 확장한다. 사용자가 등기부등본과 임대차 계약서를 등록하면 시스템은 로컬 PDF 파서로 텍스트를 추출하고, AI 기반 문서 검토 어댑터를 통해 구조화된 필드 후보와 근거를 생성한 뒤, 사용자 검토/승인 후에만 기존 주택 계약 위험도 진단 입력값에 반영해야 한다.
 
 ## Background
 
-현재 기능은 계약 기본 정보, 등기 확인, 건축물대장 확인, 시세 입력을 사용자가 직접 입력하는 흐름이다. 실제 서비스에서는 사용자가 등기부등본과 계약서를 이미 보유하고 있으며, 이 문서를 기반으로 주소, 임대인, 소유자, 보증금, 월세, 계약일, 권리관계 위험 신호를 자동으로 채우는 경험이 필요하다.
+직전 slice는 문서 intake 세션, 업로드, 검토, 승인, 반영 UI와 보안 저장 구조를 구축했지만, 실제 추출 경로는 `FakeDocumentIntakeExtractionAdapter`가 담당한다. 사용자 지적대로 현재 production path에서 `서울시 마포구 양화로 1` 같은 하드코딩 값이 조용히 반환되는 상태는 허용할 수 없다.
 
-이 기능은 MVP식 demo parser가 아니라 production document intake로 다룬다. 원본 문서, 추출 텍스트, 추출 필드, 사용자 승인 상태, 분석 입력 반영 상태가 분리되어야 한다.
+이번 loop의 목적은 "실제 PDF 파서 및 AI로 검토 하는 프로세스"를 기본 경로로 만들고, AI provider 또는 API key가 준비되지 않은 환경에서는 명시적으로 실패시키는 것이다. fake adapter는 테스트 또는 명시적 local opt-in 용도로만 남길 수 있으며, production default나 무음 fallback으로 사용하면 안 된다.
 
 ## Scope
 
 ### Include
 
-- 등기부등본 PDF 업로드와 자동 추출 흐름
-- 임대차 계약서 PDF/image 업로드와 자동 추출 흐름
-- 문서 처리 상태 모델: `UPLOADED`, `EXTRACTING`, `REVIEW_REQUIRED`, `APPROVED`, `FAILED`, `DELETED`
-- 필드별 값, 원문 근거, 신뢰도, 검토 상태
-- 사용자 수정/제외/승인 UI
-- 승인된 필드만 기존 house check 입력값에 반영
-- 계약서와 등기부등본의 주소/임대인/소유자/금액 불일치 감지
-- 문서 원본과 추출 artifact 암호화 저장
-- 접근 권한, 감사 로그, 삭제 요청 대응을 고려한 도메인 모델
-- fake OCR/extraction adapter 기반 테스트 가능한 구조
+- PDF 업로드 후 실제 parser library를 사용한 로컬 텍스트 추출
+- 기존 `DocumentIntakeExtractionPort` 뒤에 AI extraction/review adapter 추가
+- AI 요청/응답을 구조화된 JSON schema 기반으로 검증하는 흐름
+- 문서 처리 상태에 AI/provider unavailable, parse failure, invalid structured output 같은 명시적 실패 사유 추가
+- fake extraction adapter를 test/local opt-in 전용으로 격리하는 설정 구조
+- 운영 기본값에서 fake adapter가 절대 자동 선택되지 않도록 하는 구성
+- AI provider 미설정 또는 `OPENAI_API_KEY` 부재 시 명시적 오류와 사용자 안내
+- 기존 검토/승인/반영 UI에서 새 실패 상태와 재시도 경로 노출
+- 테스트 환경에서 provider mocking 또는 stubbed adapter로 자동화 검증
+- `.env.example` 또는 동등한 설정 문서에서 필요한 AI 설정 키와 설명 정리
 
 ### Exclude
 
-- 서버가 인터넷등기소 로그인, 인증, 결제, 공동인증서 처리를 대신 수행하는 기능
-- 인증서, 공동인증서 비밀번호, 카드정보, 인터넷등기소 계정 정보 저장
-- 주민등록번호 원문 저장
-- 자동 추출값을 사용자 승인 없이 최종 분석 입력으로 확정하는 흐름
-- 법률 자문, 계약 가능 여부 확정, 보증금 회수 가능성 확정 문구
-- 특정 외부 OCR/provider에 도메인 로직이 직접 결합되는 구현
+- 인터넷등기소 로그인, 인증, 결제, 공동인증서 대행
+- 로컬 개발 환경에 실제 사용자 PDF나 API key를 커밋하는 행위
+- 주민등록번호 원문 저장 또는 민감 전문 로그 출력
+- AI 결과를 사용자 승인 없이 house check 입력값으로 확정하는 흐름
+- provider 종속 SDK/응답 포맷이 도메인 계층으로 직접 새어 나가는 구조
+- 이번 slice 안에서 OCR 정확도 튜닝, 다중 provider 라우팅, 비용 최적화까지 완료하는 것
 
 ## Required Documents
 
@@ -47,28 +47,28 @@ Status: READY_FOR_UI_UX
 
 ## Acceptance Criteria
 
-- 사용자는 등기부등본과 임대차 계약서를 업로드할 수 있다.
-- 사용자는 문서별 처리 상태와 실패 원인을 볼 수 있다.
-- 추출된 각 필드는 값, 문서 출처, 원문 근거, 신뢰도, 검토 필요 여부를 표시한다.
-- 사용자는 추출 필드를 수정하거나 제외할 수 있다.
-- 사용자 승인 전에는 기존 분석 입력값이 자동 확정되지 않는다.
-- 승인 후 승인된 필드만 기존 진단 입력 모델에 반영된다.
-- 계약서와 등기부등본 간 주소/임대인/소유자/금액 불일치를 확인 필요 항목으로 표시한다.
-- 다른 사용자는 문서, 추출 결과, 승인 결과에 접근할 수 없다.
-- 원본 문서와 추출 artifact는 민감 정보로 처리되고 브라우저 영구 저장소에 남지 않는다.
-- backend/frontend/Playwright E2E 테스트가 문서 업로드 -> 추출 검토 -> 승인 -> 자동 입력 반영 -> 분석 흐름을 검증한다.
-- 자동화 테스트는 mock fixture를 사용할 수 있고, 사용자가 제공한 실제 PDF 두 개는 local-only 검증 입력으로 추가 사용한다. 해당 PDF는 커밋하지 않는다.
+- 운영 기본 경로는 fake extraction이 아니라 실제 PDF parser + AI review adapter를 사용한다.
+- PDF 입력은 서버에서 실제 parser library를 통해 텍스트 추출을 시도하고, 추출 결과 또는 원본 PDF를 AI adapter 검토 입력으로 사용한다.
+- `DocumentIntakeExtractionPort` 경계는 유지되며, 도메인 로직은 특정 AI SDK나 응답 포맷에 직접 결합되지 않는다.
+- AI provider 설정이 없거나 `OPENAI_API_KEY`가 없으면 시스템은 명시적으로 실패하고, fake adapter로 조용히 대체되지 않는다.
+- fake adapter는 테스트 또는 명시적 local opt-in 설정에서만 활성화된다.
+- 사용자는 파싱 실패, AI 미설정, AI 검토 실패를 서로 구분 가능한 상태/메시지로 볼 수 있다.
+- 승인 전에는 기존 계약 기본 정보나 등기 확인 값이 자동 확정되지 않는다.
+- 승인 후에도 승인된 필드만 기존 입력 폼에 반영된다.
+- 자동화 테스트는 parser 기반 경로, AI adapter 호출 경로, provider unavailable 경로, fake adapter opt-in 경로를 검증한다.
+- 실제 사용자 PDF와 실제 API key는 저장소에 커밋하지 않는다.
 
 ## Constraints
 
 - 기존 위험도 표현 원칙을 유지한다. “안전하다”, “계약해도 된다” 같은 단정 문구는 금지한다.
-- 실제 service-ready 구조를 목표로 하되, 첫 구현은 외부 provider 없이 fake adapter와 fixture로 검증 가능해야 한다.
-- 외부 OCR/provider 연동은 포트/어댑터 경계로 둔다.
-- 민감정보 로그 출력과 예외 메시지를 제한한다.
+- production default는 반드시 fail-fast여야 하며, fake adapter 무음 fallback을 허용하지 않는다.
+- AI provider live call은 로컬 셸에 `OPENAI_API_KEY`가 없으므로 테스트 전략에서 mock/stub 경로를 기본으로 둔다.
+- 향후 live verification이 필요하면 사용자가 별도 키를 제공한 환경에서만 수행한다.
+- 민감정보 로그 출력, 예외 메시지, 저장 artifact 범위를 최소화한다.
 - 기존 PR #1의 backend/frontend house check 흐름에 의존한다. 이 브랜치는 PR #1 위에 stack되어 시작했고, PR #1 병합 후 `main` 기준으로 재정렬해야 한다.
 
 ## Open Questions
 
-- 실제 OCR/provider 후보와 비용/정확도/보안 기준은 별도 제품 결정이 필요하다.
-- 등기부등본 “직접 확인”의 법적/운영 의미를 확정해야 한다. 첫 scope에서는 사용자가 확보한 문서의 구조화와 검토 지원을 구현하고, 공식 확인 provider는 adapter 확장점으로 둔다.
-- 문서 retention 기간과 삭제 정책의 기본값이 필요하다.
+- 실제 AI adapter가 PDF 원본과 parser text 중 무엇을 주 입력으로 삼을지 구현 시 결정이 필요하다. 단, parser 단계는 반드시 존재해야 한다.
+- OCR이 필요한 스캔형 PDF를 이번 slice에서 어디까지 지원할지 명시가 필요하다. 최소 기준은 "텍스트 추출 불가 시 명시적 실패"다.
+- 운영 환경에서 사용할 모델, 비용 한도, timeout/retry 정책은 adapter 구현 시 구체화가 필요하다.

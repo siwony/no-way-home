@@ -6,7 +6,7 @@ Work ID: house-document-auto-fill
 
 ## Current Stage
 
-PR_READY
+DEVELOPMENT
 
 ## Stage Order
 
@@ -39,3 +39,5 @@ PR_READY
 | 2026-05-24 | DEVELOPMENT | QA_REPORT | Upload size policy, multipart limits, JSON 413 handling, and frontend upload feedback were implemented and verified. |
 | 2026-05-24 | QA_REPORT | DIRECTOR_FINAL_REVIEW | QA re-run passed with frontend tests/build, backend tests, full backend test suite, and local-only real PDF browser E2E. |
 | 2026-05-24 | DIRECTOR_FINAL_REVIEW | PR_READY | Director final review returned `READY`; PR can be marked ready while preserving the stacked-base caveat. |
+| 2026-05-24 | PR_READY | DIRECTOR_PLAN_APPROVAL | User expanded scope to require real PDF parsing and AI review in the default extraction path; previous fake-adapter follow-up is now in-scope. |
+| 2026-05-24 | DIRECTOR_PLAN_APPROVAL | DEVELOPMENT | Director approved the reopened loop with real parser + AI adapter requirements and explicit no-fake-default rules. |

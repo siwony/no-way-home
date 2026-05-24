@@ -1,6 +1,6 @@
 # PR Lifecycle: 등기부등본·임대차 계약서 자동 입력
 
-Status: READY_FOR_REVIEW
+Status: UPDATED
 
 ## Branch
 
@@ -10,10 +10,11 @@ Status: READY_FOR_REVIEW
 
 ## Draft PR
 
-- Title: `feat: 등기부등본·임대차 계약서 자동 입력`
+- Title: `(WIP) feat: 등기부등본·임대차 계약서 자동 입력`
 - Body file: `doc/agent-work/house-document-auto-fill/pr-body.md`
 - PR URL: https://github.com/siwony/no-way-home/pull/2
 - Created at: 2026-05-24
+- Current remote state: PR #2 is currently review-ready on GitHub and must be moved back to Draft before developers resume implementation.
 
 ## Required Before Development
 
@@ -39,6 +40,8 @@ Status: READY_FOR_REVIEW
 | 2026-05-24 | DEVELOPMENT | Implemented 20MB backend upload policy, multipart limits, JSON `413`, frontend preflight validation, and upload error copy. | yes | pending |
 | 2026-05-24 | QA_REPORT | QA re-run passed with real local PDFs, encrypted storage evidence, frontend tests/build, focused backend tests, and `./gradlew test`. | yes | pending |
 | 2026-05-24 | DIRECTOR_FINAL_REVIEW | Director final review returned `READY`; PR #2 may be marked ready while preserving stacked-base note. | yes | pending |
+| 2026-05-24 | PR_READY | Reopened the harness loop because the default extraction path still depends on `FakeDocumentIntakeExtractionAdapter`; new in-scope requirement is real PDF parsing plus AI review with no silent fake fallback. Latest completed verification from the prior slice remains: frontend tests/build PASS, focused backend tests PASS, `./gradlew test` PASS, local-only real PDF QA PASS. | yes | no |
+| 2026-05-24 | DIRECTOR_PLAN_APPROVAL | Director approved resumed development without a new UI/UX planning loop. Next implementation targets are real parser integration, AI extraction/review adapter wiring, explicit provider-unavailable failure, and fake-adapter opt-in only behavior. | yes | no |
 
 ## Visual Evidence Assets
 
@@ -52,12 +55,16 @@ Status: READY_FOR_REVIEW
 
 ## Ready For Review
 
-- [x] Director final review decision is `READY`
-- [x] QA report result is `PASS`
-- [x] Final test results are reflected in `pr-body.md`
-- [x] `(WIP)` removed from PR title
-- [x] `gh pr ready` completed
+- [ ] Director final review decision is `READY`
+- [ ] QA report result is `PASS`
+- [ ] Final test results are reflected in `pr-body.md`
+- [ ] `(WIP)` removed from PR title
+- [ ] `gh pr ready` completed
 
 ## Notes
 
 Use one status value: `NOT_CREATED`, `DRAFT_OPENED`, `UPDATED`, `READY_FOR_REVIEW`, `SKIPPED_BY_USER`, or `BLOCKED`.
+
+- Failed gate for this loop: `PR_READY`
+- Loop target: `DEVELOPMENT`
+- Required remote follow-up before coding resumes: convert PR #2 back to Draft and restore the `(WIP)` title marker
