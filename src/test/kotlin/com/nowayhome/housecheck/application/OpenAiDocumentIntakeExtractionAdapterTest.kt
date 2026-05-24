@@ -150,13 +150,15 @@ class OpenAiDocumentIntakeExtractionAdapterTest {
     }
 
     private fun newAdapter(apiKey: String): OpenAiDocumentIntakeExtractionAdapter {
+        val aiProperties = DocumentIntakeAiProperties(
+            apiKey = apiKey,
+            model = "gpt-4.1-mini",
+            baseUrl = "http://127.0.0.1:${server?.address?.port ?: 1}/v1",
+            timeout = Duration.ofSeconds(3),
+        )
         return OpenAiDocumentIntakeExtractionAdapter(
-            aiProperties = DocumentIntakeAiProperties(
-                apiKey = apiKey,
-                model = "gpt-4.1-mini",
-                baseUrl = "http://127.0.0.1:${server?.address?.port ?: 1}/v1",
-                timeout = Duration.ofSeconds(3),
-            ),
+            aiProperties = aiProperties,
+            documentIntakeAiAuthorizationProvider = DocumentIntakeAiAuthorizationProvider(aiProperties),
             documentIntakePdfTextExtractor = PdfBoxDocumentIntakePdfTextExtractor(),
             documentIntakeAiResultValidator = DocumentIntakeAiResultValidator(DocumentIntakeFieldValueParser()),
         )

@@ -169,6 +169,7 @@ class DocumentIntakeControllerOpenAiUnavailableIntegrationTest {
             }
             registry.add("housecheck.storage.root") { storageRoot.toString() }
             registry.add("housecheck.security.encryption.secret") { "housecheck-test-secret" }
+            registry.add("housecheck.document-intake.ai.auth-mode") { "api-key" }
             registry.add("housecheck.document-intake.ai.api-key") { "" }
             registry.add("housecheck.document-intake.ai.model") { "gpt-4.1-mini" }
             registry.add("housecheck.document-intake.ai.base-url") { "http://127.0.0.1:1/v1" }

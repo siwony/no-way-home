@@ -25,6 +25,8 @@
 ## 리뷰 필요
 
 - 기본 provider가 `openai`로 고정되었고, API key가 없을 때 fake fallback 없이 `FAILED / AI_PROVIDER_UNAVAILABLE`로 끝나는지 확인
+- AI 인증은 `HOUSECHECK_DOCUMENT_INTAKE_AI_AUTH_MODE=api-key|access-token|oauth-client-credentials` 환경변수로 선택 가능함
+- `oauth-client-credentials`는 OpenAI 공식 API 인증 우회가 아니라 OAuth token endpoint가 있는 호환 AI gateway/proxy를 위한 모드임
 - PDFBox 파서 이후 OpenAI 요청에 `input_file`과 `data:application/pdf;base64,` PDF payload가 포함되는지 확인
 - AI 응답이 top-level `output_text`와 nested `output[].content[].text` 모두에서 파싱되는지 확인
 - AI 결과가 persistence 전에 field key, document type, normalized value, `sourcePage`, `sourceText`, confidence, warning payload 기준으로 검증되는지 확인

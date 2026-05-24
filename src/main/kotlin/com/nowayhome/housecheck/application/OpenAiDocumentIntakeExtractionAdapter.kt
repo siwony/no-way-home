@@ -24,6 +24,7 @@ import java.time.Duration
 )
 class OpenAiDocumentIntakeExtractionAdapter(
     private val aiProperties: DocumentIntakeAiProperties,
+    private val documentIntakeAiAuthorizationProvider: DocumentIntakeAiAuthorizationProvider,
     private val documentIntakePdfTextExtractor: DocumentIntakePdfTextExtractor,
     private val documentIntakeAiResultValidator: DocumentIntakeAiResultValidator,
 ) : DocumentIntakeExtractionPort {
@@ -39,15 +40,9 @@ class OpenAiDocumentIntakeExtractionAdapter(
         bytes: ByteArray,
     ): ExtractedDocumentResult {
         val sourceMaterial = buildSourceMaterial(contentType, bytes)
-        val apiKey = aiProperties.apiKey?.trim().orEmpty()
-        if (apiKey.isBlank()) {
-            throw DocumentIntakeExtractionFailureException(
-                code = "AI_PROVIDER_UNAVAILABLE",
-                message = "문서 처리용 AI 설정이 없어 자동 추출을 완료할 수 없습니다. 수기 입력으로 계속해 주세요.",
-            )
-        }
+        val authorizationHeader = documentIntakeAiAuthorizationProvider.authorizationHeader()
         val requestBody = buildRequestBody(documentType, originalFileName, contentType, sourceMaterial)
-        val responseBody = invokeOpenAi(apiKey, requestBody)
+        val responseBody = invokeOpenAi(authorizationHeader, requestBody)
         val payload = parseStructuredPayload(responseBody)
         return documentIntakeAiResultValidator.validate(
             documentType = documentType,
@@ -207,10 +202,10 @@ class OpenAiDocumentIntakeExtractionAdapter(
         """.trimIndent()
     }
 
-    private fun invokeOpenAi(apiKey: String, requestBody: String): String {
+    private fun invokeOpenAi(authorizationHeader: String, requestBody: String): String {
         val request = HttpRequest.newBuilder()
             .uri(resolveResponsesUri(aiProperties.baseUrl))
-            .header("Authorization", "Bearer $apiKey")
+            .header("Authorization", authorizationHeader)
             .header("Content-Type", "application/json")
             .timeout(aiProperties.timeout)
             .POST(HttpRequest.BodyPublishers.ofString(requestBody, StandardCharsets.UTF_8))
