@@ -18,7 +18,7 @@
 - [x] Frontend 구현
 - [x] UI/UX acceptance 완료
 - [x] QA plan/report 완료
-- [ ] Director final review 완료
+- [x] Director final review 완료
 
 ## 리뷰 필요
 
@@ -56,6 +56,11 @@
   - `cd frontend && npm run build` passed
   - `./gradlew test --tests 'com.nowayhome.housecheck.application.DocumentIntakeFilePolicyTest' --tests 'com.nowayhome.housecheck.api.DocumentIntakeControllerIntegrationTest' --tests 'com.nowayhome.housecheck.api.HouseCheckControllerIntegrationTest' --rerun-tasks` passed
   - `./gradlew test` passed
+- Director final review: `READY`
+- Merge caveat:
+  - PR #2 is stacked on `feat/house-risk-agent-prompts/frontend` until PR #1 merges, then should be rebased onto `main`.
+- Follow-up outside this slice:
+  - Real OCR/registry provider integration remains behind the existing `DocumentIntakeExtractionPort` boundary.
 
 ## 스크린샷 (필요한 경우)
 

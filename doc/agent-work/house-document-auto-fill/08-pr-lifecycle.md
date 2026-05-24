@@ -1,6 +1,6 @@
 # PR Lifecycle: 등기부등본·임대차 계약서 자동 입력
 
-Status: UPDATED
+Status: READY_FOR_REVIEW
 
 ## Branch
 
@@ -10,7 +10,7 @@ Status: UPDATED
 
 ## Draft PR
 
-- Title: `(WIP) feat: 등기부등본·임대차 계약서 자동 입력`
+- Title: `feat: 등기부등본·임대차 계약서 자동 입력`
 - Body file: `doc/agent-work/house-document-auto-fill/pr-body.md`
 - PR URL: https://github.com/siwony/no-way-home/pull/2
 - Created at: 2026-05-24
@@ -38,6 +38,7 @@ Status: UPDATED
 | 2026-05-24 | DEVELOPMENT | Reopened backend/frontend development loop for document-intake upload size policy, Spring multipart limits, and clear oversized-file feedback. | yes | pending |
 | 2026-05-24 | DEVELOPMENT | Implemented 20MB backend upload policy, multipart limits, JSON `413`, frontend preflight validation, and upload error copy. | yes | pending |
 | 2026-05-24 | QA_REPORT | QA re-run passed with real local PDFs, encrypted storage evidence, frontend tests/build, focused backend tests, and `./gradlew test`. | yes | pending |
+| 2026-05-24 | DIRECTOR_FINAL_REVIEW | Director final review returned `READY`; PR #2 may be marked ready while preserving stacked-base note. | yes | pending |
 
 ## Visual Evidence Assets
 
@@ -51,11 +52,11 @@ Status: UPDATED
 
 ## Ready For Review
 
-- [ ] Director final review decision is `READY`
+- [x] Director final review decision is `READY`
 - [x] QA report result is `PASS`
 - [x] Final test results are reflected in `pr-body.md`
-- [ ] `(WIP)` removed from PR title
-- [ ] `gh pr ready` completed
+- [x] `(WIP)` removed from PR title
+- [x] `gh pr ready` completed
 
 ## Notes
 

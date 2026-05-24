@@ -6,7 +6,7 @@ Work ID: house-document-auto-fill
 
 ## Current Stage
 
-DIRECTOR_FINAL_REVIEW
+PR_READY
 
 ## Stage Order
 
@@ -38,3 +38,4 @@ DIRECTOR_FINAL_REVIEW
 | 2026-05-24 | QA_REPORT | DEVELOPMENT | Looping back to backend/frontend development for upload size policy, multipart limit, and actionable oversized-file feedback. |
 | 2026-05-24 | DEVELOPMENT | QA_REPORT | Upload size policy, multipart limits, JSON 413 handling, and frontend upload feedback were implemented and verified. |
 | 2026-05-24 | QA_REPORT | DIRECTOR_FINAL_REVIEW | QA re-run passed with frontend tests/build, backend tests, full backend test suite, and local-only real PDF browser E2E. |
+| 2026-05-24 | DIRECTOR_FINAL_REVIEW | PR_READY | Director final review returned `READY`; PR can be marked ready while preserving the stacked-base caveat. |
