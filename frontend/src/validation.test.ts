@@ -1,5 +1,12 @@
 import { describe, expect, it } from "vitest";
-import { applyAccessDeniedReset, deriveNeutralGlobalMessage, validateContract, validateMarketPrice, validateRegistryFindings } from "./validation";
+import {
+  applyAccessDeniedReset,
+  deriveNeutralGlobalMessage,
+  validateContract,
+  validateDocumentIntakeUpload,
+  validateMarketPrice,
+  validateRegistryFindings,
+} from "./validation";
 
 describe("validation", () => {
   it("requires at least one market price amount", () => {
@@ -48,6 +55,24 @@ describe("validation", () => {
     });
 
     expect(errors.seniorDebtAmount).toContain("선순위 채권");
+  });
+
+  it("validates registry auto-fill uploads as pdf only", () => {
+    const errors = validateDocumentIntakeUpload(
+      "registry",
+      new File(["fake"], "registry.png", { type: "image/png" }),
+    );
+
+    expect(errors.file).toContain("PDF");
+  });
+
+  it("allows supported lease contract image uploads", () => {
+    const errors = validateDocumentIntakeUpload(
+      "lease-contract",
+      new File(["fake"], "lease.webp", { type: "image/webp" }),
+    );
+
+    expect(errors.file).toBeUndefined();
   });
 
   it("clears server data when a different user id is applied to an existing check", () => {

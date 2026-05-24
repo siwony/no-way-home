@@ -51,6 +51,39 @@ export function validateUpload(file: File | null): ValidationErrors {
   return errors;
 }
 
+export function validateDocumentIntakeUpload(documentType: "registry" | "lease-contract", file: File | null): ValidationErrors {
+  const errors: ValidationErrors = {};
+  if (!file) {
+    errors.file = "업로드할 파일을 먼저 선택해 주세요.";
+    return errors;
+  }
+
+  const lowerName = file.name.toLowerCase();
+  const isPdf = file.type === "application/pdf" || lowerName.endsWith(".pdf");
+  const isImage =
+    file.type === "image/jpeg" ||
+    file.type === "image/png" ||
+    file.type === "image/webp" ||
+    lowerName.endsWith(".jpg") ||
+    lowerName.endsWith(".jpeg") ||
+    lowerName.endsWith(".png") ||
+    lowerName.endsWith(".webp");
+
+  if (documentType === "registry" && !isPdf) {
+    errors.file = "지원하지 않는 형식입니다. 등기부등본은 PDF만 등록할 수 있습니다.";
+  }
+
+  if (documentType === "lease-contract" && !isPdf && !isImage) {
+    errors.file = "지원하지 않는 형식입니다. 임대차 계약서는 PDF, JPEG, PNG, WebP만 등록할 수 있습니다.";
+  }
+
+  if (file.size <= 0) {
+    errors.file = "빈 파일은 업로드할 수 없습니다.";
+  }
+
+  return errors;
+}
+
 export function validateRegistryFindings(form: RegistryFindingsFormState): ValidationErrors {
   const errors: ValidationErrors = {};
 

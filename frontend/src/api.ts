@@ -2,6 +2,9 @@ import type {
   ApiErrorResponse,
   BuildingLedgerFindingsFormState,
   ContractFormState,
+  DocumentIntakeApplicationPayloadResponse,
+  DocumentIntakeReviewAction,
+  DocumentIntakeSessionResponse,
   HouseChecklistResponse,
   HouseRiskReportResponse,
   MarketPriceFormState,
@@ -157,5 +160,58 @@ export const houseCheckApi = {
 
   getChecklist(userId: string, checkId: string) {
     return request<HouseChecklistResponse>(`/house-checks/${checkId}/checklist`, userId);
+  },
+};
+
+export const documentIntakeApi = {
+  createSession(userId: string) {
+    return request<DocumentIntakeSessionResponse>("/document-intakes", userId, {
+      method: "POST",
+    });
+  },
+
+  getSession(userId: string, sessionId: string) {
+    return request<DocumentIntakeSessionResponse>(`/document-intakes/${sessionId}`, userId);
+  },
+
+  uploadDocument(
+    userId: string,
+    sessionId: string,
+    documentType: "registry" | "lease-contract",
+    file: File,
+  ) {
+    const formData = new FormData();
+    formData.append("file", file);
+
+    return request<DocumentIntakeSessionResponse>(`/document-intakes/${sessionId}/documents/${documentType}`, userId, {
+      method: "POST",
+      body: formData,
+    });
+  },
+
+  reviewField(
+    userId: string,
+    sessionId: string,
+    fieldKey: string,
+    action: DocumentIntakeReviewAction,
+    editedValue?: string,
+  ) {
+    return request<DocumentIntakeSessionResponse>(`/document-intakes/${sessionId}/fields/${fieldKey}`, userId, {
+      method: "PUT",
+      body: JSON.stringify({
+        action,
+        ...(editedValue !== undefined ? { editedValue } : {}),
+      }),
+    });
+  },
+
+  getApplicationPayload(userId: string, sessionId: string) {
+    return request<DocumentIntakeApplicationPayloadResponse>(`/document-intakes/${sessionId}/application-payload`, userId);
+  },
+
+  deleteDocument(userId: string, sessionId: string, documentType: "registry" | "lease-contract") {
+    return request<DocumentIntakeSessionResponse>(`/document-intakes/${sessionId}/documents/${documentType}`, userId, {
+      method: "DELETE",
+    });
   },
 };

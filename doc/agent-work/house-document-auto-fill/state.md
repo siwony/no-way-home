@@ -6,7 +6,7 @@ Work ID: house-document-auto-fill
 
 ## Current Stage
 
-DEVELOPMENT
+UI_UX_ACCEPTANCE
 
 ## Stage Order
 
@@ -30,3 +30,4 @@ DEVELOPMENT
 | 2026-05-24 | UI_UX_PLAN | DIRECTOR_PLAN_APPROVAL | UI/UX plan completed with `READY_FOR_DIRECTOR_REVIEW`. |
 | 2026-05-24 | DIRECTOR_PLAN_APPROVAL | DRAFT_PR_OPEN | Director approved the production document intake scope and local-only user PDF QA fixture handling. |
 | 2026-05-24 | DRAFT_PR_OPEN | DEVELOPMENT | Draft PR opened at https://github.com/siwony/no-way-home/pull/2. |
+| 2026-05-24 | DEVELOPMENT | UI_UX_ACCEPTANCE | Backend and frontend document auto-fill slices completed; frontend tests/build passed and work is ready for UI/UX acceptance. |

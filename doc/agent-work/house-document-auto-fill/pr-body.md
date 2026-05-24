@@ -15,7 +15,7 @@
 - [x] UI/UX plan 작성 및 Director approval 완료
 - [x] Draft PR 생성
 - [x] Backend 구현
-- [ ] Frontend 구현
+- [x] Frontend 구현
 - [ ] UI/UX acceptance 완료
 - [ ] QA plan/report 완료
 - [ ] Director final review 완료
@@ -31,6 +31,10 @@
 - Backend slice status: `BACKEND_READY_FOR_FRONTEND`
 - Backend verification:
   - `./gradlew test --tests 'com.nowayhome.housecheck.api.DocumentIntakeControllerIntegrationTest' --tests 'com.nowayhome.housecheck.api.HouseCheckControllerIntegrationTest' --rerun-tasks` passed
+- Frontend slice status: `READY_FOR_UI_UX_ACCEPTANCE`
+- Frontend verification:
+  - `cd frontend && npm test` passed, 3 files / 13 tests
+  - `cd frontend && npm run build` passed
 
 ## 스크린샷 (필요한 경우)
 

@@ -1,6 +1,6 @@
 # Developer Implementation: 등기부등본·임대차 계약서 자동 입력
 
-Status: BACKEND_READY_FOR_FRONTEND
+Status: READY_FOR_UI_UX_ACCEPTANCE
 
 ## Prerequisites
 
@@ -64,13 +64,21 @@ Status: BACKEND_READY_FOR_FRONTEND
 
 ## Frontend Work
 
-- [ ] Not owned in this backend pass.
+- [x] Added `/api/document-intakes` frontend client coverage for session create/read, registry or lease upload, field review, delete, and approved-field payload fetch.
+- [x] Added document-intake response types and pure client helpers for field labels, compare/apply previews, and field-level source notes.
+- [x] Inserted a `문서 자동 입력` card into the existing single-route operational workspace before normal house-check creation so intake can start before `checkId` exists.
+- [x] Added fixed upload slots for `등기부등본 PDF` and `임대차 계약서 PDF / 이미지`, including file metadata, processing status, failure messages, re-upload/delete actions, and session status messaging.
+- [x] Added `추출 검토 및 승인` UI with mismatch warnings, review counts, document filters, evidence disclosure, and field-level `승인 / 수정 / 제외` actions.
+- [x] Added explicit compare/apply flow for approved fields. The UI fetches the application payload only when the user clicks apply, shows conflict rows before overwrite, and updates local contract or registry forms only after confirmation.
+- [x] Added field-level source notes (`자동 입력 반영`, `사용자 수정됨`) and preserved manual edits after apply.
+- [x] Preserved `ACCESS_DENIED` handling for document-intake calls by clearing document session state, apply previews, and document-derived source notes from the screen.
+- [x] Kept browser storage limited to `user-id`, `check-id`, and `document-intake-session-id`. No file contents, extracted values, payloads, or filenames are written to localStorage/sessionStorage.
 
 ## UI/UX Checklist Result
 
 - [x] Backend returns document states, extracted field evidence, review status, mismatch warnings, and approved-form payload in shapes the frontend can render directly.
 - [x] Backend keeps house check data unchanged before frontend/user approval is applied through existing forms.
-- [ ] Frontend-only items remain for card layout, source chips, overwrite comparison UI, retry messaging, and browser storage verification.
+- [x] Frontend now renders the approved document-intake card layout, source chips/notes, overwrite comparison flow, retry/delete messaging, and browser-storage-safe session handling.
 
 ## Tests Run
 
@@ -80,6 +88,31 @@ Status: BACKEND_READY_FOR_FRONTEND
 
 ./gradlew test --tests 'com.nowayhome.housecheck.*'
 - PASS
+
+cd frontend && npm test
+- PASS (13 tests)
+
+cd frontend && npm run build
+- PASS
+
+Live smoke (2026-05-24, local backend + Vite)
+- Started `docker compose up -d postgres`
+- Started backend with `./gradlew bootRun`
+- Started frontend with `cd frontend && npm run dev -- --host 127.0.0.1 --port 4173`
+- Browser smoke with generated local fixtures:
+  - Applied `User ID=smoke-owner`
+  - Created document intake session
+  - Uploaded temp `registry.pdf` to registry slot and temp `lease.png` to lease slot
+  - Observed both documents move to `검토 필요`
+  - Observed mismatch warnings (`보증금 확인 필요`, `임대인 / 소유자 확인 필요`)
+  - Approved fields through backend API for the same session, refreshed the UI, and observed both documents move to `승인 완료`
+  - Opened compare/apply summary, confirmed apply, and observed contract/registry form fields populated with `자동 입력 반영` notes
+- Validation smoke:
+  - `POST /api/document-intakes/{sessionId}/documents/registry` with PNG returned `400 DOCUMENT_INTAKE_INVALID_FILE_TYPE`
+- Browser storage smoke:
+  - `localStorage`: empty
+  - `sessionStorage`: only `house-risk-agent-prompts.user-id` and `house-risk-agent-prompts.document-intake-session-id`
+- Stopped frontend dev server, backend bootRun, Playwright browser session, and `docker compose stop postgres`
 ```
 
 ## Changed Files
@@ -104,6 +137,16 @@ Status: BACKEND_READY_FOR_FRONTEND
 - `src/main/kotlin/com/nowayhome/housecheck/storage/DocumentIntakeDocumentStorage.kt`
 - `src/main/resources/db/migration/V3__document_intake.sql`
 - `src/test/kotlin/com/nowayhome/housecheck/api/DocumentIntakeControllerIntegrationTest.kt`
+- `frontend/src/App.tsx`
+- `frontend/src/api.ts`
+- `frontend/src/documentIntake.ts`
+- `frontend/src/documentIntake.test.ts`
+- `frontend/src/format.ts`
+- `frontend/src/styles.css`
+- `frontend/src/types.ts`
+- `frontend/src/validation.test.ts`
+- `frontend/src/validation.ts`
+- `doc/agent-work/house-document-auto-fill/03-developer-implementation.md`
 
 ## Risks Or Follow-ups
 
@@ -111,8 +154,11 @@ Status: BACKEND_READY_FOR_FRONTEND
 - Deposit mismatch is currently driven by fake extraction hints rather than a richer cross-source financial reconciliation model.
 - The backend exposes typed application payload data but does not apply it into existing house-check entities automatically. Frontend still needs to drive the “compare and apply” UX.
 - No document preview/download endpoint was added in this slice. The current backend scope supports storage, review evidence text, approval, payload fetch, and delete.
+- Contract 기본 정보는 현재 backend에 update endpoint가 없어서 `checkId` 생성 후에는 화면 입력값 비교/보조용으로만 바뀐다. QA는 권장 흐름대로 `문서 세션 -> 승인 반영 -> 진단 시작` 순서를 우선 검증해야 한다.
+- Live smoke는 generated temp fixtures와 fake extraction에 기반했다. 사용자가 제공한 루트의 실제 PDF 2개는 아직 manual QA 전용이며, UI/UX acceptance에서 별도 업로드 검증이 필요하다.
+- PR review용 스크린샷 asset은 이번 요청의 허용 쓰기 경로가 `frontend/**`와 `03-developer-implementation.md`로 제한되어 추가하지 않았다.
 
 ## Handoff Notes
 
-- Frontend can start from `POST /api/document-intakes`, upload registry and lease files to the document-specific endpoints, render the returned field/warning snapshot, call field review updates, then fetch `GET /api/document-intakes/{sessionId}/application-payload` to prefill the existing forms.
-- Existing house-check APIs and tests still pass after this slice.
+- UI/UX acceptance can now validate the end-to-end frontend flow on the existing workspace: `User ID 적용 -> 문서 세션 시작 -> 문서 업로드 -> 추출 검토 -> 승인한 필드 반영 -> 계약/등기 입력 확인`.
+- Existing house-check APIs and tests still pass after this slice, and the browser-storage check remained within the allowed session-only keys.

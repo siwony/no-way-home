@@ -163,3 +163,102 @@ export type MarketPriceFormState = {
   sourceLabel: string;
   referenceDate: string;
 };
+
+export type DocumentIntakeDocumentType = "REGISTRY" | "LEASE_CONTRACT";
+export type DocumentIntakeProcessingStatus = "UPLOADED" | "EXTRACTING" | "REVIEW_REQUIRED" | "APPROVED" | "FAILED" | "DELETED";
+export type DocumentIntakeFieldReviewStatus = "REVIEW_REQUIRED" | "APPROVED" | "EDITED" | "EXCLUDED";
+export type DocumentIntakeWarningType = "ADDRESS_MISMATCH" | "LANDLORD_OWNER_MISMATCH" | "DEPOSIT_MISMATCH";
+export type DocumentIntakeReviewAction = "APPROVE" | "EDIT" | "EXCLUDE";
+export type DocumentIntakeFieldKey =
+  | "LEASE_ADDRESS_ROAD"
+  | "LEASE_ADDRESS_LOT"
+  | "LEASE_CONTRACT_TYPE"
+  | "LEASE_DEPOSIT_AMOUNT"
+  | "LEASE_MONTHLY_RENT_AMOUNT"
+  | "LEASE_CONTRACT_DATE"
+  | "LEASE_OCCUPANCY_DATE"
+  | "LEASE_LANDLORD_NAME"
+  | "LEASE_SPECIAL_TERMS"
+  | "REGISTRY_ADDRESS"
+  | "REGISTRY_ISSUED_DATE"
+  | "REGISTRY_OWNER_NAME"
+  | "REGISTRY_HAS_TRUST_REGISTRATION"
+  | "REGISTRY_HAS_SEIZURE"
+  | "REGISTRY_HAS_PROVISIONAL_SEIZURE"
+  | "REGISTRY_HAS_PROVISIONAL_DISPOSITION"
+  | "REGISTRY_HAS_AUCTION_PROCEEDING"
+  | "REGISTRY_HAS_LEASE_REGISTRATION"
+  | "REGISTRY_HAS_MORTGAGE"
+  | "REGISTRY_SENIOR_DEBT_AMOUNT";
+
+export type DocumentIntakeDocumentFailureResponse = {
+  code: string;
+  message: string;
+};
+
+export type DocumentIntakeDocumentResponse = {
+  documentType: DocumentIntakeDocumentType;
+  processingStatus: DocumentIntakeProcessingStatus;
+  fileName: string | null;
+  mimeType: string | null;
+  uploadedAt: string | null;
+  processedAt: string | null;
+  failure: DocumentIntakeDocumentFailureResponse | null;
+};
+
+export type DocumentIntakeFieldResponse = {
+  fieldKey: DocumentIntakeFieldKey;
+  value: string | null;
+  sourceDocument: DocumentIntakeDocumentType;
+  sourcePage: number | null;
+  sourceText: string | null;
+  confidence: number;
+  reviewStatus: DocumentIntakeFieldReviewStatus;
+};
+
+export type DocumentIntakeWarningResponse = {
+  type: DocumentIntakeWarningType;
+  message: string;
+  relatedFields: DocumentIntakeFieldKey[];
+};
+
+export type DocumentIntakeSessionResponse = {
+  sessionId: string;
+  documents: DocumentIntakeDocumentResponse[];
+  fields: DocumentIntakeFieldResponse[];
+  warnings: DocumentIntakeWarningResponse[];
+  createdAt: string;
+  updatedAt: string;
+  expiresAt: string;
+};
+
+export type DocumentIntakeContractFormPayload = {
+  addressRoad: string | null;
+  addressLot: string | null;
+  contractType: ContractType | null;
+  depositAmount: number | null;
+  monthlyRentAmount: number | null;
+  contractPlannedDate: string | null;
+  occupancyPlannedDate: string | null;
+  landlordName: string | null;
+};
+
+export type DocumentIntakeRegistryFindingsPayload = {
+  currentOwnerName: string | null;
+  ownerMatchesLandlord: boolean | null;
+  hasTrustRegistration: boolean | null;
+  hasSeizure: boolean | null;
+  hasProvisionalSeizure: boolean | null;
+  hasProvisionalDisposition: boolean | null;
+  hasAuctionProceeding: boolean | null;
+  hasLeaseRegistration: boolean | null;
+  hasMortgage: boolean | null;
+  seniorDebtAmount: number | null;
+};
+
+export type DocumentIntakeApplicationPayloadResponse = {
+  sessionId: string;
+  approvedFieldCount: number;
+  contractForm: DocumentIntakeContractFormPayload;
+  registryFindingsForm: DocumentIntakeRegistryFindingsPayload;
+};
