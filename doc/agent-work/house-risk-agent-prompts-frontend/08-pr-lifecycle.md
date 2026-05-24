@@ -43,6 +43,15 @@ None. Draft PR is open and development may proceed.
 | 2026-05-24 | QA_REPORT | QA rerun passed; frontend tests/build and built-frontend smoke are green. | yes | pending |
 | 2026-05-24 | DIRECTOR_FINAL_REVIEW | Director final review is `READY`; PR body updated with final test results and PR marked ready for review. | yes | pending |
 
+## Visual Evidence Assets
+
+- Asset directory: `doc/agent-work/house-risk-agent-prompts-frontend/assets/`
+- Use committed screenshots for frontend PR review because `gh` cannot upload image files into the PR body.
+
+| File | Scenario | PR Body Link Updated |
+|---|---|---|
+|  |  |  |
+
 ## Ready For Review
 
 - [x] Director final review decision is `READY`

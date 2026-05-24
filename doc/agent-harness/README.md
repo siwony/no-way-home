@@ -44,6 +44,7 @@ See [workflow.md](workflow.md) for gate rules and loop handling. See [codex-suba
 - PR 제목은 `(WIP) feat: <기능 이름>` 형식을 사용한다.
 - PR 본문은 `doc/agent-work/{work-id}/pr-body.md`를 기준으로 갱신한다.
 - 루프가 발생하면 실패 gate, 재작업 대상, 최신 테스트 결과를 PR body에 반영한다.
+- frontend 화면 증거가 필요하면 이미지를 `doc/agent-work/{work-id}/assets/`에 저장하고 PR body에서 커밋된 이미지 URL을 참조한다.
 - Director final review가 `READY`이고 QA result가 `PASS`일 때만 `(WIP)`를 제거하고 `gh pr ready`를 실행한다.
 
 ## Handoff Rules
