@@ -30,6 +30,7 @@ Status: READY_FOR_REVIEW
 | 2026-05-24 | DEVELOPMENT_COMPLETE | XML-only public market price lookup, preview/apply UI, tests, and screenshot evidence completed | yes | yes |
 | 2026-05-24 | QA_PASS | Full Gradle test, frontend tests/build, Playwright screenshot, and diff check passed | yes | yes |
 | 2026-05-24 | SERVICE_KEY_QA | Registered service keys tested against real public XML APIs; partial 403 fallback added and Gradle tests passed | yes | yes |
+| 2026-05-24 | SERVICE_KEY_REQA | After all three public API approvals, Juso, StanReginCd, AptTrade, and AptRent returned XML 200; lookup/save passed with market and jeonse values | yes | yes |
 
 ## Visual Evidence Assets
 

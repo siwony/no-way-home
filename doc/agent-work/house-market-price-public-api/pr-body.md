@@ -68,13 +68,18 @@ POST /api/house-checks/{checkId}/market-price
 lookup confidence AVAILABLE
 sourceKind MLIT_REAL_TRANSACTION
 lawdCode 11440
+estimatedMarketValue 1220000000
+estimatedJeonseValue 590000000
+marketSampleCount 2116
+jeonseSampleCount 6158
+warningCount 0
 marketPriceStatus SAVED
 
 실제 외부 API 직접 점검
 Juso XML 200
-StanReginCd XML 403
+StanReginCd XML 200
 AptTrade XML 200
-AptRent XML 403
+AptRent XML 200
 ```
 
 ## 스크린샷 (필요한 경우)

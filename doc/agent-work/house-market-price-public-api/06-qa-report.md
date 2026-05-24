@@ -6,7 +6,7 @@ Result: PASS
 
 ## Summary
 
-공공 실거래가 조회는 mock XML public API로 backend E2E 성격의 Spring Boot 통합 테스트를 통과했다. 등록된 실제 service key를 사용한 QA도 수행했고, 국토교통부 아파트 매매 XML API는 정상 응답을 받아 lookup/save 흐름이 통과했다. 일부 보조 API 403은 서비스 중단이 아니라 경고와 fallback으로 처리하도록 보강했다.
+공공 실거래가 조회는 mock XML public API로 backend E2E 성격의 Spring Boot 통합 테스트를 통과했다. 등록된 실제 service key를 사용한 재QA에서 Juso, StanReginCd, AptTrade, AptRent가 모두 XML 200으로 응답했고, 앱 lookup/save 흐름도 전세 참고 금액까지 포함해 경고 없이 통과했다.
 
 ## Tests Executed
 
@@ -21,13 +21,18 @@ POST /api/house-checks/{checkId}/market-price
 > lookup confidence AVAILABLE
 > sourceKind MLIT_REAL_TRANSACTION
 > lawdCode 11440
+> estimatedMarketValue 1220000000
+> estimatedJeonseValue 590000000
+> marketSampleCount 2116
+> jeonseSampleCount 6158
+> warningCount 0
 > marketPriceStatus SAVED
 
 실제 외부 API 직접 점검
 > Juso XML: 200
-> StanReginCd XML: 403
+> StanReginCd XML: 200
 > AptTrade XML: 200
-> AptRent XML: 403
+> AptRent XML: 200
 
 cd frontend && npm test
 > Test Files 3 passed (3)
@@ -57,8 +62,9 @@ git diff --check
 - Frontend lookup preview, apply, and save flow renders and produces PR screenshot evidence.
 - 실제 service key 환경에서 `서울특별시 마포구 양화로 1` 도로명 주소와 `서울특별시 마포구 합정동 472` 지번 fallback으로 lookup 성공.
 - 실제 국토교통부 아파트 매매 XML 응답으로 `estimatedMarketValue=1220000000`, `marketSampleCount=2116`, `confidence=AVAILABLE` 확인.
+- 실제 국토교통부 아파트 전월세 XML 응답으로 `estimatedJeonseValue=590000000`, `jeonseSampleCount=6158` 확인.
 - 실제 lookup 결과를 저장해 `marketPriceStatus=SAVED` 확인.
-- 실제 StanReginCd/AptRent 403 응답은 경고로 반환되고 매매 시세 조회 성공을 막지 않음.
+- 실제 승인 상태에서 StanReginCd/AptRent까지 모두 200으로 응답해 `warnings=[]` 확인.
 
 ## Failed Cases
 
